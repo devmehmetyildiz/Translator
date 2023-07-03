@@ -18,9 +18,7 @@ export default class Users extends Component {
     this.state = {
       open: false,
       selectedrecord: {},
-      stationsStatus: [],
       rolesStatus: [],
-      departmentsStatus: [],
     }
   }
 
@@ -56,9 +54,6 @@ export default class Users extends Component {
       { Header: Literals.Columns.Address[Profile.Language], accessor: 'Address', sortable: true, canGroupBy: true, canFilter: true },
       { Header: Literals.Columns.Language[Profile.Language], accessor: 'Language', sortable: true, canGroupBy: true, canFilter: true },
       { Header: Literals.Columns.UserID[Profile.Language], accessor: 'UserID', sortable: true, canGroupBy: true, canFilter: true },
-      { Header: Literals.Columns.Defaultdepartment[Profile.Language], accessor: 'Defaultdepartment', sortable: true, canGroupBy: true, canFilter: true },
-      { Header: Literals.Columns.Stations[Profile.Language], accessor: 'Stationstxt', sortable: true, canGroupBy: true, canFilter: true, isOpen: false, Cell: col => this.stationCellhandler(col) },
-      { Header: Literals.Columns.Departments[Profile.Language], accessor: 'Departmentstxt', sortable: true, canGroupBy: true, canFilter: true, isOpen: false, Cell: col => this.departmentCellhandler(col) },
       { Header: Literals.Columns.Roles[Profile.Language], accessor: 'Rolestxt', sortable: true, canGroupBy: true, canFilter: true, isOpen: false, Cell: col => this.rolesCellhandler(col) },
       { Header: Literals.Columns.Createduser[Profile.Language], accessor: 'Createduser', sortable: true, canGroupBy: true, canFilter: true, },
       { Header: Literals.Columns.Updateduser[Profile.Language], accessor: 'Updateduser', sortable: true, canGroupBy: true, canFilter: true, },
@@ -79,20 +74,13 @@ export default class Users extends Component {
     };
 
     const list = (Users.list || []).map(item => {
-      var stationtext = (item.Stations || []).map((station) => {
-        return station.Name;
-      }).join(", ")
       var rolestext = (item.Roles || []).map((role) => {
         return role.Name;
       }).join(", ")
-      var departmentext = (item.Departments || []).map((department) => {
-        return department.Name;
-      }).join(", ")
+    
       return {
         ...item,
-        Stationstxt: stationtext,
         Rolestxt: rolestext,
-        Departmentstxt: departmentext,
         edit: <Link to={`/Users/${item.Uuid}/edit`} ><Icon size='large' className='row-edit' name='edit' /></Link>,
         delete: <Icon link size='large' color='red' name='alternate trash' onClick={() => {
           handleSelectedUser(item)
@@ -136,20 +124,7 @@ export default class Users extends Component {
     )
   }
 
-  expandStations = (rowid) => {
-    const prevData = this.state.stationsStatus
-    prevData.push(rowid)
-    this.setState({ stationsStatus: [...prevData] })
-  }
-
-  shrinkStations = (rowid) => {
-    const index = this.state.stationsStatus.indexOf(rowid)
-    const prevData = this.state.stationsStatus
-    if (index > -1) {
-      prevData.splice(index, 1)
-      this.setState({ stationsStatus: [...prevData] })
-    }
-  }
+  
   expandRoles = (rowid) => {
     const prevData = this.state.rolesStatus
     prevData.push(rowid)
@@ -164,20 +139,7 @@ export default class Users extends Component {
       this.setState({ rolesStatus: [...prevData] })
     }
   }
-  expandDepartments = (rowid) => {
-    const prevData = this.state.rolesStatus
-    prevData.push(rowid)
-    this.setState({ rolesStatus: [...prevData] })
-  }
-
-  shrinkDepartments = (rowid) => {
-    const index = this.state.departmentsStatus.indexOf(rowid)
-    const prevData = this.state.departmentsStatus
-    if (index > -1) {
-      prevData.splice(index, 1)
-      this.setState({ departmentsStatus: [...prevData] })
-    }
-  }
+  
 
   rolesCellhandler = (col) => {
     if (col.value) {
@@ -189,40 +151,6 @@ export default class Users extends Component {
             !this.state.rolesStatus.includes(itemId) ?
               [col.value.slice(0, 35) + ' ...(' + itemRoles.length + ')', <Link to='#' className='showMoreOrLess' onClick={() => this.expandRoles(itemId)}> ...Daha Fazla Göster</Link>] :
               [col.value, <Link to='#' className='showMoreOrLess' onClick={() => this.shrinkRoles(itemId)}> ...Daha Az Göster</Link>]
-          ) : col.value
-      }
-      return col.value
-    }
-    return null
-  }
-
-  departmentCellhandler = (col) => {
-    if (col.value) {
-      if (!col.cell.isGrouped) {
-        const itemId = col.row.original.Id
-        const itemDepartments = col.row.original.Departments
-        return col.value.length - 35 > 20 ?
-          (
-            !this.state.departmentsStatus.includes(itemId) ?
-              [col.value.slice(0, 35) + ' ...(' + itemDepartments.length + ')', <Link to='#' className='showMoreOrLess' onClick={() => this.expandDepartments(itemId)}> ...Daha Fazla Göster</Link>] :
-              [col.value, <Link to='#' className='showMoreOrLess' onClick={() => this.shrinkDepartments(itemId)}> ...Daha Az Göster</Link>]
-          ) : col.value
-      }
-      return col.value
-    }
-    return null
-  }
-
-  stationCellhandler = (col) => {
-    if (col.value) {
-      if (!col.cell.isGrouped) {
-        const itemId = col.row.original.Id
-        const itemStations = col.row.original.Stations
-        return col.value.length - 35 > 20 ?
-          (
-            !this.state.stationsStatus.includes(itemId) ?
-              [col.value.slice(0, 35) + ' ...(' + itemStations.length + ')', <Link to='#' className='showMoreOrLess' onClick={() => this.expandStations(itemId)}> ...Daha Fazla Göster</Link>] :
-              [col.value, <Link to='#' className='showMoreOrLess' onClick={() => this.shrinkStations(itemId)}> ...Daha Az Göster</Link>]
           ) : col.value
       }
       return col.value

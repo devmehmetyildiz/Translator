@@ -19,41 +19,29 @@ export default class UsersCreate extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      selectedstations: [],
       selectedroles: [],
       selectedlanguage: {},
-      selecteddepartments: [],
     }
   }
 
   componentDidMount() {
-    const { GetStations, GetRoles, GetDepartments } = this.props
-    GetStations()
+    const { GetRoles } = this.props
     GetRoles()
-    GetDepartments()
   }
 
   componentDidUpdate() {
-    const { Departments, Users, Stations, Roles, removeDepartmentnotification,
-      removeStationnotification, removeRolenotification, removeUsernotification } = this.props
-    Notification(Departments.notifications, removeDepartmentnotification)
+    const { Users, Roles,
+      removeRolenotification, removeUsernotification } = this.props
     Notification(Users.notifications, removeUsernotification)
-    Notification(Stations.notifications, removeStationnotification)
     Notification(Roles.notifications, removeRolenotification)
   }
 
   render() {
 
-    const { Departments, Users, Stations, Roles, Profile } = this.props
+    const { Users, Roles, Profile } = this.props
 
-    const Stationoptions = Stations.list.map(station => {
-      return { key: station.Uuid, text: station.Name, value: station.Uuid }
-    })
     const Roleoptions = Roles.list.map(roles => {
       return { key: roles.Uuid, text: roles.Name, value: roles.Uuid }
-    })
-    const Departmentoptions = Departments.list.map(department => {
-      return { key: department.Uuid, text: department.Name, value: department.Uuid }
     })
 
     const Languageoptions = [
@@ -62,10 +50,9 @@ export default class UsersCreate extends Component {
     ]
 
     return (
-      Departments.isLoading || Departments.isDispatching ||
-        Roles.isLoading || Roles.isDispatching ||
-        Users.isLoading || Users.isDispatching ||
-        Stations.isLoading || Stations.isDispatching ? <LoadingPage /> :
+
+      Roles.isLoading || Roles.isDispatching ||
+        Users.isLoading || Users.isDispatching ? <LoadingPage /> :
         <Pagewrapper>
           <Headerwrapper>
             <Headerbredcrump>
@@ -95,11 +82,9 @@ export default class UsersCreate extends Component {
                 <FormInput required placeholder={Literals.Columns.Address[Profile.Language]} name="Address" />
               </Form.Group>
               <Form.Group widths={'equal'}>
-                <FormInput required placeholder={Literals.Columns.Stations[Profile.Language]} value={this.state.selectedstations} clearable search multiple options={Stationoptions} onChange={this.handleChangeStation} formtype='dropdown' />
-                <FormInput required placeholder={Literals.Columns.Departments[Profile.Language]} value={this.state.selecteddepartments} clearable search multiple options={Departmentoptions} onChange={this.handleChangeDepartment} formtype='dropdown' />
                 <FormInput required placeholder={Literals.Columns.Roles[Profile.Language]} value={this.state.selectedroles} clearable search multiple options={Roleoptions} onChange={this.handleChangeRoles} formtype='dropdown' />
+                <FormInput required placeholder={Literals.Columns.Language[Profile.Language]} value={this.state.selectedlanguage} options={Languageoptions} onChange={this.handleChangeLanguage} formtype='dropdown' />
               </Form.Group>
-              <FormInput required placeholder={Literals.Columns.Language[Profile.Language]} value={this.state.selectedlanguage} options={Languageoptions} onChange={this.handleChangeLanguage} formtype='dropdown' />
               <Footerwrapper>
                 <Link to="/Users">
                   <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
@@ -114,17 +99,11 @@ export default class UsersCreate extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault()
-    const { AddUsers, history, fillUsernotification, Roles, Departments, Stations, Profile } = this.props
+    const { AddUsers, history, fillUsernotification, Roles, Profile } = this.props
     const data = formToObject(e.target)
     data.UserID = parseInt(data.UserID, 10)
-    data.Stations = this.state.selectedstations.map(station => {
-      return Stations.list.find(u => u.Uuid === station)
-    })
     data.Roles = this.state.selectedroles.map(roles => {
       return Roles.list.find(u => u.Uuid === roles)
-    })
-    data.Departments = this.state.selecteddepartments.map(department => {
-      return Departments.list.find(u => u.Uuid === department)
     })
     data.Language = this.state.selectedlanguage
 
@@ -144,12 +123,6 @@ export default class UsersCreate extends Component {
     if (!validator.isString(data.Email)) {
       errors.push({ type: 'Error', code: Literals.Page.Pageheader[Profile.Language], description: Literals.Messages.EmailRequired[Profile.Language] })
     }
-    if (!validator.isArray(data.Stations)) {
-      errors.push({ type: 'Error', code: Literals.Page.Pageheader[Profile.Language], description: Literals.Messages.StationsRequired[Profile.Language] })
-    }
-    if (!validator.isArray(data.Departments)) {
-      errors.push({ type: 'Error', code: Literals.Page.Pageheader[Profile.Language], description: Literals.Messages.DepartmentsRequired[Profile.Language] })
-    }
     if (!validator.isArray(data.Roles)) {
       errors.push({ type: 'Error', code: Literals.Page.Pageheader[Profile.Language], description: Literals.Messages.RolesRequired[Profile.Language] })
     }
@@ -165,12 +138,6 @@ export default class UsersCreate extends Component {
     }
   }
 
-  handleChangeStation = (e, { value }) => {
-    this.setState({ selectedstations: value })
-  }
-  handleChangeDepartment = (e, { value }) => {
-    this.setState({ selecteddepartments: value })
-  }
   handleChangeRoles = (e, { value }) => {
     this.setState({ selectedroles: value })
   }

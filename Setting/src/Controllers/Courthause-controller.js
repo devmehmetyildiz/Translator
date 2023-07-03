@@ -6,7 +6,7 @@ const validator = require("../Utilities/Validator")
 const uuid = require('uuid').v4
 
 
-async function GetCourthausies(req, res, next) {
+async function GetCourthauses(req, res, next) {
     try {
         const courhausies = await db.courthauseModel.findAll({ where: { Isactive: true } })
         res.status(200).json(courhausies)
@@ -76,7 +76,7 @@ async function AddCourthause(req, res, next) {
         await t.rollback()
         return next(sequelizeErrorCatcher(err))
     }
-    GetCourthausies(req, res, next)
+    GetCourthauses(req, res, next)
 }
 
 async function UpdateCourthause(req, res, next) {
@@ -120,7 +120,7 @@ async function UpdateCourthause(req, res, next) {
     } catch (error) {
         return next(sequelizeErrorCatcher(error))
     }
-    GetCourthausies(req, res, next)
+    GetCourthauses(req, res, next)
 }
 
 async function DeleteCourthause(req, res, next) {
@@ -154,11 +154,11 @@ async function DeleteCourthause(req, res, next) {
         await t.rollback();
         return next(sequelizeErrorCatcher(error))
     }
-    GetCourthausies(req, res, next)
+    GetCourthauses(req, res, next)
 }
 
 module.exports = {
-    GetCourthausies,
+    GetCourthauses,
     GetCourthause,
     AddCourthause,
     UpdateCourthause,

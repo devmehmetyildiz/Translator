@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import CourtsCreate from '../../Pages/Courts/CourtsCreate'
-import { AddCourthauses, removeCourthausenotification, fillCourthausenotification } from "../../Redux/CourtSlice"
+import { AddCourts, removeCourtnotification, fillCourtnotification } from "../../Redux/CourtSlice"
 
 
 const mapStateToProps = (state) => ({
@@ -8,6 +8,6 @@ const mapStateToProps = (state) => ({
     Profile: state.Profile
 })
 
-const mapDispatchToProps = { AddCourthauses, removeCourthausenotification, fillCourthausenotification }
+const mapDispatchToProps = { AddCourts, removeCourtnotification, fillCourtnotification }
 
 export default connect(mapStateToProps, mapDispatchToProps)(CourtsCreate)

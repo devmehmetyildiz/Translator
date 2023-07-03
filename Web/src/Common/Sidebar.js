@@ -57,6 +57,17 @@ export function Sidebar(props) {
                 { id: 5, subtitle: Literals.Cases.Page.Pageheader[Profile.Language], url: "/Cases" },
                 { id: 8, subtitle: Literals.Users.Page.Pageheader[Profile.Language], url: "/Users" },
                 { id: 9, subtitle: Literals.Files.Page.Pageheader[Profile.Language], url: "/Files" },
+                { id: 9, subtitle: Literals.Courthauses.Page.Pageheader[Profile.Language], url: "/Courthauses" },
+                { id: 9, subtitle: Literals.Courts.Page.Pageheader[Profile.Language], url: "/Courts" },
+                { id: 9, subtitle: Literals.Definedcompanies.Page.Pageheader[Profile.Language], url: "/Definedcompanies" },
+                { id: 9, subtitle: Literals.Definedcostumers.Page.Pageheader[Profile.Language], url: "/Definedcostumers" },
+                { id: 9, subtitle: Literals.Documents.Page.Pageheader[Profile.Language], url: "/Documents" },
+                { id: 9, subtitle: Literals.Goals.Page.Pageheader[Profile.Language], url: "/Goals" },
+                { id: 9, subtitle: Literals.Kdvs.Page.Pageheader[Profile.Language], url: "/Kdvs" },
+                { id: 9, subtitle: Literals.Languages.Page.Pageheader[Profile.Language], url: "/Languages" },
+                { id: 9, subtitle: Literals.Payments.Page.Pageheader[Profile.Language], url: "/Payments" },
+                { id: 9, subtitle: Literals.Recordtypes.Page.Pageheader[Profile.Language], url: "/Recordtypes" },
+                { id: 9, subtitle: Literals.Translators.Page.Pageheader[Profile.Language], url: "/Translators" },
             ]
         },
     ]
