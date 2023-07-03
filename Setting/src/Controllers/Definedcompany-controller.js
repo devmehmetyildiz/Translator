@@ -58,27 +58,27 @@ async function AddDefinedcompany(req, res, next) {
         validationErrors.push(messages.VALIDATION_ERROR.NAME_REQUIRED)
     }
     if (!validator.isString(Address)) {
-        validationErrors.push(messages.VALIDATION_ERROR.NAME_REQUIRED)
+        validationErrors.push(messages.VALIDATION_ERROR.ADDRESS_REQUIRED)
     }
     if (!validator.isString(Acccountcode)) {
-        validationErrors.push(messages.VALIDATION_ERROR.NAME_REQUIRED)
+        validationErrors.push(messages.VALIDATION_ERROR.ACCOUNTCODE_REQUIRED)
     }
     if (!validator.isString(Accountname)) {
-        validationErrors.push(messages.VALIDATION_ERROR.NAME_REQUIRED)
+        validationErrors.push(messages.VALIDATION_ERROR.ACCOUNTNAME_REQUIRED)
     }
 
     if (validationErrors.length > 0) {
         return next(createValidationError(validationErrors, req.language))
     }
 
-    let caseuuid = uuid()
+    let definedcompanyuuid = uuid()
 
     const t = await db.sequelize.transaction();
 
     try {
         await db.definedcompanyModel.create({
             ...req.body,
-            Uuid: caseuuid,
+            Uuid: definedcompanyuuid,
             Createduser: "System",
             Createtime: new Date(),
             Isactive: true
@@ -106,19 +106,19 @@ async function UpdateDefinedcompany(req, res, next) {
         validationErrors.push(messages.VALIDATION_ERROR.NAME_REQUIRED)
     }
     if (!validator.isString(Address)) {
-        validationErrors.push(messages.VALIDATION_ERROR.NAME_REQUIRED)
+        validationErrors.push(messages.VALIDATION_ERROR.ADDRESS_REQUIRED)
     }
     if (!validator.isString(Acccountcode)) {
-        validationErrors.push(messages.VALIDATION_ERROR.NAME_REQUIRED)
+        validationErrors.push(messages.VALIDATION_ERROR.ACCOUNTCODE_REQUIRED)
     }
     if (!validator.isString(Accountname)) {
-        validationErrors.push(messages.VALIDATION_ERROR.NAME_REQUIRED)
+        validationErrors.push(messages.VALIDATION_ERROR.ACCOUNTNAME_REQUIRED)
     }
     if (!Uuid) {
-        validationErrors.push(messages.VALIDATION_ERROR.CASEID_REQUIRED)
+        validationErrors.push(messages.VALIDATION_ERROR.DEFINEDCOMPANYID_REQUIRED)
     }
     if (!validator.isUUID(Uuid)) {
-        validationErrors.push(messages.VALIDATION_ERROR.UNSUPPORTED_CASEID)
+        validationErrors.push(messages.VALIDATION_ERROR.UNSUPPORTED_DEFINEDCOMPANYID)
     }
     if (validationErrors.length > 0) {
         return next(createValidationError(validationErrors, req.language))
@@ -128,10 +128,10 @@ async function UpdateDefinedcompany(req, res, next) {
     try {
         const definedcompany = db.definedcompanyModel.findOne({ where: { Uuid: Uuid } })
         if (!definedcompany) {
-            return next(createNotfounderror([messages.ERROR.CASE_NOT_FOUND], req.language))
+            return next(createNotfounderror([messages.ERROR.DEFINEDCOMPANY_NOT_FOUND], req.language))
         }
         if (coudefinedcompanyrthause.Isactive === false) {
-            return next(createAccessDenied([messages.ERROR.CASE_NOT_ACTIVE], req.language))
+            return next(createAccessDenied([messages.ERROR.DEFINEDCOMPANY_NOT_ACTIVE], req.language))
         }
 
         await db.definedcompanyModel.update({
@@ -150,13 +150,13 @@ async function UpdateDefinedcompany(req, res, next) {
 async function DeleteDefinedcompany(req, res, next) {
 
     let validationErrors = []
-    const Uuid = req.params.caseId
+    const Uuid = req.params.definedcompanyId
 
     if (!Uuid) {
-        validationErrors.push(messages.VALIDATION_ERROR.CASEID_REQUIRED)
+        validationErrors.push(messages.VALIDATION_ERROR.DEFINEDCOMPANYID_REQUIRED)
     }
     if (!validator.isUUID(Uuid)) {
-        validationErrors.push(messages.VALIDATION_ERROR.UNSUPPORTED_CASEID)
+        validationErrors.push(messages.VALIDATION_ERROR.UNSUPPORTED_DEFINEDCOMPANYID)
     }
     if (validationErrors.length > 0) {
         return next(createValidationError(validationErrors, req.language))
@@ -166,10 +166,10 @@ async function DeleteDefinedcompany(req, res, next) {
     try {
         const definedcompany = db.definedcompanyModel.findOne({ where: { Uuid: Uuid } })
         if (!definedcompany) {
-            return next(createNotfounderror([messages.ERROR.CASE_NOT_FOUND], req.language))
+            return next(createNotfounderror([messages.ERROR.DEFINEDCOMPANY_NOT_FOUND], req.language))
         }
         if (definedcompany.Isactive === false) {
-            return next(createAccessDenied([messages.ERROR.CASE_NOT_ACTIVE], req.language))
+            return next(createAccessDenied([messages.ERROR.DEFINEDCOMPANY_NOT_ACTIVE], req.language))
         }
 
         await db.definedcompanyModel.destroy({ where: { Uuid: Uuid }, transaction: t });

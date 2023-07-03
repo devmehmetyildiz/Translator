@@ -12,135 +12,287 @@ const messages = {
         tr: 'Durum aktif değil',
       }
     },
-    FILE_NOT_FOUND: {
-      code: 'FILE_NOT_FOUND', description: {
-        en: 'File not found',
-        tr: 'Dosya bulunamadı',
+    PAYMENT_NOT_FOUND: {
+      code: 'PAYMENT_NOT_FOUND', description: {
+        en: 'Payment not found',
+        tr: 'Ödeme yöntemi bulunamadı',
       }
     },
-    FILE_NOT_ACTIVE: {
-      code: 'FILE_NOT_ACTIVE', description: {
-        en: 'File not active',
-        tr: 'Dosya aktif değil',
+    PAYMENT_NOT_ACTIVE: {
+      code: 'PAYMENT_NOT_ACTIVE', description: {
+        en: 'Payment not active',
+        tr: 'Ödeme yöntemi aktif değil',
       }
     },
-    UNIT_NOT_FOUND: {
-      code: 'UNIT_NOT_FOUND', description: {
-        en: 'Unit not found',
-        tr: 'Birim bulunamadı',
+    COURT_NOT_FOUND: {
+      code: 'COURT_NOT_FOUND', description: {
+        en: 'Court not found',
+        tr: 'Mahkeme bulunamadı',
       }
     },
-    UNIT_NOT_ACTIVE: {
-      code: 'UNIT_NOT_ACTIVE', description: {
-        en: 'Unit not active',
-        tr: 'Birim aktif değil',
+    COURT_NOT_ACTIVE: {
+      code: 'COURT_NOT_ACTIVE', description: {
+        en: 'Court not active',
+        tr: 'Mahkeme aktif değil',
       }
     },
-    DEPARTMENT_NOT_FOUND: {
-      code: 'DEPARTMENT_NOT_FOUND', description: {
-        en: 'Department not found',
-        tr: 'Departman bulunamadı',
+    COURTHAUSE_NOT_FOUND: {
+      code: 'CASE_NOT_FOUND', description: {
+        en: 'Courthause not found',
+        tr: 'Adliye bulunamadı',
       }
     },
-    DEPARTMENT_NOT_ACTIVE: {
-      code: 'DEPARTMENT_NOT_ACTIVE', description: {
-        en: 'Department not active',
-        tr: 'Departman aktif değil',
+    COURTHAUSE_NOT_ACTIVE: {
+      code: 'COURTHAUSE_NOT_ACTIVE', description: {
+        en: 'Courthause not active',
+        tr: 'Adliye aktif değil',
       }
     },
-    CHECKPERIOD_NOT_FOUND: {
-      code: 'CHECKPERIOD_NOT_FOUND', description: {
-        en: 'Checkperiod not found',
-        tr: 'Kontrol periyodu bulunamadı',
+    DEFINEDCOMPANY_NOT_FOUND: {
+      code: 'DEFINEDCOMPANY_NOT_FOUND', description: {
+        en: 'Defined company not found',
+        tr: 'Tanımlı Firma bulunamadı',
       }
     },
-    CHECKPERIOD_NOT_ACTIVE: {
-      code: 'CHECKPERIOD_NOT_ACTIVE', description: {
-        en: 'Checkperiod not active',
-        tr: 'Kontrol periyodu aktif değil',
+    DEFINEDCOMPANY_NOT_ACTIVE: {
+      code: 'DEFINEDCOMPANY_NOT_ACTIVE', description: {
+        en: 'Defined company not active',
+        tr: 'Tanımlı firma aktif değil',
       }
     },
-    COSTUMERTYPE_NOT_FOUND: {
-      code: 'COSTUMERTYPE_NOT_FOUND', description: {
-        en: 'Costumer type not found',
-        tr: 'Müşteri türü bulunamadı',
+    DEFINEDCOSTUMER_NOT_FOUND: {
+      code: 'DEFINEDCOSTUMER_NOT_FOUND', description: {
+        en: 'Defined costumer not found',
+        tr: 'Tanımlı müşteri bulunamadı',
       }
     },
-    COSTUMERTYPE_NOT_ACTIVE: {
-      code: 'COSTUMERTYPE_NOT_ACTIVE', description: {
-        en: 'Costumer type not active',
-        tr: 'Müşteri türü aktif değil',
-      }
-    },
-    FILE_UPLOAD_ERROR: {
-      code: 'FILE_UPLOAD_ERROR', description: {
-        en: 'File cant upload to ftp server',
-        tr: 'Dosya ftp servera yüklenemedi',
-      }
-    },
-    PATIENTTYPE_NOT_FOUND: {
-      code: 'PATIENTTYPE_NOT_FOUND', description: {
-        en: 'Patient type not found',
-        tr: 'Hasta türü bulunamadı',
-      }
-    },
-    PATIENTTYPE_NOT_ACTIVE: {
-      code: 'PATIENTTYPE_NOT_ACTIVE', description: {
-        en: 'Patienttype not active',
-        tr: 'Hasta türü aktif değil',
-      }
-    },
-    PERIOD_NOT_FOUND: {
-      code: 'PERIOD_NOT_FOUND', description: {
-        en: 'Period not found',
-        tr: 'Periyot bulunamadı',
-      }
-    },
-    PERIOD_NOT_ACTIVE: {
-      code: 'PERIOD_NOT_ACTIVE', description: {
-        en: 'Period not active',
-        tr: 'Periyot aktif değil',
-      }
-    },
-    STATION_NOT_FOUND: {
-      code: 'STATION_NOT_FOUND', description: {
-        en: 'Station not found',
-        tr: 'İstasyon bulunamadı',
-      }
-    },
-    STATION_NOT_ACTIVE: {
-      code: 'STATION_NOT_ACTIVE', description: {
-        en: 'Station not active',
-        tr: 'İstasyon aktif değil',
-      }
-    },
-    TODODEFINE_NOT_FOUND: {
-      code: 'TODODEFINE_NOT_FOUND', description: {
-        en: 'Todo define not found',
-        tr: 'Yapılacaklar tanımı bulunamadı',
-      }
-    },
-    TODODEFINE_NOT_ACTIVE: {
-      code: 'TODODEFINE_NOT_ACTIVE', description: {
-        en: 'Todo define not active',
-        tr: 'Yapılacaklar tanımı aktif değil',
-      }
-    },
-    TODOGROUPDEFINE_NOT_FOUND: {
-      code: 'TODOGROUPDEFINE_NOT_FOUND', description: {
-        en: 'Todogroup define not found',
-        tr: 'Yapılacak grup tanımı bulunamadı',
-      }
-    },
-    TODOGROUPDEFINE_NOT_ACTIVE: {
-      code: 'TODOGROUPDEFINE_NOT_ACTIVE', description: {
-        en: 'Todogroup define not active',
-        tr: 'Yapılacak grup tanımı aktif değil',
+    DEFINEDCOSTUMER_NOT_ACTIVE: {
+      code: 'DEFINEDCOSTUMER_NOT_ACTIVE', description: {
+        en: 'Defined costumer not active',
+        tr: 'Tanımlı müşteri aktif değil',
       }
     },
 
+    DOCUMENT_NOT_FOUND: {
+      code: 'DOCUMENT_NOT_FOUND', description: {
+        en: 'Document not found',
+        tr: 'Belge bulunamadı',
+      }
+    },
+    DOCUMENT_NOT_ACTIVE: {
+      code: 'DOCUMENT_NOT_ACTIVE', description: {
+        en: 'Document not active',
+        tr: 'Belge aktif değil',
+      }
+    },
+    GOAL_NOT_FOUND: {
+      code: 'GOAL_NOT_FOUND', description: {
+        en: 'Goal not found',
+        tr: 'Hedef bulunamadı',
+      }
+    },
+    GOAL_NOT_ACTIVE: {
+      code: 'GOAL_NOT_ACTIVE', description: {
+        en: 'Goal not active',
+        tr: 'Hedef aktif değil',
+      }
+    },
+    KDV_NOT_FOUND: {
+      code: 'KDV_NOT_FOUND', description: {
+        en: 'Kdv not found',
+        tr: 'Kdv bulunamadı',
+      }
+    },
+    KDV_NOT_ACTIVE: {
+      code: 'KDV_NOT_ACTIVE', description: {
+        en: 'Kdv not active',
+        tr: 'Kdv aktif değil',
+      }
+    },
+    LANGUAGE_NOT_FOUND: {
+      code: 'LANGUAGE_NOT_FOUND', description: {
+        en: 'Language not found',
+        tr: 'Dil bulunamadı',
+      }
+    },
+    LANGUAGE_NOT_ACTIVE: {
+      code: 'LANGUAGE_NOT_ACTIVE', description: {
+        en: 'Language not active',
+        tr: 'Dil aktif değil',
+      }
+    },
+    RECORDTYPE_NOT_FOUND: {
+      code: 'RECORDTYPE_NOT_FOUND', description: {
+        en: 'Record type not found',
+        tr: 'Kayıt türü bulunamadı',
+      }
+    },
+    RECORDTYPE_NOT_ACTIVE: {
+      code: 'RECORDTYPE_NOT_ACTIVE', description: {
+        en: 'Record type not active',
+        tr: 'Kayıt türü aktif değil',
+      }
+    },
+    TRANSLATOR_NOT_FOUND: {
+      code: 'TRANSLATOR_NOT_FOUND', description: {
+        en: 'Translator not found',
+        tr: 'Tercüman bulunamadı',
+      }
+    },
+    TRANSLATOR_NOT_ACTIVE: {
+      code: 'TRANSLATOR_NOT_ACTIVE', description: {
+        en: 'Translator not active',
+        tr: 'Tercüman aktif değil',
+      }
+    },
   },
   VALIDATION_ERROR: {
+    CASEID_REQUIRED: {
+      code: 'CASEID_REQUIRED', description: {
+        en: 'The Case Id required',
+        tr: 'Bu işlem için Durum unik Id bilgisi gerekli',
+      }
+    },
+    UNSUPPORTED_CASEID: {
+      code: 'UNSUPPORTED_CASEID', description: {
+        en: 'The Case ID is not supported',
+        tr: 'geçersiz durum numarası',
+      }
+    },
+    PAYMENTID_REQUIRED: {
+      code: 'PAYMENTID_REQUIRED', description: {
+        en: 'The Payment Id required',
+        tr: 'Bu işlem için Ödeme numarası gerekli',
+      }
+    },
+    UNSUPPORTED_PAYMENTID: {
+      code: 'UNSUPPORTED_PAYMENTID', description: {
+        en: 'The Payment ID is not supported',
+        tr: 'geçersiz Ödeme numarası',
+      }
+    },
+    COURTID_REQUIRED: {
+      code: 'COURTID_REQUIRED', description: {
+        en: 'The Court Id required',
+        tr: 'Bu işlem için Mahkeme Id bilgisi gerekli',
+      }
+    },
+    UNSUPPORTED_COURTID: {
+      code: 'UNSUPPORTED_COURTID', description: {
+        en: 'The Court ID is not supported',
+        tr: 'geçersiz Mahkeme numarası',
+      }
+    },
+    COURTHAUSEID_REQUIRED: {
+      code: 'COURTHAUSEID_REQUIRED', description: {
+        en: 'The Courthause Id required',
+        tr: 'Bu işlem için Adliye Id bilgisi gerekli',
+      }
+    },
+    UNSUPPORTED_COURTHAUSEID: {
+      code: 'UNSUPPORTED_COURTID', description: {
+        en: 'The Courthause ID is not supported',
+        tr: 'geçersiz Adliye numarası',
+      }
+    },
+    DEFINEDCOMPANYID_REQUIRED: {
+      code: 'DEFINEDCOMPANYID_REQUIRED', description: {
+        en: 'The Defined company Id required',
+        tr: 'Bu işlem için Tanımlı firma bilgisi gerekli',
+      }
+    },
+    UNSUPPORTED_DEFINEDCOMPANYID: {
+      code: 'UNSUPPORTED_DEFINEDCOMPANYID', description: {
+        en: 'The Defined Company ID is not supported',
+        tr: 'geçersiz Tanımlı Firma numarası',
+      }
+    },
+    DEFINEDCOSTUMERID_REQUIRED: {
+      code: 'DEFINEDCOSTUMERID_REQUIRED', description: {
+        en: 'The Defined Costumer Id required',
+        tr: 'Bu işlem için Tanımlı Müşteri bilgisi gerekli',
+      }
+    },
+    UNSUPPORTED_DEFINEDCOSTUMERID: {
+      code: 'UNSUPPORTED_DEFINEDCOSTUMERID', description: {
+        en: 'The Defined Costumer ID is not supported',
+        tr: 'geçersiz Tanımlı Müşteri numarası',
+      }
+    },
+    DOCUMENTID_REQUIRED: {
+      code: 'DOCUMENTID_REQUIRED', description: {
+        en: 'The Document Id required',
+        tr: 'Bu işlem için Belge numarası gerekli',
+      }
+    },
+    UNSUPPORTED_DOCUMENTID: {
+      code: 'UNSUPPORTED_DOCUMENTID', description: {
+        en: 'The Document ID is not supported',
+        tr: 'geçersiz Belge numarası',
+      }
+    },
+    GOALID_REQUIRED: {
+      code: 'GOALID_REQUIRED', description: {
+        en: 'The Goal Id required',
+        tr: 'Bu işlem için Hedef Numarası gerekli',
+      }
+    },
+    UNSUPPORTED_GOALID: {
+      code: 'UNSUPPORTED_GOALID', description: {
+        en: 'The Goal ID is not supported',
+        tr: 'geçersiz Hedef numarası',
+      }
+    },
+    KDVID_REQUIRED: {
+      code: 'KDVID_REQUIRED', description: {
+        en: 'The Kdv Id required',
+        tr: 'Bu işlem için Kdv Numarası gerekli',
+      }
+    },
+    UNSUPPORTED_KDVID: {
+      code: 'UNSUPPORTED_KDVID', description: {
+        en: 'The Kdv is not supported',
+        tr: 'geçersiz Kdv numarası',
+      }
+    },
+    LANGUAGEID_REQUIRED: {
+      code: 'LANGUAGEID_REQUIRED', description: {
+        en: 'The Language Id required',
+        tr: 'Bu işlem için Dil Numarası gerekli',
+      }
+    },
+    UNSUPPORTED_LANGUAGEID: {
+      code: 'UNSUPPORTED_LANGUAGEID', description: {
+        en: 'The Language is not supported',
+        tr: 'geçersiz Dil numarası',
+      }
+    },
+    RECORDTYPEID_REQUIRED: {
+      code: 'RECORDTYPEID_REQUIRED', description: {
+        en: 'The Record type Id required',
+        tr: 'Bu işlem için Kayıt Tür Numarası gerekli',
+      }
+    },
+    UNSUPPORTED_RECORDTYPEID: {
+      code: 'UNSUPPORTED_RECORDTYPEID', description: {
+        en: 'The Record Type Id is not supported',
+        tr: 'geçersiz Kayıt Tür numarası',
+      }
+    },
+    TRANSLATORID_REQUIRED: {
+      code: 'TRANSLATORID_REQUIRED', description: {
+        en: 'The Translator Id required',
+        tr: 'Bu işlem için Tercüman Numarası gerekli',
+      }
+    },
+    UNSUPPORTED_TRANSLATORID: {
+      code: 'UNSUPPORTED_TRANSLATORID', description: {
+        en: 'The Translator Id is not supported',
+        tr: 'geçersiz Tercüman numarası',
+      }
+    },
+
+
     NAME_REQUIRED: {
       code: 'NAME_REQUIRED', description: {
         en: 'The name required',
@@ -159,216 +311,91 @@ const messages = {
         tr: 'Bu işlem için durum rengi gerekli',
       }
     },
-    DEPARTMENTS_REQUIRED: {
-      code: 'DEPARTMENTS_REQUIRED', description: {
-        en: 'The departments required',
-        tr: 'Bu işlem için departmanlar gerekli',
+    CASESTATUS_REQUIRED: {
+      code: 'CASESTATUS_REQUIRED', description: {
+        en: 'The case status required',
+        tr: 'Bu işlem için case durumu gerekli',
       }
     },
-    CASEID_REQUIRED: {
-      code: 'CASEID_REQUIRED', description: {
-        en: 'The caseId required',
-        tr: 'Bu işlem için caseid bilgisi gerekli',
+    ADDRESS_REQUIRED: {
+      code: 'ADDRESS_REQUIRED', description: {
+        en: 'The address required',
+        tr: 'Bu işlem için adres gerekli',
       }
     },
-    UNITID_REQUIRED: {
-      code: 'UNITID_REQUIRED', description: {
-        en: 'The unitID required',
-        tr: 'Bu işlem için unitId bilgisi gerekli',
+    ACCOUNTCODE_REQUIRED: {
+      code: 'ACCOUNTCODE_REQUIRED', description: {
+        en: 'The account code required',
+        tr: 'Bu işlem için vergi numarası gerekli',
       }
     },
-    DEPARTMENTID_REQUIRED: {
-      code: 'DEPARTMENTID_REQUIRED', description: {
-        en: 'The departmentId required',
-        tr: 'Bu işlem için departmentId bilgisi gerekli',
+    ACCOUNTNAME_REQUIRED: {
+      code: 'ACCOUNTNAME_REQUIRED', description: {
+        en: 'The account name required',
+        tr: 'Bu işlem için vergi dairesi gerekli',
       }
     },
-    UNITTYPE_REQUIRED: {
-      code: 'UNITTYPE_REQUIRED', description: {
-        en: 'The unit type required',
-        tr: 'Bu işlem için birim türü bilgisi gerekli',
+    COUNTRYID_REQUIRED: {
+      code: 'COUNTRYID_REQUIRED', description: {
+        en: 'The country Id required',
+        tr: 'Bu işlem için Kimlik numarası gerekli',
       }
     },
-    UNSUPPORTED_CASEID: {
-      code: 'UNSUPPORTED_CASEID', description: {
-        en: 'The caseId is not supported',
-        tr: 'geçersiz durum numarası',
+    PHONE_REQUIRED: {
+      code: 'PHONE_REQUIRED', description: {
+        en: 'The phone required',
+        tr: 'Bu işlem için telefon gerekli',
       }
     },
-    UNSUPPORTED_UNITID: {
-      code: 'UNSUPPORTED_UNITID', description: {
-        en: 'The unitId is not supported',
-        tr: 'geçersiz birim numarası',
+    EMAIL_REQUIRED: {
+      code: 'EMAIL_REQUIRED', description: {
+        en: 'The e mail required',
+        tr: 'Bu işlem için e posta gerekli',
       }
     },
-    UNSUPPORTED_DEPARTMENTID: {
-      code: 'UNSUPPORTED_DEPARTMENTID', description: {
-        en: 'The department id is not supported',
-        tr: 'geçersiz departman numarası',
+    CITY_REQUIRED: {
+      code: 'CITY_REQUIRED', description: {
+        en: 'The city required',
+        tr: 'Bu işlem için şehir gerekli',
       }
     },
-    PERIODTYPE_REQUIRED: {
-      code: 'PERIODTYPE_REQUIRED', description: {
-        en: 'The Periodtype required',
-        tr: 'Periyot türü gereklidir',
+    TOWN_REQUIRED: {
+      code: 'TOWN_REQUIRED', description: {
+        en: 'The town required',
+        tr: 'Bu işlem için ilçe gerekli',
       }
     },
-    OCCUREDDAYS_REQUIRED: {
-      code: 'OCCUREDDAYS_REQUIRED', description: {
-        en: 'The Occureddays is required',
-        tr: 'Gerçekleşme günleri gereklidir',
+    GOAL_REQUIRED: {
+      code: 'GOAL_REQUIRED', description: {
+        en: 'The goal required',
+        tr: 'Bu işlem için hedef gerekli',
       }
     },
-    TODODEFINES_REQUIRED: {
-      code: 'TODODEFINES_REQUIRED', description: {
-        en: 'The Todo defines are required',
-        tr: 'Yapılacaklar gereklidir',
+    PERCENT_REQUIRED: {
+      code: 'PERCENT_REQUIRED', description: {
+        en: 'The percent required',
+        tr: 'Bu işlem için yüzde değeri gerekli',
       }
     },
-    PERIODS_REQUIRED: {
-      code: 'PERIODS_REQUIRED', description: {
-        en: 'The Periods is required',
-        tr: 'Periyotlar gereklidir',
+    PRICE_REQUIRED: {
+      code: 'PRICE_REQUIRED', description: {
+        en: 'The price required',
+        tr: 'Bu işlem için fiyat gerekli',
       }
     },
-    CHECKPERIODID_REQUIRED: {
-      code: 'CHECKPERIODID_REQUIRED', description: {
-        en: 'The Checkperiodid is required',
-        tr: 'Kontrol periyot idsi gereklidir',
+    DISCOUNT_REQUIRED: {
+      code: 'DISCOUNT_REQUIRED', description: {
+        en: 'The discount required',
+        tr: 'Bu işlem için iskonto gerekli',
       }
     },
-    UNSUPPORTED_CHECKPERIODID: {
-      code: 'UNSUPPORTED_CHECKPERIODID', description: {
-        en: 'The Checkperiodid is unsupported',
-        tr: 'Geçersiz kontrol periyot idsi',
+    USERID_REQUIRED: {
+      code: 'USERID_REQUIRED', description: {
+        en: 'The user Id required',
+        tr: 'Bu işlem için kullanıcı id bilgisi gerekli',
       }
     },
-    UNSUPPORTED_PERIODID: {
-      code: 'UNSUPPORTED_PERIODID', description: {
-        en: 'The Periodid is unsupported',
-        tr: 'Geçersiz  periyot idsi',
-      }
-    },
-    UNSUPPORTED_COSTUMERTYPEID: {
-      code: 'UNSUPPORTED_COSTUMERTYPEID', description: {
-        en: 'The costumertypeid is unsupported',
-        tr: 'Geçersiz  costumertypeid',
-      }
-    },
-    UNSUPPORTED_PATIENTTYPEID: {
-      code: 'UNSUPPORTED_PATIENTTYPEID', description: {
-        en: 'The patienttypeid is unsupported',
-        tr: 'Geçersiz  patienttypeid',
-      }
-    },
-    UNSUPPORTED_STATIONID: {
-      code: 'UNSUPPORTED_STATIONID', description: {
-        en: 'The stationid is unsupported',
-        tr: 'Geçersiz  stationid',
-      }
-    },
-    COSTUMERTYPEID_REQUIRED: {
-      code: 'COSTUMERTYPEID_REQUIRED', description: {
-        en: 'The costumertypeid required',
-        tr: 'Bu işlem için costumertypeid bilgisi gerekli',
-      }
-    },
-    PERIODID_REQUIRED: {
-      code: 'PERIODID_REQUIRED', description: {
-        en: 'The periodid required',
-        tr: 'Bu işlem için periodid bilgisi gerekli',
-      }
-    },
-    STATIONID_REQUIRED: {
-      code: 'STATIONID_REQUIRED', description: {
-        en: 'The stationid required',
-        tr: 'Bu işlem için stationid bilgisi gerekli',
-      }
-    },
-    PATIENTTYPEID_REQUIRED: {
-      code: 'PATIENTTYPEID_REQUIRED', description: {
-        en: 'The patienttypeId required',
-        tr: 'Bu işlem için patienttypeId bilgisi gerekli',
-      }
-    },
-    STATIONS_REQUIRED: {
-      code: 'STATIONS_REQUIRED', description: {
-        en: 'The stations required',
-        tr: 'Bu işlem için istasyonlar gerekli',
-      }
-    },
-    ISHAVEPATIENTS_REQUIRED: {
-      code: 'ISHAVEPATIENTS_REQUIRED', description: {
-        en: 'The ishavepatients required',
-        tr: 'Bu işlem için hastalara sahipmi bilgisi gerekli',
-      }
-    },
-    CHECKTIME_REQUIRED: {
-      code: 'CHECKTIME_REQUIRED', description: {
-        en: 'Check time required',
-        tr: 'Bu işlem için kontrol süresi bilgisi gerekli',
-      }
-    },
-    OCCUREDTIME_REQUIRED: {
-      code: 'OCCUREDTIME_REQUIRED', description: {
-        en: 'The occured time required',
-        tr: 'Bu işlem için gerçekleşme zamanı bilgisi gerekli',
-      }
-    },
-    UNSUPPORTED_TODODEFINEID: {
-      code: 'UNSUPPORTED_TODODEFINEID', description: {
-        en: 'The tododefineid is unsupported',
-        tr: 'Geçersiz tododefineid',
-      }
-    },
-    TODODEFINEID_REQUIRED: {
-      code: 'TODODEFINEID_REQUIRED', description: {
-        en: 'The tododefineid is required',
-        tr: 'Bu işlem için tododefineid gerekli',
-      }
-    },
-    UNSUPPORTED_TODOGROUPDEFINEID: {
-      code: 'UNSUPPORTED_TODOGROUPDEFINEID', description: {
-        en: 'The todogroupdefineid is unsupported',
-        tr: 'Geçersiz todogroupdefineid',
-      }
-    },
-    FILEID_REQUIRED: {
-      code: 'FILEID_REQUIRED', description: {
-        en: 'The fileid is required',
-        tr: 'Bu işlem için fileid gerekli',
-      }
-    },
-    UNSUPPORTED_FILEID: {
-      code: 'UNSUPPORTED_FILEID', description: {
-        en: 'The fileid is unsupported',
-        tr: 'Geçersiz fileid',
-      }
-    },
-    TODOGROUPDEFINEID_REQUIRED: {
-      code: 'TODOGROUPDEFINEID_REQUIRED', description: {
-        en: 'The todogroupdefineid is required',
-        tr: 'Bu işlem için todogroupdefineid gerekli',
-      }
-    },
-    INFO_REQUIRED: {
-      code: 'INFO_REQUIRED', description: {
-        en: 'The info required',
-        tr: 'Bu işlem için açıklama gerekli',
-      }
-    },
-    ISREQUIRED_REQUIRED: {
-      code: 'INFO_REQUIRED', description: {
-        en: 'The isrequired required',
-        tr: 'Bu işlem için zorunlu mu? bilgisi gerekli',
-      }
-    },
-    ISNEEDACTIVATION_REQUIRED: {
-      code: 'ISNEEDACTIVATION_REQUIRED', description: {
-        en: 'The isneedactivation required',
-        tr: 'Bu işlem için aktivasyon gereklimi bilgisi gerekli',
-      }
-    },
+
   }
 
 }

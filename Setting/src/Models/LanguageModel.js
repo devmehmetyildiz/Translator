@@ -13,7 +13,7 @@ module.exports = sequelize.define('languageModel', {
     Price: {
         type: Sequelize.STRING
     },
-    Kdv: {
+    KdvID: {
         type: Sequelize.STRING
     },
     Discount: {

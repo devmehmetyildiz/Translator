@@ -19,10 +19,10 @@ async function GetCourt(req, res, next) {
 
     let validationErrors = []
     if (!req.params.courtId) {
-        validationErrors.push(messages.VALIDATION_ERROR.CASEID_REQUIRED)
+        validationErrors.push(messages.VALIDATION_ERROR.COURTID_REQUIRED)
     }
     if (!validator.isUUID(req.params.courtId)) {
-        validationErrors.push(messages.VALIDATION_ERROR.UNSUPPORTED_CASEID)
+        validationErrors.push(messages.VALIDATION_ERROR.UNSUPPORTED_COURTID)
     }
     if (validationErrors.length > 0) {
         return next(createValidationError(validationErrors, req.language))
@@ -31,10 +31,10 @@ async function GetCourt(req, res, next) {
     try {
         const court = await db.courtModel.findOne({ where: { Uuid: req.params.courtId } });
         if (!court) {
-            return createNotfounderror([messages.ERROR.CASE_NOT_FOUND])
+            return createNotfounderror([messages.ERROR.COURT_NOT_FOUND])
         }
         if (!court.Isactive) {
-            return createNotfounderror([messages.ERROR.CASE_NOT_ACTIVE])
+            return createNotfounderror([messages.ERROR.COURT_NOT_ACTIVE])
         }
         res.status(200).json(court)
     } catch (error) {
@@ -59,14 +59,14 @@ async function AddCourt(req, res, next) {
         return next(createValidationError(validationErrors, req.language))
     }
 
-    let caseuuid = uuid()
+    let courtuuid = uuid()
 
     const t = await db.sequelize.transaction();
 
     try {
         await db.courtModel.create({
             ...req.body,
-            Uuid: caseuuid,
+            Uuid: courtuuid,
             Createduser: "System",
             Createtime: new Date(),
             Isactive: true
@@ -91,10 +91,10 @@ async function UpdateCourt(req, res, next) {
         validationErrors.push(messages.VALIDATION_ERROR.NAME_REQUIRED)
     }
     if (!Uuid) {
-        validationErrors.push(messages.VALIDATION_ERROR.CASEID_REQUIRED)
+        validationErrors.push(messages.VALIDATION_ERROR.COURTID_REQUIRED)
     }
     if (!validator.isUUID(Uuid)) {
-        validationErrors.push(messages.VALIDATION_ERROR.UNSUPPORTED_CASEID)
+        validationErrors.push(messages.VALIDATION_ERROR.UNSUPPORTED_COURTID)
     }
     if (validationErrors.length > 0) {
         return next(createValidationError(validationErrors, req.language))
@@ -104,10 +104,10 @@ async function UpdateCourt(req, res, next) {
     try {
         const court = db.courtModel.findOne({ where: { Uuid: Uuid } })
         if (!court) {
-            return next(createNotfounderror([messages.ERROR.CASE_NOT_FOUND], req.language))
+            return next(createNotfounderror([messages.ERROR.COURT_NOT_FOUND], req.language))
         }
         if (court.Isactive === false) {
-            return next(createAccessDenied([messages.ERROR.CASE_NOT_ACTIVE], req.language))
+            return next(createAccessDenied([messages.ERROR.COURT_NOT_ACTIVE], req.language))
         }
 
         await db.courtModel.update({
@@ -126,13 +126,13 @@ async function UpdateCourt(req, res, next) {
 async function DeleteCourt(req, res, next) {
 
     let validationErrors = []
-    const Uuid = req.params.caseId
+    const Uuid = req.params.courtId
 
     if (!Uuid) {
-        validationErrors.push(messages.VALIDATION_ERROR.CASEID_REQUIRED)
+        validationErrors.push(messages.VALIDATION_ERROR.COURTID_REQUIRED)
     }
     if (!validator.isUUID(Uuid)) {
-        validationErrors.push(messages.VALIDATION_ERROR.UNSUPPORTED_CASEID)
+        validationErrors.push(messages.VALIDATION_ERROR.UNSUPPORTED_COURTID)
     }
     if (validationErrors.length > 0) {
         return next(createValidationError(validationErrors, req.language))
@@ -142,10 +142,10 @@ async function DeleteCourt(req, res, next) {
     try {
         const court = db.courtModel.findOne({ where: { Uuid: Uuid } })
         if (!court) {
-            return next(createNotfounderror([messages.ERROR.CASE_NOT_FOUND], req.language))
+            return next(createNotfounderror([messages.ERROR.COURT_NOT_FOUND], req.language))
         }
         if (court.Isactive === false) {
-            return next(createAccessDenied([messages.ERROR.CASE_NOT_ACTIVE], req.language))
+            return next(createAccessDenied([messages.ERROR.COURT_NOT_ACTIVE], req.language))
         }
 
         await db.courtModel.destroy({ where: { Uuid: Uuid }, transaction: t });

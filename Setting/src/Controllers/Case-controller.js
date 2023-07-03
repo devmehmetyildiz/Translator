@@ -9,18 +9,6 @@ const uuid = require('uuid').v4
 async function GetCases(req, res, next) {
     try {
         const cases = await db.caseModel.findAll({ where: { Isactive: true } })
-        for (const casedata of cases) {
-            let departmentuuids = await db.casedepartmentModel.findAll({
-                where: {
-                    CaseID: casedata.Uuid,
-                }
-            });
-            casedata.Departments = await db.departmentModel.findAll({
-                where: {
-                    Uuid: departmentuuids.map(u => { return u.DepartmentID })
-                }
-            })
-        }
         res.status(200).json(cases)
     } catch (error) {
         return next(sequelizeErrorCatcher(error))
@@ -37,16 +25,6 @@ async function GetCompleteCase(req, res, next) {
         if (!casedata.Isactive) {
             return createNotfounderror([messages.ERROR.CASE_NOT_ACTIVE])
         }
-        let departmentuuids = await db.casedepartmentModel.findAll({
-            where: {
-                CaseID: casedata.Uuid,
-            }
-        });
-        casedata.Departments = await db.departmentModel.findAll({
-            where: {
-                Uuid: departmentuuids.map(u => { return u.DepartmentID })
-            }
-        })
         res.status(200).json(casedata)
     } catch (error) {
         return next(sequelizeErrorCatcher(error))
@@ -63,16 +41,6 @@ async function GetDeactivateCase(req, res, next) {
         if (!casedata.Isactive) {
             return createNotfounderror([messages.ERROR.CASE_NOT_ACTIVE])
         }
-        let departmentuuids = await db.casedepartmentModel.findAll({
-            where: {
-                CaseID: casedata.Uuid,
-            }
-        });
-        casedata.Departments = await db.departmentModel.findAll({
-            where: {
-                Uuid: departmentuuids.map(u => { return u.DepartmentID })
-            }
-        })
         res.status(200).json(casedata)
     } catch (error) {
         return next(sequelizeErrorCatcher(error))
@@ -100,16 +68,6 @@ async function GetCase(req, res, next) {
         if (!casedata.Isactive) {
             return createNotfounderror([messages.ERROR.CASE_NOT_ACTIVE])
         }
-        let departmentuuids = await db.casedepartmentModel.findAll({
-            where: {
-                CaseID: casedata.Uuid,
-            }
-        });
-        casedata.Departments = await db.departmentModel.findAll({
-            where: {
-                Uuid: departmentuuids.map(u => { return u.DepartmentID })
-            }
-        })
         res.status(200).json(casedata)
     } catch (error) {
         return next(sequelizeErrorCatcher(error))
@@ -126,7 +84,6 @@ async function AddCase(req, res, next) {
         Shortname,
         Casecolor,
         CaseStatus,
-        Departments,
     } = req.body
 
     if (!validator.isString(Name)) {
@@ -140,9 +97,6 @@ async function AddCase(req, res, next) {
     }
     if (!validator.isNumber(CaseStatus)) {
         validationErrors.push(messages.VALIDATION_ERROR.CASECOLOR_REQUIRED)
-    }
-    if (!validator.isArray(Departments)) {
-        validationErrors.push(messages.VALIDATION_ERROR.DEPARTMENTS_REQUIRED)
     }
 
     if (validationErrors.length > 0) {
@@ -162,16 +116,6 @@ async function AddCase(req, res, next) {
             Isactive: true
         }, { transaction: t })
 
-        for (const department of Departments) {
-            if (!department.Uuid || !validator.isUUID(department.Uuid)) {
-                return next(createValidationError(messages.VALIDATION_ERROR.UNSUPPORTED_DEPARTMENTID, req.language))
-            }
-            await db.casedepartmentModel.create({
-                CaseID: caseuuid,
-                DepartmentID: department.Uuid
-            }, { transaction: t });
-        }
-
         await t.commit()
     } catch (err) {
         await t.rollback()
@@ -188,7 +132,6 @@ async function UpdateCase(req, res, next) {
         Shortname,
         Casecolor,
         CaseStatus,
-        Departments,
         Uuid
     } = req.body
 
@@ -205,13 +148,10 @@ async function UpdateCase(req, res, next) {
         validationErrors.push(messages.VALIDATION_ERROR.UNSUPPORTED_CASEID)
     }
     if (!validator.isString(Casecolor)) {
-        validationErrors.push(messages.VALIDATION_ERROR.NAME_REQUIRED)
-    }
-    if (!validator.isNumber(CaseStatus)) {
         validationErrors.push(messages.VALIDATION_ERROR.CASECOLOR_REQUIRED)
     }
-    if (!validator.isArray(Departments)) {
-        validationErrors.push(messages.VALIDATION_ERROR.DEPARTMENTS_REQUIRED)
+    if (!validator.isNumber(CaseStatus)) {
+        validationErrors.push(messages.VALIDATION_ERROR.CASESTATUS_REQUIRED)
     }
     if (validationErrors.length > 0) {
         return next(createValidationError(validationErrors, req.language))
@@ -233,16 +173,6 @@ async function UpdateCase(req, res, next) {
             Updatetime: new Date(),
         }, { where: { Uuid: Uuid } }, { transaction: t })
 
-        await db.casedepartmentModel.destroy({ where: { CaseID: Uuid }, transaction: t });
-        for (const department of Departments) {
-            if (!department.Uuid || !validator.isUUID(department.Uuid)) {
-                return next(createValidationError(messages.VALIDATION_ERROR.UNSUPPORTED_DEPARTMENTID, req.language))
-            }
-            await db.casedepartmentModel.create({
-                CaseID: Uuid,
-                DepartmentID: department.Uuid
-            }, { transaction: t });
-        }
         await t.commit()
     } catch (error) {
         return next(sequelizeErrorCatcher(error))

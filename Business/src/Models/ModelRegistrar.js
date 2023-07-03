@@ -1,14 +1,10 @@
 const applog_businessModel = require('./Applog_businessModel')
-const patientModel = require('./PatientModel')
-const patientdefineModel = require('./PatientdefineModel')
-const patientmovementModel = require('./PatientmovementModel')
-const todoModel = require('./TodoModel')
+const orderModel = require('./OrderModel')
+const jobModel = require('./JobModel')
 
 
 module.exports = {
     applog_businessModel,
-    patientModel,
-    patientdefineModel,
-    patientmovementModel,
-    todoModel
+    orderModel,
+    jobModel
 }

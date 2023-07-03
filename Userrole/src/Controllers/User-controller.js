@@ -24,7 +24,6 @@ async function Register(req, res, next) {
             Email,
             Password,
         } = req.body
-        console.log('req.body: ', req.body);
         let validationErrors = []
         if (!validator.isString(Username)) {
             validationErrors.push(messages.VALIDATION_ERROR.USERNAME_REQUIRED)
@@ -114,41 +113,8 @@ async function GetUsers(req, res, next) {
     try {
         const users = await db.userModel.findAll({ where: { Isactive: true } })
         if (users && users.length > 0) {
-            let departments = []
-            let stations = []
-            try {
-                const departmentsresponse = await axios({
-                    method: 'GET',
-                    url: config.services.Setting + `Departments`,
-                    headers: {
-                        session_key: config.session.secret
-                    }
-                })
-                const stationsresponse = await axios({
-                    method: 'GET',
-                    url: config.services.Setting + `Stations`,
-                    headers: {
-                        session_key: config.session.secret
-                    }
-                })
-
-                departments = departmentsresponse.data
-                stations = stationsresponse.data
-            } catch (error) {
-                return next(requestErrorCatcher(error, 'Setting'))
-            }
             for (const user of users) {
-                let departmentuuids = await db.userdepartmentModel.findAll({
-                    where: {
-                        UserID: user.Uuid,
-                    }
-                });
                 let rolesuuids = await db.userroleModel.findAll({
-                    where: {
-                        UserID: user.Uuid
-                    }
-                })
-                let stationuuids = await db.userstationModel.findAll({
                     where: {
                         UserID: user.Uuid
                     }
@@ -156,18 +122,6 @@ async function GetUsers(req, res, next) {
                 user.Roles = await db.roleModel.findAll({
                     where: {
                         Uuid: rolesuuids.map(u => { return u.RoleID })
-                    }
-                })
-                user.Departments = departmentuuids.map(userdepartment => {
-                    let data = departments.find(u => u.Uuid === userdepartment.DepartmentID)
-                    if (data) {
-                        return data
-                    }
-                })
-                user.Stations = stationuuids.map(userstation => {
-                    let data = stations.find(u => u.Uuid === userstation.StationID)
-                    if (data) {
-                        return data
                     }
                 })
                 try {
@@ -213,23 +167,7 @@ async function GetUser(req, res, next) {
         if (!user.Isactive) {
             return next(createNotfounderror([messages.ERROR.USER_NOT_ACTIVE], req.language))
         }
-        let departments = []
-        let stations = []
         try {
-            const departmentsresponse = await axios({
-                method: 'GET',
-                url: config.services.Setting + `Departments`,
-                headers: {
-                    session_key: config.session.secret
-                }
-            })
-            const stationsresponse = await axios({
-                method: 'GET',
-                url: config.services.Setting + `Stations`,
-                headers: {
-                    session_key: config.session.secret
-                }
-            })
             const fileresponse = await axios({
                 method: 'GET',
                 url: config.services.File + `Files/GetbyparentID/${user.Uuid}`,
@@ -238,22 +176,10 @@ async function GetUser(req, res, next) {
                 }
             })
             user.Files = fileresponse.data
-            departments = departmentsresponse.data
-            stations = stationsresponse.data
         } catch (error) {
             next(requestErrorCatcher(error, 'Setting'))
         }
-        let departmentuuids = await db.userdepartmentModel.findAll({
-            where: {
-                UserID: user.Uuid,
-            }
-        });
         let rolesuuids = await db.userroleModel.findAll({
-            where: {
-                UserID: user.Uuid
-            }
-        })
-        let stationuuids = await db.userstationModel.findAll({
             where: {
                 UserID: user.Uuid
             }
@@ -263,19 +189,6 @@ async function GetUser(req, res, next) {
                 Uuid: rolesuuids.map(u => { return u.RoleID })
             }
         })
-        user.Departments = departmentuuids.map(userdepartment => {
-            let data = departments.find(u => u.Uuid === userdepartment.DepartmentID)
-            if (data) {
-                return data
-            }
-        })
-        user.Stations = stationuuids.map(userstation => {
-            let data = stations.find(u => u.Uuid === userstation.StationID)
-            if (data) {
-                return data
-            }
-        })
-
         user.PasswordHash && delete user.PasswordHash
         res.status(200).json(user)
     } catch (error) {
@@ -294,6 +207,29 @@ async function Getbyusername(req, res, next) {
     }
     try {
         const user = await db.userModel.findOne({ where: { Username: req.params.username } })
+        if (!user) {
+            return next(createNotfounderror([messages.ERROR.USER_NOT_FOUND], req.language))
+        }
+        if (!user.Isactive) {
+            return next(createNotfounderror([messages.ERROR.USER_NOT_ACTIVE], req.language))
+        }
+        res.status(200).json(user)
+    } catch (error) {
+        next(sequelizeErrorCatcher(error))
+    }
+}
+
+async function Getbyemail(req, res, next) {
+
+    let validationErrors = []
+    if (req.params.email === undefined) {
+        validationErrors.push(messages.VALIDATION_ERROR.EMAIL_REQUIRED)
+    }
+    if (validationErrors.length > 0) {
+        return next(createValidationError(validationErrors, req.language))
+    }
+    try {
+        const user = await db.userModel.findOne({ where: { Email: req.params.email } })
         if (!user) {
             return next(createNotfounderror([messages.ERROR.USER_NOT_FOUND], req.language))
         }
@@ -394,9 +330,7 @@ async function AddUser(req, res, next) {
         Address,
         Email,
         Password,
-        Departments,
         Roles,
-        Stations,
         UserID
     } = req.body
 
@@ -429,12 +363,6 @@ async function AddUser(req, res, next) {
     }
     if (!validator.isNumber(UserID)) {
         validationErrors.push(messages.VALIDATION_ERROR.USERID_REQUIRED)
-    }
-    if (!validator.isArray(Departments)) {
-        validationErrors.push(messages.VALIDATION_ERROR.DEPARTMENTS_REQUIRED)
-    }
-    if (!validator.isArray(Stations)) {
-        validationErrors.push(messages.VALIDATION_ERROR.STATIONS_REQUIRED)
     }
     if (!validator.isArray(Roles)) {
         validationErrors.push(messages.VALIDATION_ERROR.ROLES_REQUIRED)
@@ -483,15 +411,6 @@ async function AddUser(req, res, next) {
             UserID: useruuid,
             Salt: salt
         }, { transaction: t })
-        for (const department of Departments) {
-            if (!department.Uuid || !validator.isUUID(department.Uuid)) {
-                return next(createValidationError(messages.VALIDATION_ERROR.UNSUPPORTED_DEPARTMENTID, req.language))
-            }
-            await db.userdepartmentModel.create({
-                UserID: useruuid,
-                DepartmentID: department.Uuid
-            }, { transaction: t });
-        }
         for (const role of Roles) {
             if (!role.Uuid || !validator.isUUID(role.Uuid)) {
                 return next(createValidationError(messages.VALIDATION_ERROR.UNSUPPORTED_ROLEID, req.language))
@@ -499,15 +418,6 @@ async function AddUser(req, res, next) {
             await db.userroleModel.create({
                 UserID: useruuid,
                 RoleID: role.Uuid
-            }, { transaction: t });
-        }
-        for (const station of Stations) {
-            if (!station.Uuid || !validator.isUUID(station.Uuid)) {
-                return next(createValidationError(messages.VALIDATION_ERROR.UNSUPPORTED_STATIONID, req.language))
-            }
-            await db.userstationModel.create({
-                UserID: useruuid,
-                StationID: station.Uuid
             }, { transaction: t });
         }
         await t.commit()
@@ -532,9 +442,7 @@ async function UpdateUser(req, res, next) {
         City,
         Address,
         Email,
-        Departments,
         Roles,
-        Stations,
     } = req.body
 
     if (!validator.isString(Username)) {
@@ -589,18 +497,7 @@ async function UpdateUser(req, res, next) {
             Updateduser: "System",
             Updatetime: new Date(),
         }, { where: { Uuid: Uuid } }, { transaction: t })
-        await db.userdepartmentModel.destroy({ where: { UserID: Uuid }, transaction: t });
         await db.userroleModel.destroy({ where: { UserID: Uuid }, transaction: t });
-        await db.userstationModel.destroy({ where: { UserID: Uuid }, transaction: t });
-        for (const department of Departments) {
-            if (!department.Uuid || !validator.isUUID(department.Uuid)) {
-                return next(createValidationError(messages.VALIDATION_ERROR.UNSUPPORTED_DEPARTMENTID, req.language))
-            }
-            await db.userdepartmentModel.create({
-                UserID: Uuid,
-                DepartmentID: department.Uuid
-            }, { transaction: t });
-        }
         for (const role of Roles) {
             if (!role.Uuid || !validator.isUUID(role.Uuid)) {
                 return next(createValidationError(messages.VALIDATION_ERROR.UNSUPPORTED_ROLEID, req.language))
@@ -608,15 +505,6 @@ async function UpdateUser(req, res, next) {
             await db.userroleModel.create({
                 UserID: Uuid,
                 RoleID: role.Uuid
-            }, { transaction: t });
-        }
-        for (const station of Stations) {
-            if (!station.Uuid || !validator.isUUID(station.Uuid)) {
-                return next(createValidationError(messages.VALIDATION_ERROR.UNSUPPORTED_STATIONID, req.language))
-            }
-            await db.userstationModel.create({
-                UserID: Uuid,
-                StationID: station.Uuid
             }, { transaction: t });
         }
         await t.commit()
@@ -654,9 +542,7 @@ async function DeleteUser(req, res, next) {
 
         await db.userModel.destroy({ where: { uuid: Uuid }, transaction: t });
         await db.usersaltModel.destroy({ where: { Userid: Uuid }, transaction: t });
-        await db.userdepartmentModel.destroy({ where: { UserID: Uuid }, transaction: t });
         await db.userroleModel.destroy({ where: { UserID: Uuid }, transaction: t });
-        await db.userstationModel.destroy({ where: { UserID: Uuid }, transaction: t });
         await t.commit();
     } catch (error) {
         await t.rollback();
@@ -716,5 +602,6 @@ module.exports = {
     GetActiveUsername,
     GetActiveUserMeta,
     Getusertablemetaconfig,
-    Saveusertablemetaconfig
+    Saveusertablemetaconfig,
+    Getbyemail
 }

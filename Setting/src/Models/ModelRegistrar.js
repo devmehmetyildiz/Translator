@@ -8,6 +8,8 @@ const goalModel = require('./GoalModel')
 const languageModel = require('./LanguageModel')
 const recordtypeModel = require('./RecordtypeModel')
 const translatorModel = require('./TranslatorModel')
+const kdvModel = require('./KdvModel')
+const paymentModel = require('./PaymentModel')
 const applog_settingModel = require('./Applog_settingModel')
 
 
@@ -23,4 +25,6 @@ module.exports = {
     recordtypeModel,
     translatorModel,
     applog_settingModel,
+    kdvModel,
+    paymentModel,
 }
