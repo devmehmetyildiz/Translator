@@ -16,9 +16,6 @@ module.exports = sequelize.define('printtemplateModel', {
     Valuekey: {
         type: Sequelize.STRING
     },
-    DepartmentID: {
-        type: Sequelize.STRING
-    },
     Createduser: {
         type: Sequelize.STRING
     },

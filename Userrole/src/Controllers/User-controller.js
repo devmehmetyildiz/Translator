@@ -134,7 +134,7 @@ async function GetUsers(req, res, next) {
                     })
                     user.Files = fileresponse.data
                 } catch (error) {
-                    return next(requestErrorCatcher(error, 'Setting'))
+                    return next(requestErrorCatcher(error, 'File'))
                 }
             }
         }
@@ -177,7 +177,7 @@ async function GetUser(req, res, next) {
             })
             user.Files = fileresponse.data
         } catch (error) {
-            next(requestErrorCatcher(error, 'Setting'))
+            next(requestErrorCatcher(error, 'File'))
         }
         let rolesuuids = await db.userroleModel.findAll({
             where: {

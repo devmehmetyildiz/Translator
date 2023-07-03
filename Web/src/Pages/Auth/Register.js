@@ -27,7 +27,7 @@ export class Register extends Component {
                             </div>
                             <Header as='h3' color='blue' textAlign='center'>
                                 <br />
-                                <p>Patient Care Hasta Bakım Sistemi</p>
+                                <p>Translator Dil Takip Sistemi</p>
                             </Header>
                             <Form size='large' className='p-4' onSubmit={this.RegisterHandler}>
                                 <Form.Input transparent placeholder="Kullanıcı Adı" name="Username" fluid icon='user' iconPosition='left' />
@@ -78,7 +78,7 @@ export class Register extends Component {
                 fillnotification(error)
             })
         } else {
-              register({data, history})
+            register({ data, history })
         }
     }
 }

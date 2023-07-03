@@ -10,24 +10,6 @@ const axios = require('axios')
 async function GetPrinttemplates(req, res, next) {
     try {
         const printtemplates = await db.printtemplateModel.findAll({ where: { Isactive: true } })
-        let departments = []
-        if (printtemplates && Array.isArray(printtemplates) && printtemplates.length > 0) {
-            try {
-                const departmentresponse = await axios({
-                    method: 'GET',
-                    url: config.services.Setting + 'Departments',
-                    headers: {
-                        session_key: config.session.secret
-                    }
-                })
-                departments = departmentresponse.data
-            } catch (error) {
-                return next(requestErrorCatcher(error, 'Setting'))
-            }
-        }
-        for (const printtemplate of printtemplates) {
-            printtemplate.Department = departments.find(u => u.Uuid === printtemplate.DepartmentID)
-        }
         res.status(200).json(printtemplates)
     } catch (error) {
         return next(sequelizeErrorCatcher(error))
@@ -55,18 +37,6 @@ async function GetPrinttemplate(req, res, next) {
         if (!printtemplate.Isactive) {
             return next(createNotfounderror([messages.ERROR.PRINTTEMPLATE_NOT_ACTIVE], req.language))
         }
-        try {
-            const departmentresponse = await axios({
-                method: 'GET',
-                url: config.services.Setting + `Departments/${printtemplate.DepartmentID}`,
-                headers: {
-                    session_key: config.session.secret
-                }
-            })
-            printtemplate.Department = departmentresponse.data
-        } catch (error) {
-            return next(requestErrorCatcher(error, 'Setting'))
-        }
         res.status(200).json(printtemplate)
     } catch (error) {
         return next(sequelizeErrorCatcher(error))
@@ -80,7 +50,6 @@ async function AddPrinttemplate(req, res, next) {
         Name,
         Printtemplate,
         Valuekey,
-        DepartmentID,
     } = req.body
 
     if (!validator.isString(Name)) {
@@ -91,9 +60,6 @@ async function AddPrinttemplate(req, res, next) {
     }
     if (!validator.isString(Valuekey)) {
         validationErrors.push(messages.VALIDATION_ERROR.VALUEKEY_REQUIRED)
-    }
-    if (!validator.isString(DepartmentID)) {
-        validationErrors.push(messages.VALIDATION_ERROR.DEPARTMENTID_REQUIRED)
     }
 
     if (validationErrors.length > 0) {
@@ -128,7 +94,6 @@ async function UpdatePrinttemplate(req, res, next) {
         Name,
         Printtemplate,
         Valuekey,
-        DepartmentID,
         Uuid
     } = req.body
 
@@ -140,9 +105,6 @@ async function UpdatePrinttemplate(req, res, next) {
     }
     if (!validator.isString(Valuekey)) {
         validationErrors.push(messages.VALIDATION_ERROR.VALUEKEY_REQUIRED)
-    }
-    if (!validator.isString(DepartmentID)) {
-        validationErrors.push(messages.VALIDATION_ERROR.DEPARTMENTID_REQUIRED)
     }
     if (!validator.isUUID(Uuid)) {
         validationErrors.push(messages.VALIDATION_ERROR.PRINTTEMPLATEID_REQUIRED)
