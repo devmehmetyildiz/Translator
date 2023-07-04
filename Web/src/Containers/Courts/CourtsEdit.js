@@ -6,7 +6,7 @@ import {
 } from "../../Redux/CourtSlice"
 
 const mapStateToProps = (state) => ({
-    Cases: state.Cases,
+    Courts: state.Courts,
     Profile: state.Profile
 })
 

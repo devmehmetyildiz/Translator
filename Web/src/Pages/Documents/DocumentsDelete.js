@@ -1,0 +1,47 @@
+import React, { Component } from 'react'
+import { Button, Modal } from 'semantic-ui-react'
+import Literals from './Literals'
+
+export default class DocumentsDelete extends Component {
+
+    render() {
+        const { Profile, Documents, DeleteDocuments, handleDeletemodal, handleSelectedDocument } = this.props
+        const { isDeletemodalopen, selected_record } = Documents
+        return (
+            <Modal
+                onClose={() => handleDeletemodal(false)}
+                onOpen={() => handleDeletemodal(true)}
+                open={isDeletemodalopen}
+            >
+                <Modal.Header>{Literals.Page.Pagedeleteheader[Profile.Language]}</Modal.Header>
+                <Modal.Content image>
+                    <Modal.Description>
+                        <p>
+                            <span className='font-bold'>{selected_record?.Name} </span>
+                            {Literals.Messages.Deletecheck[Profile.Language]}
+                        </p>
+                    </Modal.Description>
+                </Modal.Content>
+                <Modal.Actions>
+                    <Button color='black' onClick={() => {
+                        handleDeletemodal(false)
+                        handleSelectedDocument({})
+                    }}>
+                        {Literals.Button.Giveup[Profile.Language]}
+                    </Button>
+                    <Button
+                        content={Literals.Button.Delete[Profile.Language]}
+                        labelPosition='right'
+                        icon='checkmark'
+                        onClick={() => {
+                            DeleteDocuments(selected_record)
+                            handleDeletemodal(false)
+                            handleSelectedDocument({})
+                        }}
+                        positive
+                    />
+                </Modal.Actions>
+            </Modal>
+        )
+    }
+}

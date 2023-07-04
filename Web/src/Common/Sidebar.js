@@ -14,13 +14,13 @@ export function Sidebar(props) {
             en: "Settings",
             tr: "Ayarlar"
         },
-        Orders: {
-            en: "Orders",
-            tr: "Siparişler"
+        Jobs: {
+            en: "Jobs",
+            tr: "İşlerim"
         },
-        Organisation: {
-            en: "Organisation Management",
-            tr: "Kurum Yönetimi"
+        Reports: {
+            en: "Reports",
+            tr: "Raporlar"
         },
         System: {
             en: "System Management",
@@ -31,9 +31,13 @@ export function Sidebar(props) {
     const defaultpages = [
         {
             id: 1,
-            title: Sidebarliterals.Organisation[Profile.Language],
-            url: "/Dashboard",
+            title: Sidebarliterals.Jobs[Profile.Language],
             icon: <TbGauge className=' text-blue-700' />
+        },
+        {
+            id: 1,
+            title: Sidebarliterals.Reports[Profile.Language],
+            icon: <TbActivity className=' text-yellow-700' />
         },
         {
             id: 2,

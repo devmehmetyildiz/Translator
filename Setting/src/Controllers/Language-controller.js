@@ -67,7 +67,7 @@ async function AddLanguage(req, res, next) {
     if (!validator.isUUID(KdvID)) {
         validationErrors.push(messages.VALIDATION_ERROR.KDVID_REQUIRED)
     }
-    if (!validator.isString(Discount)) {
+    if (!validator.isNumber(Discount)) {
         validationErrors.push(messages.VALIDATION_ERROR.DISCOUNT_REQUIRED)
     }
 
@@ -115,7 +115,7 @@ async function UpdateLanguage(req, res, next) {
     if (!validator.isUUID(KdvID)) {
         validationErrors.push(messages.VALIDATION_ERROR.KDVID_REQUIRED)
     }
-    if (!validator.isString(Discount)) {
+    if (!validator.isNumber(Discount)) {
         validationErrors.push(messages.VALIDATION_ERROR.DISCOUNT_REQUIRED)
     }
     if (!Uuid) {

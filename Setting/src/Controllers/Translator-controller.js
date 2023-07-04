@@ -9,7 +9,7 @@ const axios = require('axios')
 
 async function GetTranslators(req, res, next) {
     try {
-        const translators = await db.tranlatorModel.findAll({ where: { Isactive: true } })
+        const translators = await db.translatorModel.findAll({ where: { Isactive: true } })
         for (const translator of translators) {
             const userresponse = await axios({
                 method: 'GET',
@@ -40,7 +40,7 @@ async function GetTranslator(req, res, next) {
     }
 
     try {
-        const translator = await db.tranlatorModel.findOne({ where: { Uuid: req.params.translatorId } });
+        const translator = await db.translatorModel.findOne({ where: { Uuid: req.params.translatorId } });
         if (!translator) {
             return createNotfounderror([messages.ERROR.TRANSLATOR_NOT_FOUND])
         }
@@ -68,14 +68,10 @@ async function AddTranslator(req, res, next) {
     let validationErrors = []
     const {
         Name,
-        UserID
     } = req.body
 
     if (!validator.isString(Name)) {
         validationErrors.push(messages.VALIDATION_ERROR.NAME_REQUIRED)
-    }
-    if (!validator.isUUID(UserID)) {
-        validationErrors.push(messages.VALIDATION_ERROR.USERID_REQUIRED)
     }
 
     if (validationErrors.length > 0) {
@@ -108,14 +104,10 @@ async function UpdateTranslator(req, res, next) {
     const {
         Uuid,
         Name,
-        UserID
     } = req.body
 
     if (!validator.isString(Name)) {
         validationErrors.push(messages.VALIDATION_ERROR.NAME_REQUIRED)
-    }
-    if (!validator.isUUID(UserID)) {
-        validationErrors.push(messages.VALIDATION_ERROR.USERID_REQUIRED)
     }
     if (!Uuid) {
         validationErrors.push(messages.VALIDATION_ERROR.TRANSLATORID_REQUIRED)

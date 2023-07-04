@@ -3,7 +3,7 @@ import CourthausesEdit from '../../Pages/Courthauses/CourthausesEdit'
 import { EditCourthauses, GetCourthause, handleSelectedCourthause, removeCourthausenotification, fillCourthausenotification } from "../../Redux/CourthauseSlice"
 
 const mapStateToProps = (state) => ({
-    Cases: state.Cases,
+    Courthauses: state.Courthauses,
     Profile: state.Profile
 })
 

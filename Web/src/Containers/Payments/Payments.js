@@ -6,7 +6,7 @@ import {
 } from "../../Redux/PaymentSlice"
 
 const mapStateToProps = (state) => ({
-  Languages: state.Languages,
+  Payments: state.Payments,
   Profile: state.Profile
 })
 

@@ -14,60 +14,23 @@ import Pagedivider from '../../Common/Styled/Pagedivider'
 import Contentwrapper from '../../Common/Wrappers/Contentwrapper'
 import Footerwrapper from '../../Common/Wrappers/Footerwrapper'
 import Headerbredcrump from '../../Common/Wrappers/Headerbredcrump'
+
 export default class CourthausesCreate extends Component {
 
-  constructor(props) {
-    super(props)
-    this.state = {
-      selecteddepartments: [],
-      selectedstatusOption: 0
-    }
-  }
-
-
-  componentDidMount() {
-    const { GetDepartments } = this.props
-    GetDepartments()
-  }
-
   componentDidUpdate() {
-    const { Cases, removeCasenotification, Departments, removeDepartmentnotification } = this.props
-    Notification(Cases.notifications, removeCasenotification)
-    Notification(Departments.notifications, removeDepartmentnotification)
+    const { Courthauses, removeCourthausenotification } = this.props
+    Notification(Courthauses.notifications, removeCourthausenotification)
   }
-
 
   render() {
-    const { Cases, Departments, Profile } = this.props
-
-    const Departmentoptions = Departments.list.map(department => {
-      return { key: department.Uuid, text: department.Name, value: department.Uuid }
-    })
-
-    const casestatusOption = [
-      {
-        key: '-1',
-        text: Literals.Options.caseStatusoption.value0[Profile.Language],
-        value: -1,
-      },
-      {
-        key: '0',
-        text: Literals.Options.caseStatusoption.value1[Profile.Language],
-        value: 0,
-      },
-      {
-        key: '1',
-        text: Literals.Options.caseStatusoption.value2[Profile.Language],
-        value: 1,
-      }
-    ]
+    const { Courthauses, Profile } = this.props
 
     return (
-      Cases.isLoading || Cases.isDispatching || Departments.isLoading || Departments.isDispatching ? <LoadingPage /> :
+      Courthauses.isLoading || Courthauses.isDispatching ? <LoadingPage /> :
         <Pagewrapper>
           <Headerwrapper>
             <Headerbredcrump>
-              <Link to={"/Cases"}>
+              <Link to={"/Courthauses"}>
                 <Breadcrumb.Section>{Literals.Page.Pageheader[Profile.Language]}</Breadcrumb.Section>
               </Link>
               <Breadcrumb.Divider icon='right chevron' />
@@ -77,19 +40,9 @@ export default class CourthausesCreate extends Component {
           <Pagedivider />
           <Contentwrapper>
             <Form onSubmit={this.handleSubmit}>
-              <Form.Group widths='equal'>
-                <FormInput required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
-                <FormInput required placeholder={Literals.Columns.Shortname[Profile.Language]} name="Shortname" />
-              </Form.Group>
-              <Form.Group widths='equal'>
-                <FormInput required placeholder={Literals.Columns.Casecolor[Profile.Language]} name="Casecolor" attention="blue,red,green..." />
-                <FormInput required placeholder={Literals.Columns.CaseStatus[Profile.Language]} options={casestatusOption} onChange={this.handleChangeOption} value={this.state.selectedstatusOption} formtype="dropdown" />
-              </Form.Group>
-              <Form.Group widths='equal'>
-                <FormInput required placeholder={Literals.Columns.Departmentstxt[Profile.Language]} clearable search multiple options={Departmentoptions} onChange={this.handleChange} value={this.state.selecteddepartments} formtype="dropdown" />
-              </Form.Group>
+              <FormInput required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
               <Footerwrapper>
-                <Link to="/Cases">
+                <Link to="/Courthauses">
                   <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
                 </Link>
                 <Button floated="right" type='submit' color='blue'>{Literals.Button.Create[Profile.Language]}</Button>
@@ -100,47 +53,21 @@ export default class CourthausesCreate extends Component {
     )
   }
 
-
   handleSubmit = (e) => {
     e.preventDefault()
-    const { AddCases, history, fillCasenotification, Departments, Profile } = this.props
-    const { list } = Departments
+    const { AddCourthauses, history, fillCourthausenotification, Profile } = this.props
     const data = formToObject(e.target)
-    data.Departments = this.state.selecteddepartments.map(department => {
-      return list.find(u => u.Uuid === department)
-    })
-    data.CaseStatus = this.state.selectedstatusOption
 
     let errors = []
     if (!validator.isString(data.Name)) {
       errors.push({ type: 'Error', code: Literals.Page.Pageheader[Profile.Language], description: Literals.Messages.Namerequired[Profile.Language] })
     }
-    if (!validator.isNumber(data.CaseStatus)) {
-      errors.push({ type: 'Error', code: Literals.Page.Pageheader[Profile.Language], description: Literals.Messages.Casestatusrequired[Profile.Language] })
-    }
-    if (!validator.isString(data.Casecolor)) {
-      errors.push({ type: 'Error', code: Literals.Page.Pageheader[Profile.Language], description: Literals.Messages.Casecolorrequired[Profile.Language] })
-    }
-    if (!validator.isString(data.Shortname)) {
-      errors.push({ type: 'Error', code: Literals.Page.Pageheader[Profile.Language], description: Literals.Messages.Shortnamerequired[Profile.Language] })
-    }
-    if (!validator.isArray(data.Departments)) {
-      errors.push({ type: 'Error', code: Literals.Page.Pageheader[Profile.Language], description: Literals.Messages.Departmentsrequired[Profile.Language] })
-    }
     if (errors.length > 0) {
       errors.forEach(error => {
-        fillCasenotification(error)
+        fillCourthausenotification(error)
       })
     } else {
-      AddCases({ data, history })
+      AddCourthauses({ data, history })
     }
-  }
-
-  handleChange = (e, { value }) => {
-    this.setState({ selecteddepartments: value })
-  }
-
-  handleChangeOption = (e, { value }) => {
-    this.setState({ selectedstatusOption: value })
   }
 }

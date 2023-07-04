@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import { Button, Dropdown, Header, Icon, Modal } from 'semantic-ui-react'
 import { ROUTES } from '../Utils/Constants'
 import config from '../Config'
+import img from '../Assets/img'
 
 const navbarLiterals = {
   editProfile: {
@@ -64,17 +65,18 @@ export class Navbar extends Component {
 
     return (
       <nav
-        className=" w-[100%] h-[58.61px] bg-[#2b7694] dark:bg-Contentfg mx-auto flex flex-row justify-between items-center fixed top-0 pl-[20px] z-50">
+        className=" w-[100%] h-[58.61px] bg-[#2355a0] dark:bg-Contentfg mx-auto flex flex-row justify-between items-center fixed top-0 pl-[20px] z-50">
         <div className={`group flex flex-col cursor-pointer justify-center items-center ${isMobile ? 'hidden' : 'visible'}`} onClick={() => { seticonOnly(!iconOnly) }}>
           <div className='h-[2px] group-hover:bg-[#747474] bg-white dark:bg-[#3d3d3d]  w-[20px]' />
           <div className='h-[2px] group-hover:bg-[#747474] bg-white dark:bg-[#3d3d3d] my-[3px] w-[20px]' />
           <div className='h-[2px] group-hover:bg-[#747474] bg-white dark:bg-[#3d3d3d]  w-[20px]' />
         </div>
         < div className='p-2 w-[250px] flex justify-center items-center' >
-          <p className='select-none m-0 font-Common font-bold text-[1.84em] line-none text-white dark:text-TextColor'>
-            ELDER
-            <span className='text-[#c5a47e]'>CAMP</span>
-          </p>
+          <div className='flex flex-row justify-center items-center w-full'>
+            <p className='select-none m-0 font-Common font-bold text-[1.84em] line-none text-white dark:text-TextColor'> STAR </p>
+            <img className='text-[10px] w-[50px] h-[50px]'  src={img.translatoricon} alt="" />
+            <p className='select-none m-0 font-Common font-bold text-[1.84em] line-none text-[#7eabc5] dark:text-TextColor'> NOTE </p>
+          </div>
         </div >
         <div className='flex flex-row justify-center items-center h-full'>
           <Dropdown icon={null} trigger={trigger} basic className="h-full block">

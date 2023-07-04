@@ -4,11 +4,11 @@ module.exports = sequelize.define('orderModel', {
         primaryKey: true,
         autoIncrement: true
     },
-    Orderno: {
-        type: Sequelize.INTEGER,
+    OrderID: {
+        type: Sequelize.STRING,
     },
     Jobno: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
     },
     SourcelanguageID: {
         type: Sequelize.STRING,

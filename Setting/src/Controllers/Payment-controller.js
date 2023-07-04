@@ -110,7 +110,7 @@ async function UpdatePayment(req, res, next) {
             return next(createAccessDenied([messages.ERROR.PAYMENT_NOT_ACTIVE], req.language))
         }
 
-        await db.courtModel.update({
+        await db.paymentModel.update({
             ...req.body,
             Updateduser: "System",
             Updatetime: new Date(),
@@ -126,7 +126,7 @@ async function UpdatePayment(req, res, next) {
 async function DeletePayment(req, res, next) {
 
     let validationErrors = []
-    const Uuid = req.params.courtId
+    const Uuid = req.params.paymentId
 
     if (!Uuid) {
         validationErrors.push(messages.VALIDATION_ERROR.PAYMENTID_REQUIRED)

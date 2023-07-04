@@ -15,13 +15,6 @@ import Pagedivider from '../../Common/Styled/Pagedivider'
 
 export default class Cases extends Component {
 
-  constructor(props) {
-    super(props)
-    this.state = {
-      departmentStatus: []
-    }
-  }
-
 
   componentDidMount() {
     const { GetCases } = this.props
@@ -63,7 +56,6 @@ export default class Cases extends Component {
       { Header: Literals.Columns.Shortname[Profile.Language], accessor: 'Shortname', sortable: true, canGroupBy: true, canFilter: true },
       { Header: Literals.Columns.CaseStatus[Profile.Language], accessor: 'CaseStatus', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.casesstatusCellhandler(col, casestatusOption) },
       { Header: Literals.Columns.Casecolor[Profile.Language], accessor: 'Casecolor', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.casecolorCellhandler(col) },
-      { Header: Literals.Columns.Departmentstxt[Profile.Language], accessor: 'Departmentstxt', sortable: true, canGroupBy: true, canFilter: true, isOpen: false, Cell: col => this.departmentCellhandler(col) },
       { Header: Literals.Columns.Createduser[Profile.Language], accessor: 'Createduser', sortable: true, canGroupBy: true, canFilter: true, },
       { Header: Literals.Columns.Updateduser[Profile.Language], accessor: 'Updateduser', sortable: true, canGroupBy: true, canFilter: true, },
       { Header: Literals.Columns.Createtime[Profile.Language], accessor: 'Createtime', sortable: true, canGroupBy: true, canFilter: true, },
@@ -83,13 +75,9 @@ export default class Cases extends Component {
     };
 
     const list = (Cases.list || []).map(item => {
-      var text = item.Departments.map((department) => {
-        return department.Name;
-      }).join(", ")
 
       return {
         ...item,
-        Departmentstxt: text,
         edit: <Link to={`/Cases/${item.Uuid}/edit`} ><Icon size='large' className='row-edit' name='edit' /></Link>,
         delete: <Icon link size='large' color='red' name='alternate trash' onClick={() => {
           handleSelectedCase(item)
@@ -133,20 +121,6 @@ export default class Cases extends Component {
     )
   }
 
-  expandDepartments = (rowid) => {
-    const prevData = this.state.departmentStatus
-    prevData.push(rowid)
-    this.setState({ departmentStatus: [...prevData] })
-  }
-
-  shrinkDepartments = (rowid) => {
-    const index = this.state.departmentStatus.indexOf(rowid)
-    const prevData = this.state.departmentStatus
-    if (index > -1) {
-      prevData.splice(index, 1)
-      this.setState({ departmentStatus: [...prevData] })
-    }
-  }
 
   casesstatusCellhandler = (col, casestatusOption) => {
     return casestatusOption.find(u => u.value === col.value) ? casestatusOption.find(u => u.value === col.value).text : ''
@@ -155,23 +129,6 @@ export default class Cases extends Component {
   casecolorCellhandler = (col) => {
     if (col.value) {
       return <div className='flex flex-row justify-center items-center text-center'><p className='m-0 p-0'>{col.value}</p><Icon style={{ color: col.value }} className="ml-2" name='circle' /></div>
-    }
-    return null
-  }
-
-  departmentCellhandler = (col) => {
-    if (col.value) {
-      if (!col.cell.isGrouped) {
-        const itemId = col.row.original.Id
-        const itemDepartments = col.row.original.Departments
-        return col.value.length - 35 > 20 ?
-          (
-            !this.state.departmentStatus.includes(itemId) ?
-              [col.value.slice(0, 35) + ' ...(' + itemDepartments.length + ')', <Link to='#' className='showMoreOrLess' onClick={() => this.expandDepartments(itemId)}> ...Daha Fazla Göster</Link>] :
-              [col.value, <Link to='#' className='showMoreOrLess' onClick={() => this.shrinkDepartments(itemId)}> ...Daha Az Göster</Link>]
-          ) : col.value
-      }
-      return col.value
     }
     return null
   }

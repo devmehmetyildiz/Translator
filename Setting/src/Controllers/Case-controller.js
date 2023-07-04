@@ -205,7 +205,6 @@ async function DeleteCase(req, res, next) {
             return next(createAccessDenied([messages.ERROR.CASE_NOT_ACTIVE], req.language))
         }
 
-        await db.casedepartmentModel.destroy({ where: { CaseID: Uuid }, transaction: t });
         await db.caseModel.destroy({ where: { Uuid: Uuid }, transaction: t });
         await t.commit();
     } catch (error) {

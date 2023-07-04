@@ -87,7 +87,7 @@ const Literals = {
     },
     Messages: {
         Nodatafind: {
-            tr: "tanımlı hedef Yok",
+            tr: "tanımlı kdv Yok",
             en: "There is no kdv found"
         },
         Deletecheck: {

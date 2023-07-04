@@ -19,30 +19,21 @@ export default class CasesCreate extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      selecteddepartments: [],
       selectedstatusOption: 0
     }
   }
 
 
-  componentDidMount() {
-    const { GetDepartments } = this.props
-    GetDepartments()
-  }
 
   componentDidUpdate() {
-    const { Cases, removeCasenotification, Departments, removeDepartmentnotification } = this.props
+    const { Cases, removeCasenotification } = this.props
     Notification(Cases.notifications, removeCasenotification)
-    Notification(Departments.notifications, removeDepartmentnotification)
   }
 
 
   render() {
-    const { Cases, Departments, Profile } = this.props
+    const { Cases, Profile } = this.props
 
-    const Departmentoptions = Departments.list.map(department => {
-      return { key: department.Uuid, text: department.Name, value: department.Uuid }
-    })
 
     const casestatusOption = [
       {
@@ -63,7 +54,7 @@ export default class CasesCreate extends Component {
     ]
 
     return (
-      Cases.isLoading || Cases.isDispatching || Departments.isLoading || Departments.isDispatching ? <LoadingPage /> :
+      Cases.isLoading || Cases.isDispatching  ? <LoadingPage /> :
         <Pagewrapper>
           <Headerwrapper>
             <Headerbredcrump>
@@ -85,9 +76,6 @@ export default class CasesCreate extends Component {
                 <FormInput required placeholder={Literals.Columns.Casecolor[Profile.Language]} name="Casecolor" attention="blue,red,green..." />
                 <FormInput required placeholder={Literals.Columns.CaseStatus[Profile.Language]} options={casestatusOption} onChange={this.handleChangeOption} value={this.state.selectedstatusOption} formtype="dropdown" />
               </Form.Group>
-              <Form.Group widths='equal'>
-                <FormInput required placeholder={Literals.Columns.Departmentstxt[Profile.Language]} clearable search multiple options={Departmentoptions} onChange={this.handleChange} value={this.state.selecteddepartments} formtype="dropdown" />
-              </Form.Group>
               <Footerwrapper>
                 <Link to="/Cases">
                   <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
@@ -103,12 +91,8 @@ export default class CasesCreate extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault()
-    const { AddCases, history, fillCasenotification, Departments, Profile } = this.props
-    const { list } = Departments
+    const { AddCases, history, fillCasenotification, Profile } = this.props
     const data = formToObject(e.target)
-    data.Departments = this.state.selecteddepartments.map(department => {
-      return list.find(u => u.Uuid === department)
-    })
     data.CaseStatus = this.state.selectedstatusOption
 
     let errors = []
@@ -124,9 +108,6 @@ export default class CasesCreate extends Component {
     if (!validator.isString(data.Shortname)) {
       errors.push({ type: 'Error', code: Literals.Page.Pageheader[Profile.Language], description: Literals.Messages.Shortnamerequired[Profile.Language] })
     }
-    if (!validator.isArray(data.Departments)) {
-      errors.push({ type: 'Error', code: Literals.Page.Pageheader[Profile.Language], description: Literals.Messages.Departmentsrequired[Profile.Language] })
-    }
     if (errors.length > 0) {
       errors.forEach(error => {
         fillCasenotification(error)
@@ -134,10 +115,6 @@ export default class CasesCreate extends Component {
     } else {
       AddCases({ data, history })
     }
-  }
-
-  handleChange = (e, { value }) => {
-    this.setState({ selecteddepartments: value })
   }
 
   handleChangeOption = (e, { value }) => {

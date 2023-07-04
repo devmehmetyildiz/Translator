@@ -64,7 +64,7 @@ async function AddDocument(req, res, next) {
     const t = await db.sequelize.transaction();
 
     try {
-        await db.courtModel.create({
+        await db.documentModel.create({
             ...req.body,
             Uuid: documentuuid,
             Createduser: "System",
