@@ -54,10 +54,22 @@ export default class JobsCreate extends Component {
 
 
   render() {
-    const { Translators, Users, Profile } = this.props
+    const { Jobs, Orders, Languages, Documents, Cases, Profile } = this.props
 
-    const Useroptions = Users.list.map(user => {
-      return { key: user.Uuid, text: user.Username, value: user.Uuid }
+    const Documentoption = Documents.list.map(document => {
+      return { key: document.Uuid, text: document.Name, value: document.Uuid }
+    })
+
+    const Orderoption = Orders.list.map(order => {
+      return { key: order.Uuid, text: order.Orderno, value: order.Uuid }
+    })
+
+    const Languageoption = Languages.list.map(document => {
+      return { key: document.Uuid, text: document.Name, value: document.Uuid }
+    })
+
+    const Caseoption = Cases.list.map(cases => {
+      return { key: cases.Uuid, text: cases.Name, value: cases.Uuid }
     })
 
     return (
@@ -75,9 +87,10 @@ export default class JobsCreate extends Component {
           <Pagedivider />
           <Contentwrapper>
             <Form onSubmit={this.handleSubmit}>
-              <Form.Group widths='equal'>
-                <FormInput required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
-                <FormInput required placeholder={Literals.Columns.UserName[Profile.Language]} options={Useroptions} onChange={this.handleChangeUser} value={this.state.selectedUser} formtype="dropdown" />
+              <FormInput required placeholder={Literals.Columns.Order[Profile.Language]} options={Orderoption} onChange={(e, { value }) => { this.setState({ selectedOrder: value }) }} value={this.state.selectedOrder} formtype='dropdown' />
+              <Form.Group widths={'equal'}>
+                <FormInput required placeholder={Literals.Columns.Order[Profile.Language]} options={Orderoption} onChange={(e, { value }) => { this.setState({ selectedOrder: value }) }} value={this.state.selectedOrder} formtype='dropdown' />
+                <FormInput required placeholder={Literals.Columns.Order[Profile.Language]} options={Orderoption} onChange={(e, { value }) => { this.setState({ selectedOrder: value }) }} value={this.state.selectedOrder} formtype='dropdown' />
               </Form.Group>
               <Footerwrapper>
                 <Link to="/Translators">
