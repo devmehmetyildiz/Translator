@@ -1,15 +1,18 @@
 export const ROUTES = {
+    JOB: 'Jobs',
+    ORDER: 'Orders',
+
     DATATABLE: 'Datatable',
     AUTH: 'Auth',
     ROLE: 'Roles',
     USER: 'Users',
 
     FILE: 'Files',
-    
+
     MAILSETTING: 'Mailsettings',
     PRINTTEMPLATE: 'Printtemplates',
     RULE: 'Rules',
-    
+
     CASE: 'Cases',
     COURT: 'Courts',
     COURTHAUSE: 'Courthauses',

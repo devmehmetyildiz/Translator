@@ -5,15 +5,15 @@ module.exports = sequelize.define('orderModel', {
         autoIncrement: true
     },
     Orderno: {
-        type: Sequelize.INTEGER,
-    },
-    Recordtype: {
         type: Sequelize.STRING,
     },
-    Princiblecourthause: {
+    RecordtypeID: {
         type: Sequelize.STRING,
     },
-    Princiblecourt: {
+    PrinciblecourthauseID: {
+        type: Sequelize.STRING,
+    },
+    PrinciblecourtID: {
         type: Sequelize.STRING,
     },
     Princibleno: {
@@ -22,10 +22,10 @@ module.exports = sequelize.define('orderModel', {
     Desicionno: {
         type: Sequelize.STRING,
     },
-    Directivecourthause: {
+    DirectivecourthauseID: {
         type: Sequelize.STRING,
     },
-    Directivecourt: {
+    DirectivecourtID: {
         type: Sequelize.STRING,
     },
     Directiveno: {

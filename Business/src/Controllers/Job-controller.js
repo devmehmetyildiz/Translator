@@ -1,6 +1,7 @@
 const config = require("../Config")
 const messages = require("../Constants/Messages")
 const { sequelizeErrorCatcher, createAccessDenied, requestErrorCatcher } = require("../Utilities/Error")
+const { Getnumerator } = require("../Utilities/Numerator")
 const createValidationError = require("../Utilities/Error").createValidation
 const createNotfounderror = require("../Utilities/Error").createNotfounderror
 const validator = require("../Utilities/Validator")
@@ -61,10 +62,10 @@ async function GetJob(req, res, next) {
 
     let validationErrors = []
     if (!req.params.jobId) {
-        validationErrors.push(messages.VALIDATION_ERROR.COURTID_REQUIRED)
+        validationErrors.push(messages.VALIDATION_ERROR.JOBID_REQUIRED)
     }
     if (!validator.isUUID(req.params.jobId)) {
-        validationErrors.push(messages.VALIDATION_ERROR.UNSUPPORTED_COURTID)
+        validationErrors.push(messages.VALIDATION_ERROR.UNSUPPORTED_JOBID)
     }
     if (validationErrors.length > 0) {
         return next(createValidationError(validationErrors, req.language))
@@ -73,10 +74,10 @@ async function GetJob(req, res, next) {
     try {
         const job = await db.jobModel.findOne({ where: { Uuid: req.params.jobId } });
         if (!job) {
-            return createNotfounderror([messages.ERROR.COURT_NOT_FOUND])
+            return createNotfounderror([messages.ERROR.JOB_NOT_FOUND])
         }
         if (!job.Isactive) {
-            return createNotfounderror([messages.ERROR.COURT_NOT_ACTIVE])
+            return createNotfounderror([messages.ERROR.JOB_NOT_ACTIVE])
         }
         try {
             let languages = []
@@ -126,7 +127,6 @@ async function AddJobs(req, res, next) {
     let validationErrors = []
     const {
         OrderID,
-        Jobno,
         SourcelanguageID,
         TargetlanguageID,
         DocumentID,
@@ -136,42 +136,40 @@ async function AddJobs(req, res, next) {
     } = req.body
 
     if (!validator.isUUID(OrderID)) {
-        validationErrors.push(messages.VALIDATION_ERROR.NAME_REQUIRED)
-    }
-    if (!validator.isString(Jobno)) {
-        validationErrors.push(messages.VALIDATION_ERROR.NAME_REQUIRED)
+        validationErrors.push(messages.VALIDATION_ERROR.ORDERID_REQUIRED)
     }
     if (!validator.isUUID(SourcelanguageID)) {
-        validationErrors.push(messages.VALIDATION_ERROR.NAME_REQUIRED)
+        validationErrors.push(messages.VALIDATION_ERROR.SOURCELANGUAGEID_REQUIRED)
     }
     if (!validator.isUUID(TargetlanguageID)) {
-        validationErrors.push(messages.VALIDATION_ERROR.NAME_REQUIRED)
+        validationErrors.push(messages.VALIDATION_ERROR.TARGETLANGUAGEID_REQUIRED)
     }
     if (!validator.isUUID(DocumentID)) {
-        validationErrors.push(messages.VALIDATION_ERROR.NAME_REQUIRED)
+        validationErrors.push(messages.VALIDATION_ERROR.DOCUMENTID_REQUIRED)
     }
     if (!validator.isNumber(Amount)) {
-        validationErrors.push(messages.VALIDATION_ERROR.NAME_REQUIRED)
+        validationErrors.push(messages.VALIDATION_ERROR.AMOUNT_REQUIRED)
     }
     if (!validator.isNumber(Price)) {
-        validationErrors.push(messages.VALIDATION_ERROR.NAME_REQUIRED)
+        validationErrors.push(messages.VALIDATION_ERROR.PRICE_REQUIRED)
     }
     if (!validator.isUUID(CaseID)) {
-        validationErrors.push(messages.VALIDATION_ERROR.NAME_REQUIRED)
+        validationErrors.push(messages.VALIDATION_ERROR.CASEID_REQUIRED)
     }
 
     if (validationErrors.length > 0) {
         return next(createValidationError(validationErrors, req.language))
     }
 
-    let jobuuid = uuid()
-
     const t = await db.sequelize.transaction();
 
+    let jobuuid = uuid()
+    let jobnumerator = Getnumerator(next, t)
     try {
         await db.jobModel.create({
             ...req.body,
-            Uuid: courtuuid,
+            Uuid: jobuuid,
+            Jobno: jobnumerator,
             Createduser: "System",
             Createtime: new Date(),
             Isactive: true
@@ -189,7 +187,6 @@ async function UpdateJobs(req, res, next) {
     let validationErrors = []
     const {
         OrderID,
-        Jobno,
         SourcelanguageID,
         TargetlanguageID,
         DocumentID,
@@ -200,34 +197,31 @@ async function UpdateJobs(req, res, next) {
     } = req.body
 
     if (!validator.isUUID(OrderID)) {
-        validationErrors.push(messages.VALIDATION_ERROR.NAME_REQUIRED)
-    }
-    if (!validator.isString(Jobno)) {
-        validationErrors.push(messages.VALIDATION_ERROR.NAME_REQUIRED)
+        validationErrors.push(messages.VALIDATION_ERROR.ORDERID_REQUIRED)
     }
     if (!validator.isUUID(SourcelanguageID)) {
-        validationErrors.push(messages.VALIDATION_ERROR.NAME_REQUIRED)
+        validationErrors.push(messages.VALIDATION_ERROR.SOURCELANGUAGEID_REQUIRED)
     }
     if (!validator.isUUID(TargetlanguageID)) {
-        validationErrors.push(messages.VALIDATION_ERROR.NAME_REQUIRED)
+        validationErrors.push(messages.VALIDATION_ERROR.TARGETLANGUAGEID_REQUIRED)
     }
     if (!validator.isUUID(DocumentID)) {
-        validationErrors.push(messages.VALIDATION_ERROR.NAME_REQUIRED)
+        validationErrors.push(messages.VALIDATION_ERROR.DOCUMENTID_REQUIRED)
     }
     if (!validator.isNumber(Amount)) {
-        validationErrors.push(messages.VALIDATION_ERROR.NAME_REQUIRED)
+        validationErrors.push(messages.VALIDATION_ERROR.AMOUNT_REQUIRED)
     }
     if (!validator.isNumber(Price)) {
-        validationErrors.push(messages.VALIDATION_ERROR.NAME_REQUIRED)
+        validationErrors.push(messages.VALIDATION_ERROR.PRICE_REQUIRED)
     }
     if (!validator.isUUID(CaseID)) {
-        validationErrors.push(messages.VALIDATION_ERROR.NAME_REQUIRED)
+        validationErrors.push(messages.VALIDATION_ERROR.CASEID_REQUIRED)
     }
     if (!Uuid) {
-        validationErrors.push(messages.VALIDATION_ERROR.COURTID_REQUIRED)
+        validationErrors.push(messages.VALIDATION_ERROR.JOBID_REQUIRED)
     }
     if (!validator.isUUID(Uuid)) {
-        validationErrors.push(messages.VALIDATION_ERROR.UNSUPPORTED_COURTID)
+        validationErrors.push(messages.VALIDATION_ERROR.UNSUPPORTED_JOBID)
     }
     if (validationErrors.length > 0) {
         return next(createValidationError(validationErrors, req.language))
@@ -237,10 +231,10 @@ async function UpdateJobs(req, res, next) {
     try {
         const job = db.jobModel.findOne({ where: { Uuid: Uuid } })
         if (!job) {
-            return next(createNotfounderror([messages.ERROR.COURT_NOT_FOUND], req.language))
+            return next(createNotfounderror([messages.ERROR.JOB_NOT_FOUND], req.language))
         }
         if (job.Isactive === false) {
-            return next(createAccessDenied([messages.ERROR.COURT_NOT_ACTIVE], req.language))
+            return next(createAccessDenied([messages.ERROR.JOB_NOT_ACTIVE], req.language))
         }
 
         await db.jobModel.update({
@@ -262,10 +256,10 @@ async function DeleteJobs(req, res, next) {
     const Uuid = req.params.jobId
 
     if (!Uuid) {
-        validationErrors.push(messages.VALIDATION_ERROR.COURTID_REQUIRED)
+        validationErrors.push(messages.VALIDATION_ERROR.JOBID_REQUIRED)
     }
     if (!validator.isUUID(Uuid)) {
-        validationErrors.push(messages.VALIDATION_ERROR.UNSUPPORTED_COURTID)
+        validationErrors.push(messages.VALIDATION_ERROR.UNSUPPORTED_JOBID)
     }
     if (validationErrors.length > 0) {
         return next(createValidationError(validationErrors, req.language))
@@ -275,10 +269,10 @@ async function DeleteJobs(req, res, next) {
     try {
         const job = db.jobModel.findOne({ where: { Uuid: Uuid } })
         if (!job) {
-            return next(createNotfounderror([messages.ERROR.COURT_NOT_FOUND], req.language))
+            return next(createNotfounderror([messages.ERROR.JOB_NOT_FOUND], req.language))
         }
         if (job.Isactive === false) {
-            return next(createAccessDenied([messages.ERROR.COURT_NOT_ACTIVE], req.language))
+            return next(createAccessDenied([messages.ERROR.JOB_NOT_ACTIVE], req.language))
         }
 
         await db.jobModel.destroy({ where: { Uuid: Uuid }, transaction: t });

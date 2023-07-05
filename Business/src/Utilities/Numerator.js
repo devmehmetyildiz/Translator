@@ -2,32 +2,41 @@ const { sequelizeErrorCatcher } = require("./Error")
 const moment = require('moment');
 const NUMERATOR_LEN = 8
 
-async function Getnumerator(willCreatenew, next) {
+async function Getnumerator(next, transaction) {
     try {
         const nums = await db.filenumeratorModel.findAll()
         if (nums && Array.isArray(nums) && nums.length > 0) {
             const previous = nums[0]
-            if (willCreatenew) {
-                await db.filenumeratorModel.update({
-                    Current: Createnewnumerator(previous.Current, next)
-                }, { where: { Id: previous.Id } })
-            } else {
-
-            }
+            const newnumerator = await Createnewnumerator(previous.Current, next)
+            await db.filenumeratorModel.update({
+                Current: newnumerator
+            }, { where: { Id: previous.Id } }, { transaction })
+            return newnumerator
         } else {
+            const newnumerator = await Createnewnumerator(_, next)
             await db.filenumeratorModel.create({
-                Current: Createnewnumerator(_, next)
-            })
-            return
+                Current: newnumerator
+            }, { transaction })
+            return newnumerator
         }
     } catch (error) {
         return next(sequelizeErrorCatcher(error))
     }
 }
 
-async function Getcurrent() {
-    const nums = await db.filenumeratorModel.findAll()
-    if (nums && Array.isArray(nums) && nums.length > 0) {
+async function Getcurrentnumerator(next) {
+    try {
+        const nums = await db.filenumeratorModel.findAll()
+        if (nums && Array.isArray(nums) && nums.length > 0) {
+            return nums[0].Current
+        } else {
+            const count = 1
+            const numerator = year + month + count.toString().padStart(4, '0');
+            return numerator
+        }
+    } catch (error) {
+        return next(sequelizeErrorCatcher(error))
+    }
 }
 
 async function Createnewnumerator(previous, next) {
@@ -57,3 +66,8 @@ async function Createnewnumerator(previous, next) {
     }
 }
 
+module.exports = {
+    Getcurrentnumerator,
+    Getnumerator,
+    Createnewnumerator
+}

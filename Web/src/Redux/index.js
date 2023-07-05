@@ -1,5 +1,8 @@
 import { combineReducers } from "@reduxjs/toolkit";
 
+import JobSlice from "./JobSlice";
+import OrderSlice from "./OrderSlice";
+
 import ProfileSlice from "./ProfileSlice";
 import RoleSlice from "./RoleSlice";
 import UserSlice from "./UserSlice";
@@ -42,7 +45,9 @@ const Slices = combineReducers({
     Languages: LanguageSlice,
     Payments: PaymentSlice,
     Recordtypes: RecordtypeSlice,
-    Translators: TranslatorSlice
+    Translators: TranslatorSlice,
+    Orders: OrderSlice,
+    Jobs: JobSlice,
 });
 
 export default Slices;
