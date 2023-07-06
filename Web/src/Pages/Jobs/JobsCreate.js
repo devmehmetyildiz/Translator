@@ -73,11 +73,15 @@ export default class JobsCreate extends Component {
     })
 
     return (
-      Translators.isLoading || Translators.isDispatching || Users.isLoading || Users.isDispatching ? <LoadingPage /> :
+      Jobs.isLoading || Jobs.isDispatching ||
+        Orders.isLoading || Orders.isDispatching ||
+        Languages.isLoading || Languages.isDispatching ||
+        Documents.isLoading || Documents.isDispatching ||
+        Cases.isLoading || Cases.isDispatching ? <LoadingPage /> :
         <Pagewrapper>
           <Headerwrapper>
             <Headerbredcrump>
-              <Link to={"/Translators"}>
+              <Link to={"/Jobs"}>
                 <Breadcrumb.Section>{Literals.Page.Pageheader[Profile.Language]}</Breadcrumb.Section>
               </Link>
               <Breadcrumb.Divider icon='right chevron' />
@@ -89,11 +93,20 @@ export default class JobsCreate extends Component {
             <Form onSubmit={this.handleSubmit}>
               <FormInput required placeholder={Literals.Columns.Order[Profile.Language]} options={Orderoption} onChange={(e, { value }) => { this.setState({ selectedOrder: value }) }} value={this.state.selectedOrder} formtype='dropdown' />
               <Form.Group widths={'equal'}>
-                <FormInput required placeholder={Literals.Columns.Order[Profile.Language]} options={Orderoption} onChange={(e, { value }) => { this.setState({ selectedOrder: value }) }} value={this.state.selectedOrder} formtype='dropdown' />
-                <FormInput required placeholder={Literals.Columns.Order[Profile.Language]} options={Orderoption} onChange={(e, { value }) => { this.setState({ selectedOrder: value }) }} value={this.state.selectedOrder} formtype='dropdown' />
+                <FormInput required placeholder={Literals.Columns.Sourcelanguage[Profile.Language]} options={Languageoption} onChange={(e, { value }) => { this.setState({ selectedSourcelanguage: value }) }} value={this.state.selectedSourcelanguage} formtype='dropdown' />
+                <FormInput required placeholder={Literals.Columns.Targetlanguage[Profile.Language]} options={Languageoption} onChange={(e, { value }) => { this.setState({ selectedTargetlanguage: value }) }} value={this.state.selectedTargetlanguage} formtype='dropdown' />
               </Form.Group>
+              <Form.Group widths={'equal'}>
+                <FormInput required placeholder={Literals.Columns.Document[Profile.Language]} options={Documentoption} onChange={(e, { value }) => { this.setState({ selectedDocument: value }) }} value={this.state.selectedDocument} formtype='dropdown' />
+                <FormInput required placeholder={Literals.Columns.Amount[Profile.Language]} type={'number'} />
+              </Form.Group>
+              <Form.Group widths={'equal'}>
+                <FormInput required placeholder={Literals.Columns.Price[Profile.Language]} type={'number'} />
+                <FormInput required placeholder={Literals.Columns.Case[Profile.Language]} options={Caseoption} onChange={(e, { value }) => { this.setState({ selectedCase: value }) }} value={this.state.selectedCase} formtype='dropdown' />
+              </Form.Group>
+              <FormInput placeholder={Literals.Columns.Info[Profile.Language]} />
               <Footerwrapper>
-                <Link to="/Translators">
+                <Link to="/Jobs">
                   <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
                 </Link>
                 <Button floated="right" type='submit' color='blue'>{Literals.Button.Create[Profile.Language]}</Button>
@@ -107,24 +120,43 @@ export default class JobsCreate extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault()
-    const { AddTranslators, history, fillTranslatornotification, Profile } = this.props
+    const { AddJobs, history, fillJobnotification, Profile } = this.props
     const data = formToObject(e.target)
-    data.UserID = this.state.selectedUser
-
+    data.OrderID = this.state.selectedOrder
+    data.SourcelanguageID = this.state.selectedSourcelanguage
+    data.TargetlanguageID = this.state.selectedTargetlanguage
+    data.DocumentID = this.state.selectedDocument
+    data.CaseID = this.state.selectedCase
+    data.Amount = parseInt(data.Amount)
+    data.Price = parseFloat(data.Price)
     let errors = []
-    if (!validator.isString(data.Name)) {
-      errors.push({ type: 'Error', code: Literals.Page.Pageheader[Profile.Language], description: Literals.Messages.Namerequired[Profile.Language] })
+    if (!validator.isUUID(data.OrderID)) {
+      errors.push({ type: 'Error', code: Literals.Page.Pageheader[Profile.Language], description: Literals.Messages.Orderrequired[Profile.Language] })
+    }
+    if (!validator.isUUID(data.SourcelanguageID)) {
+      errors.push({ type: 'Error', code: Literals.Page.Pageheader[Profile.Language], description: Literals.Messages.Sourcelanguagerequired[Profile.Language] })
+    }
+    if (!validator.isUUID(data.TargetlanguageID)) {
+      errors.push({ type: 'Error', code: Literals.Page.Pageheader[Profile.Language], description: Literals.Messages.Targetlanguagerequired[Profile.Language] })
+    }
+    if (!validator.isUUID(data.DocumentID)) {
+      errors.push({ type: 'Error', code: Literals.Page.Pageheader[Profile.Language], description: Literals.Messages.Documentrequired[Profile.Language] })
+    }
+    if (!validator.isNumber(data.Amount)) {
+      errors.push({ type: 'Error', code: Literals.Page.Pageheader[Profile.Language], description: Literals.Messages.Amountrequired[Profile.Language] })
+    }
+    if (!validator.isNumber(data.Price)) {
+      errors.push({ type: 'Error', code: Literals.Page.Pageheader[Profile.Language], description: Literals.Messages.Pricerequired[Profile.Language] })
+    }
+    if (!validator.isUUID(data.CaseID)) {
+      errors.push({ type: 'Error', code: Literals.Page.Pageheader[Profile.Language], description: Literals.Messages.Caserequired[Profile.Language] })
     }
     if (errors.length > 0) {
       errors.forEach(error => {
-        fillTranslatornotification(error)
+        fillJobnotification(error)
       })
     } else {
-      AddTranslators({ data, history })
+      AddJobs({ data, history })
     }
-  }
-
-  handleChangeUser = (e, { value }) => {
-    this.setState({ selectedUser: value })
   }
 }

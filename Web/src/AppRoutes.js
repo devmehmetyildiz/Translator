@@ -77,6 +77,14 @@ const Translators = lazy(() => import('./Containers/Translators/Translators'));
 const TranslatorsCreate = lazy(() => import('./Containers/Translators/TranslatorsCreate'));
 const TranslatorsEdit = lazy(() => import('./Containers/Translators/TranslatorsEdit'));
 
+const Orders = lazy(() => import('./Containers/Orders/Orders'));
+const OrdersCreate = lazy(() => import('./Containers/Orders/OrdersCreate'));
+const OrdersEdit = lazy(() => import('./Containers/Orders/OrdersEdit'));
+
+const Jobs = lazy(() => import('./Containers/Jobs/Jobs'));
+const JobsCreate = lazy(() => import('./Containers/Jobs/JobsCreate'));
+const JobsEdit = lazy(() => import('./Containers/Jobs/JobsEdit'));
+
 const ProfileEdit = lazy(() => import('./Containers/Auth/ProfileEdit'));
 const PasswordChange = lazy(() => import('./Containers/Auth/PasswordChange'));
 const Passwordforget = lazy(() => import('./Containers/Auth/Passwordforget'));
@@ -143,7 +151,7 @@ class AppRoutes extends Component {
       { exact: true, path: "/Kdvs", auth: true, component: Kdvs },
       { exact: true, path: "/Kdvs/Create", auth: true, component: KdvsCreate },
       { exact: true, path: "/Kdvs/:KdvID/Edit", auth: true, component: KdvsEdit },
-      
+
       { exact: true, path: "/Languages", auth: true, component: Languages },
       { exact: true, path: "/Languages/Create", auth: true, component: LanguagesCreate },
       { exact: true, path: "/Languages/:LanguageID/Edit", auth: true, component: LanguagesEdit },
@@ -159,6 +167,14 @@ class AppRoutes extends Component {
       { exact: true, path: "/Translators", auth: true, component: Translators },
       { exact: true, path: "/Translators/Create", auth: true, component: TranslatorsCreate },
       { exact: true, path: "/Translators/:TranslatorID/Edit", auth: true, component: TranslatorsEdit },
+
+      { exact: true, path: "/Orders", auth: true, component: Orders },
+      { exact: true, path: "/Orders/Create", auth: true, component: OrdersCreate },
+      { exact: true, path: "/Orders/:OrderID/Edit", auth: true, component: OrdersEdit },
+
+      { exact: true, path: "/Jobs", auth: true, component: Jobs },
+      { exact: true, path: "/Jobs/Create", auth: true, component: JobsCreate },
+      { exact: true, path: "/Jobs/:JobID/Edit", auth: true, component: JobsEdit },
 
       { exact: true, path: "/Rules", auth: true, component: Rules },
       { exact: true, path: "/Rules/Create", auth: true, component: RulesCreate },

@@ -41,7 +41,7 @@ export default class Layout extends Component {
       Profile.isLogging ?
         <LoadingPage />
         :
-        <div className='bg-white dark:bg-Contentbg ' >
+        <div className='bg-white dark:bg-Contentbg overflow-hidden' >
           <Navbar iconOnly={isMobile ? true : iconOnly} seticonOnly={seticonOnly} Profile={Profile} logOut={logOut} isMobile={isMobile} />
           <div className='flex flex-row justify-start items-start '>
             <Sidebar history={history} iconOnly={isMobile ? true : iconOnly} seticonOnly={seticonOnly} Profile={Profile} isMobile={isMobile} />

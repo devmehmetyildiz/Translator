@@ -8,7 +8,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = {
-    GetJobs, fillJobnotification, removeJobnotification, handleDeletemodal, handleSelectedJob
+    GetJobs, removeJobnotification, handleDeletemodal, handleSelectedJob
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Jobs)

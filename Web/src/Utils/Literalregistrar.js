@@ -16,6 +16,8 @@ import Languages from "../Pages/Languages/Literals"
 import Payments from "../Pages/Payments/Literals"
 import Recordtypes from "../Pages/Recordtypes/Literals"
 import Translators from "../Pages/Translators/Literals"
+import Orders from "../Pages/Orders/Literals"
+import Jobs from "../Pages/Jobs/Literals"
 
 const Literals = {
     Cases,
@@ -35,7 +37,9 @@ const Literals = {
     Languages,
     Payments,
     Recordtypes,
-    Translators
+    Translators,
+    Orders,
+    Jobs
 }
 
 export default Literals

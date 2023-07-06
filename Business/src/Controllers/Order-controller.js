@@ -321,7 +321,6 @@ async function AddOrders(req, res, next) {
     if (validator.isArray(Jobs)) {
         for (const job of Jobs) {
             const {
-                OrderID,
                 SourcelanguageID,
                 TargetlanguageID,
                 DocumentID,
@@ -329,9 +328,6 @@ async function AddOrders(req, res, next) {
                 Price,
             } = job
 
-            if (!validator.isUUID(OrderID)) {
-                validationErrors.push(messages.VALIDATION_ERROR.ORDERID_REQUIRED)
-            }
             if (!validator.isUUID(SourcelanguageID)) {
                 validationErrors.push(messages.VALIDATION_ERROR.SOURCELANGUAGEID_REQUIRED)
             }

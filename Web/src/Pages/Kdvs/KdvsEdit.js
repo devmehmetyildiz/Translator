@@ -63,7 +63,7 @@ export default class KdvsEdit extends Component {
                         <Form onSubmit={this.handleSubmit}>
                             <Form.Group widths={'equal'}>
                                 <FormInput required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
-                                <FormInput required placeholder={Literals.Columns.Percent[Profile.Language]} name="Percent" type='number' step='0.01' />
+                                <FormInput required placeholder={Literals.Columns.Percent[Profile.Language]} name="Percent" type='number' step='0.01' display='percent' />
                             </Form.Group>
                             <Footerwrapper>
                                 <Link to="/Kdvs">

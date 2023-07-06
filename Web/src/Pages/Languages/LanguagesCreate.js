@@ -60,7 +60,7 @@ export default class LanguagesCreate extends Component {
                         <Form onSubmit={this.handleSubmit}>
                             <Form.Group widths='equal'>
                                 <FormInput required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
-                                <FormInput required placeholder={Literals.Columns.Price[Profile.Language]} name="Price" type='number' step='0.01' />
+                                <FormInput required placeholder={Literals.Columns.Price[Profile.Language]} name="Price" type='number' step='0.01' display='try'/>
                             </Form.Group>
                             <Form.Group widths='equal'>
                                 <FormInput required placeholder={Literals.Columns.KdvPercent[Profile.Language]} options={Kdvoptions} onChange={this.handleChangeKdv} value={this.state.selectedkdv} formtype="dropdown" />

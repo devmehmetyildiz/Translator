@@ -6,7 +6,7 @@ import {
 } from "../../Redux/KdvSlice"
 
 const mapStateToProps = (state) => ({
-    Goals: state.Goals,
+    Kdvs: state.Kdvs,
     Profile: state.Profile
 })
 

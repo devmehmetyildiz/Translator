@@ -1,8 +1,14 @@
-module.exports = sequelize.define('orderModel', {
+module.exports = sequelize.define('jobModel', {
     Id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true
+    },
+    Uuid: {
+        type: Sequelize.STRING
+    },
+    Order: {
+        type: Sequelize.INTEGER
     },
     OrderID: {
         type: Sequelize.STRING,
@@ -23,7 +29,7 @@ module.exports = sequelize.define('orderModel', {
         type: Sequelize.INTEGER,
     },
     Price: {
-        type: Sequelize.STRING,
+        type: Sequelize.FLOAT,
     },
     CaseID: {
         type: Sequelize.STRING,
@@ -31,7 +37,46 @@ module.exports = sequelize.define('orderModel', {
     Info: {
         type: Sequelize.STRING,
     },
+    Wordcount: {
+        type: Sequelize.INTEGER,
+    },
+    Linecount: {
+        type: Sequelize.INTEGER,
+    },
+    Charcount: {
+        type: Sequelize.INTEGER,
+    },
+    Calculatedprice: {
+        type: Sequelize.FLOAT,
+    },
+    Calculatedamount: {
+        type: Sequelize.INTEGER,
+    },
+    Preferredamount: {
+        type: Sequelize.INTEGER,
+    },
+    Createduser: {
+        type: Sequelize.STRING
+    },
+    Createtime: {
+        type: Sequelize.DATE
+    },
+    Updateduser: {
+        type: Sequelize.STRING
+    },
+    Updatetime: {
+        type: Sequelize.DATE
+    },
+    Deleteduser: {
+        type: Sequelize.STRING
+    },
+    Deletetime: {
+        type: Sequelize.DATE
+    },
+    Isactive: {
+        type: Sequelize.BOOLEAN
+    }
 }, {
-    tableName: 'orders', // replace with the name of your existing table
+    tableName: 'jobs', // replace with the name of your existing table
     timestamps: false
 });

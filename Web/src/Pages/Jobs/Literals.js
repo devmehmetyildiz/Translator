@@ -122,9 +122,33 @@ const Literals = {
             tr: "işini silmek istediğinize emin misiniz?",
             en: "job will delete, are you sure?"
         },
-        Namerequired: {
-            tr: "İsim Gerekli",
-            en: "Name Required"
+        Orderrequired: {
+            tr: "Sipariş Gerekli",
+            en: "Order Required"
+        },
+        Sourcelanguagerequired: {
+            tr: "Kaynak Dil Gerekli",
+            en: "Source Language Required"
+        },
+        Targetlanguagerequired: {
+            tr: "Hedef Dil Gerekli",
+            en: "Target Language Required"
+        },
+        Documentrequired: {
+            tr: "Belge Gerekli",
+            en: "Document Required"
+        },
+        Amountrequired: {
+            tr: "Miktar Gerekli",
+            en: "Amount Required"
+        },
+        Pricerequired: {
+            tr: "Ücret Gerekli",
+            en: "Price Required"
+        },
+        Caserequired: {
+            tr: "Durum Gerekli",
+            en: "Case Required"
         },
     }
 }

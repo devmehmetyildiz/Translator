@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import OrdersCreate from "../../Pages/Orders/OrdersCreate"
-import { AddOrders, fillJobnotification, removeJobnotification } from "../../Redux/OrderSlice"
+import { AddOrders, fillOrdernotification, removeOrdernotification } from "../../Redux/OrderSlice"
 import { GetRecordtypes, removeRecordtypenotification } from "../../Redux/RecordtypeSlice"
 import { GetCourthauses, removeCourthausenotification } from "../../Redux/CourthauseSlice"
 import { GetCourts, removeCourtnotification } from "../../Redux/CourtSlice"
@@ -30,7 +30,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = {
-    AddOrders, fillJobnotification, removeJobnotification, GetRecordtypes, removeRecordtypenotification,
+    AddOrders, fillOrdernotification, removeOrdernotification, GetRecordtypes, removeRecordtypenotification,
     GetCourthauses, removeCourthausenotification, GetCourts, removeCourtnotification,
     GetDefinedcostumers, removeDefinedcostumernotification, GetDefinedcompanies, removeDefinedcompanynotification,
     GetTranslators, removeTranslatornotification, GetKdvs, removeKdvnotification, GetPayments, removePaymentnotification,

@@ -4,7 +4,7 @@ import { FormContext } from '../Provider/FormProvider';
 import store from '..';
 export default function FormInput(props) {
 
-    const { name } = props
+    const { name, display } = props
 
     const context = React.useContext(FormContext)
     const handleKeyPress = (e) => {
@@ -37,9 +37,12 @@ export default function FormInput(props) {
                 />}
             </div>
             {!props.formtype ?
-                <Form.Input {...props} defaultValue={context.formstates[name]} onChange={(e) => { context.setFormstates({ ...context.formstates, [name]: e.target.value }) }} onKeyPress={(e) => { handleKeyPress(e) }} fluid />
+                <Form.Input icon={display ? true : false} {...props} defaultValue={context.formstates[name]} onChange={(e) => { context.setFormstates({ ...context.formstates, [name]: e.target.value }) }} onKeyPress={(e) => { handleKeyPress(e) }} fluid >
+                    {display && <Icon name={display} />}
+                    <input />
+                </Form.Input>
                 :
-                <Dropdown {...props} fluid selection />
+                <Dropdown {...props} fluid selection clearable />
             }
 
         </Form.Field>
