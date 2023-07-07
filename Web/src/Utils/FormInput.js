@@ -4,8 +4,8 @@ import { FormContext } from '../Provider/FormProvider';
 import store from '..';
 export default function FormInput(props) {
 
-    const { name, display } = props
-
+    const { display, page } = props
+    const name = `${page}/${props.name}`
     const context = React.useContext(FormContext)
     const handleKeyPress = (e) => {
         if (e.key === 'Enter') {
@@ -18,6 +18,7 @@ export default function FormInput(props) {
         en: "This Area Required",
         tr: "Bu alan zorunludur"
     }
+
     return (
         <Form.Field>
             <div className='flex flex-row m-2'>
@@ -42,7 +43,10 @@ export default function FormInput(props) {
                     <input />
                 </Form.Input>
                 :
-                <Dropdown {...props} fluid selection clearable />
+                <Dropdown value={context.formstates[name]} {...props} fluid selection clearable
+                    onChange={(e, data) => {
+                        context.setFormstates({ ...context.formstates, [name]: data.value })
+                    }} />
             }
 
         </Form.Field>

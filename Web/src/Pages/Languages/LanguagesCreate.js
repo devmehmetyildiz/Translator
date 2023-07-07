@@ -14,15 +14,10 @@ import Pagedivider from '../../Common/Styled/Pagedivider'
 import Contentwrapper from '../../Common/Wrappers/Contentwrapper'
 import Footerwrapper from '../../Common/Wrappers/Footerwrapper'
 import Headerbredcrump from '../../Common/Wrappers/Headerbredcrump'
+import { FormContext } from '../../Provider/FormProvider'
 export default class LanguagesCreate extends Component {
 
-    constructor(props) {
-        super(props)
-        this.state = {
-            selectedkdv: '',
-        }
-    }
-
+    PAGE_NAME = 'LanguagesCreate'
 
     componentDidMount() {
         const { GetKdvs } = this.props
@@ -37,7 +32,7 @@ export default class LanguagesCreate extends Component {
 
 
     render() {
-        const { Languages, Kdvs, Profile } = this.props
+        const { Languages, Kdvs, Profile, history } = this.props
 
         const Kdvoptions = Kdvs.list.map(kdv => {
             return { key: kdv.Uuid, text: kdv.Name, value: kdv.Uuid }
@@ -59,17 +54,17 @@ export default class LanguagesCreate extends Component {
                     <Contentwrapper>
                         <Form onSubmit={this.handleSubmit}>
                             <Form.Group widths='equal'>
-                                <FormInput required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
-                                <FormInput required placeholder={Literals.Columns.Price[Profile.Language]} name="Price" type='number' step='0.01' display='try'/>
+                                <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
+                                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Price[Profile.Language]} name="Price" type='number' step='0.01' display='try' />
                             </Form.Group>
                             <Form.Group widths='equal'>
-                                <FormInput required placeholder={Literals.Columns.KdvPercent[Profile.Language]} options={Kdvoptions} onChange={this.handleChangeKdv} value={this.state.selectedkdv} formtype="dropdown" />
-                                <FormInput required placeholder={Literals.Columns.Discount[Profile.Language]} name="Discount" type='number' step='0.01' />
+                                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.KdvPercent[Profile.Language]} name="KdvID" options={Kdvoptions} formtype="dropdown" />
+                                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Discount[Profile.Language]} name="Discount" type='number' step='0.01' display='try' />
                             </Form.Group>
                             <Footerwrapper>
-                                <Link to="/Languages">
+                                {history && <Link to="/Languages">
                                     <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
-                                </Link>
+                                </Link>}
                                 <Button floated="right" type='submit' color='blue'>{Literals.Button.Create[Profile.Language]}</Button>
                             </Footerwrapper>
                         </Form>
@@ -78,12 +73,11 @@ export default class LanguagesCreate extends Component {
         )
     }
 
-
     handleSubmit = (e) => {
         e.preventDefault()
         const { AddLanguages, history, fillLanguagenotification, Profile } = this.props
         const data = formToObject(e.target)
-        data.KdvID = this.state.selectedkdv
+        data.KdvID = this.context.formstates[`${this.PAGE_NAME}/KdvID`]
         data.Price = parseFloat(data.Price)
         data.Discount = parseFloat(data.Discount)
 
@@ -108,8 +102,5 @@ export default class LanguagesCreate extends Component {
             AddLanguages({ data, history })
         }
     }
-
-    handleChangeKdv = (e, { value }) => {
-        this.setState({ selectedkdv: value })
-    }
 }
+LanguagesCreate.contextType = FormContext

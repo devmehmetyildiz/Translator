@@ -42,7 +42,7 @@ export const AddLanguages = createAsyncThunk(
                 code: 'Veri Kaydetme',
                 description: 'Dil başarı ile Eklendi',
             }));
-            history.push('/Languages');
+            history && history.push('/Languages');
             return response.data;
         } catch (error) {
             const errorPayload = AxiosErrorHelper(error);

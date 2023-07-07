@@ -222,6 +222,30 @@ const Literals = {
             tr: "işini silmek istediğinize emin misiniz?",
             en: "job will delete, are you sure?"
         },
+        Ordernorequired: {
+            tr: "Sipariş numarası Gerekli",
+            en: "Order no Required"
+        },
+        Recordtyperequired: {
+            tr: "Kayıt Türü Gerekli",
+            en: "Record type Required"
+        },
+        Registerdaterequired: {
+            tr: "Kayıt tarihi Gerekli",
+            en: "Register date Required"
+        },
+        Translatorrequired: {
+            tr: "Çevirmen Gerekli",
+            en: "Translator Required"
+        },
+        Jobsrequired: {
+            tr: "İşler Gerekli",
+            en: "Jobs Required"
+        },
+        Orderrequired: {
+            tr: "Sipariş Gerekli",
+            en: "Order Required"
+        },
         Sourcelanguagerequired: {
             tr: "Kaynak Dil Gerekli",
             en: "Source Language Required"
@@ -245,30 +269,6 @@ const Literals = {
         Caserequired: {
             tr: "Durum Gerekli",
             en: "Case Required"
-        },
-        Ordernorequired: {
-            tr: "Sipariş Numarası Gerekli",
-            en: "Order no Required"
-        },
-        Recordtypenorequired: {
-            tr: "Kayıt Türü Gerekli",
-            en: "Record type Required"
-        },
-        Registerdaterequired: {
-            tr: "Kayıt tarihi Gerekli",
-            en: "Register date Required"
-        },
-        Translatorrequired: {
-            tr: "Çevirmen Gerekli",
-            en: "Register date Required"
-        },
-        Caserequired: {
-            tr: "Durum Gerekli",
-            en: "Case Required"
-        },
-        Jobsrequired: {
-            tr: "İşler Gerekli",
-            en: "Jobs Required"
         },
     }
 }

@@ -51,11 +51,9 @@ export const GetActiveUser = createAsyncThunk(
     'Profile/GetActiveUser',
     async (_, { dispatch }) => {
         try {
-            console.log('config: ', config);
             const response = await instanse.get(config.services.Userrole, 'Users/GetActiveUsername');
             return response.data;
         } catch (error) {
-            console.log('error: ', error);
             const errorPayload = AxiosErrorHelper(error);
             dispatch(fillnotification(errorPayload));
             throw errorPayload;
@@ -68,7 +66,6 @@ export const GetUserMeta = createAsyncThunk(
     async (_, { dispatch }) => {
         try {
             const response = await instanse.get(config.services.Userrole, 'Users/GetActiveUserMeta');
-            console.log('response.data: ', response.data);
             return response.data;
         } catch (error) {
             const errorPayload = AxiosErrorHelper(error);

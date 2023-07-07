@@ -14,6 +14,7 @@ import Pagedivider from '../../Common/Styled/Pagedivider'
 import Contentwrapper from '../../Common/Wrappers/Contentwrapper'
 import Footerwrapper from '../../Common/Wrappers/Footerwrapper'
 import Headerbredcrump from '../../Common/Wrappers/Headerbredcrump'
+import LanguagesCreate from '../../Containers/Languages/LanguagesCreate'
 export default class OrdersCreate extends Component {
 
   constructor(props) {
@@ -31,6 +32,7 @@ export default class OrdersCreate extends Component {
       selectedKdv: '',
       selectedPayment: '',
       selectedCase: '',
+      openLanguage: false
     }
   }
 
@@ -116,19 +118,20 @@ export default class OrdersCreate extends Component {
       return { key: cases.Uuid, text: cases.Name, value: cases.Uuid }
     })
 
+    const formLoading = Recordtypes.isLoading || Recordtypes.isDispatching ||
+      Courthauses.isLoading || Courthauses.isDispatching ||
+      Courts.isLoading || Courts.isDispatching ||
+      Definedcompanies.isLoading || Definedcompanies.isDispatching ||
+      Definedcostumers.isLoading || Definedcostumers.isDispatching ||
+      Payments.isLoading || Payments.isDispatching ||
+      Languages.isLoading || Languages.isDispatching ||
+      Documents.isLoading || Documents.isDispatching ||
+      Cases.isLoading || Cases.isDispatching ||
+      Kdvs.isLoading || Kdvs.isDispatching
 
     return (
-      isLoading || isDispatching ||
-        Recordtypes.isLoading || Recordtypes.isDispatching ||
-        Courthauses.isLoading || Courthauses.isDispatching ||
-        Courts.isLoading || Courts.isDispatching ||
-        Definedcompanies.isLoading || Definedcompanies.isDispatching ||
-        Definedcostumers.isLoading || Definedcostumers.isDispatching ||
-        Kdvs.isLoading || Kdvs.isDispatching ||
-        Payments.isLoading || Payments.isDispatching ||
-        Languages.isLoading || Languages.isDispatching ||
-        Documents.isLoading || Documents.isDispatching ||
-        Cases.isLoading || Cases.isDispatching ? <LoadingPage /> :
+      isLoading || isDispatching
+        ? <LoadingPage /> :
         <Pagewrapper>
           <Headerwrapper>
             <Headerbredcrump>
@@ -141,15 +144,15 @@ export default class OrdersCreate extends Component {
           </Headerwrapper>
           <Pagedivider />
           <Contentwrapper>
-            <Form onSubmit={this.handleSubmit}>
-              <Tab className='station-tab m-[1px]'
+            <Form loading={formLoading} onSubmit={this.handleSubmit}>
+              <Tab className='station-tab '
                 panes={[
                   {
                     menuItem: Literals.Columns.orders[Profile.Language],
                     pane: {
                       key: 'save',
                       content: <React.Fragment>
-                        <div className='h-[calc(62vh)] overflow-y-auto overflow-x-auto'>
+                        <div className='h-[calc(60vh)] overflow-y-auto'>
                           <Form.Group widths={'equal'}>
                             <FormInput placeholder={Literals.Columns.Orderno[Profile.Language]} name="Orderno" />
                             <FormInput placeholder={Literals.Columns.Recordtype[Profile.Language]} value={this.state.selectedRecordtype} options={Recordtypeoption} onChange={(e, data) => { this.setState({ selectedRecordtype: data.value }) }} formtype='dropdown' />
@@ -195,20 +198,29 @@ export default class OrdersCreate extends Component {
                     pane: {
                       key: 'design',
                       content: <React.Fragment>
-                        <div className='h-[calc(62vh-10px)] overflow-y-auto overflow-x-auto'>
+                        <div className='h-[calc(60vh)] overflow-y-auto overflow-x-auto'>
                           <Table celled className='list-table ' key='product-create-type-conversion-table ' >
                             <Table.Header>
                               <Table.Row>
                                 <Table.HeaderCell width={1}>{Literals.Columns.Jobcountorder[Profile.Language]}</Table.HeaderCell>
                                 <Table.HeaderCell width={2}>{Literals.Columns.Jobno[Profile.Language]} </Table.HeaderCell>
-                                <Table.HeaderCell width={2}>{Literals.Columns.Sourcelanguage[Profile.Language]}</Table.HeaderCell>
+                                <Table.HeaderCell width={2}>{Literals.Columns.Sourcelanguage[Profile.Language]} <span>
+                                  <Modal
+                                    open={this.state.openLanguage}
+                                    onClose={() => { this.setState({ openLanguage: false }) }}
+                                    onOpen={() => { this.setState({ openLanguage: true }) }}
+                                    trigger={<Icon link name='plus' />}
+                                    content={<LanguagesCreate />}
+                                  />
+                                </span>
+                                </Table.HeaderCell>
                                 <Table.HeaderCell width={2}>{Literals.Columns.Targetlanguage[Profile.Language]}</Table.HeaderCell>
                                 <Table.HeaderCell width={2}>{Literals.Columns.Document[Profile.Language]}</Table.HeaderCell>
                                 <Table.HeaderCell width={1}>{Literals.Columns.Amount[Profile.Language]}</Table.HeaderCell>
                                 <Table.HeaderCell width={2}>{Literals.Columns.Price[Profile.Language]}</Table.HeaderCell>
                                 <Table.HeaderCell width={2}>{Literals.Columns.Case[Profile.Language]}</Table.HeaderCell>
                                 <Table.HeaderCell width={10}>{Literals.Columns.Info[Profile.Language]}</Table.HeaderCell>
-                                <Table.HeaderCell width={0}>{Literals.Columns.delete[Profile.Language]}</Table.HeaderCell>
+                                <Table.HeaderCell width={1}>{Literals.Columns.delete[Profile.Language]}</Table.HeaderCell>
                               </Table.Row>
                             </Table.Header>
                             <Table.Body>
@@ -288,7 +300,9 @@ export default class OrdersCreate extends Component {
 
   handleSubmit = async (e) => {
     e.preventDefault()
-
+    if (this.state.openLanguage) {
+      return
+    }
     const { AddOrders, history, fillOrdernotification, Profile } = this.props
     const jobs = this.state.selectedJobs
     const formData = formToObject(e.target)
@@ -348,22 +362,22 @@ export default class OrdersCreate extends Component {
     });
 
     if (!validator.isString(responseData.Orderno)) {
-      errors.push({ type: 'Error', code: Literals.Page.Pageheader[Profile.Language], description: Literals.Messages.Companyrequired[Profile.Language] })
+      errors.push({ type: 'Error', code: Literals.Page.Pageheader[Profile.Language], description: Literals.Messages.Ordernorequired[Profile.Language] })
     }
     if (!validator.isUUID(responseData.RecordtypeID)) {
-      errors.push({ type: 'Error', code: Literals.Page.Pageheader[Profile.Language], description: Literals.Messages.Purchasepricerequired[Profile.Language] })
+      errors.push({ type: 'Error', code: Literals.Page.Pageheader[Profile.Language], description: Literals.Messages.Recordtyperequired[Profile.Language] })
     }
     if (!validator.isISODate(responseData.Registerdate)) {
-      errors.push({ type: 'Error', code: Literals.Page.Pageheader[Profile.Language], description: Literals.Messages.Companypersonelnamerequired[Profile.Language] })
+      errors.push({ type: 'Error', code: Literals.Page.Pageheader[Profile.Language], description: Literals.Messages.Registerdaterequired[Profile.Language] })
     }
     if (!validator.isUUID(responseData.TranslatorID)) {
-      errors.push({ type: 'Error', code: Literals.Page.Pageheader[Profile.Language], description: Literals.Messages.Purchasenumberrequired[Profile.Language] })
+      errors.push({ type: 'Error', code: Literals.Page.Pageheader[Profile.Language], description: Literals.Messages.Translatorrequired[Profile.Language] })
     }
     if (!validator.isUUID(responseData.CaseID)) {
-      errors.push({ type: 'Error', code: Literals.Page.Pageheader[Profile.Language], description: Literals.Messages.Personelnamerequired[Profile.Language] })
+      errors.push({ type: 'Error', code: Literals.Page.Pageheader[Profile.Language], description: Literals.Messages.Caserequired[Profile.Language] })
     }
     if (!validator.isArray(responseData.Jobs)) {
-      errors.push({ type: 'Error', code: Literals.Page.Pageheader[Profile.Language], description: Literals.Messages.Caserequired[Profile.Language] })
+      errors.push({ type: 'Error', code: Literals.Page.Pageheader[Profile.Language], description: Literals.Messages.Jobsrequired[Profile.Language] })
     }
 
     if (errors.length > 0) {
@@ -412,5 +426,3 @@ export default class OrdersCreate extends Component {
   }
 
 }
-
-

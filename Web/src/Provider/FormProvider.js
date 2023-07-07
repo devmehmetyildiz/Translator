@@ -5,6 +5,7 @@ export const FormContext = React.createContext()
 
 const FormProvider = ({ children }) => {
     const [formstates, setFormstates] = useState({})
+    console.log('formstates: ', formstates);
     return (
         <FormContext.Provider value={{ formstates, setFormstates }}>
             {children}

@@ -54,7 +54,7 @@ export default class CasesCreate extends Component {
     ]
 
     return (
-      Cases.isLoading || Cases.isDispatching  ? <LoadingPage /> :
+      Cases.isLoading || Cases.isDispatching ? <LoadingPage /> :
         <Pagewrapper>
           <Headerwrapper>
             <Headerbredcrump>
