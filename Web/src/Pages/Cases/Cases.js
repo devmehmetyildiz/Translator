@@ -12,6 +12,7 @@ import Pagewrapper from '../../Common/Wrappers/Pagewrapper'
 import Headerwrapper from '../../Common/Wrappers/Headerwrapper'
 import CasesDelete from '../../Containers/Cases/CasesDelete'
 import Pagedivider from '../../Common/Styled/Pagedivider'
+import { FormContext } from '../../Provider/FormProvider'
 
 export default class Cases extends Component {
 
@@ -94,7 +95,7 @@ export default class Cases extends Component {
               <Grid columns='2' >
                 <GridColumn width={8}>
                   <Breadcrumb size='big'>
-                    <Link to={"/Cases"}>
+                    <Link to={"/Cases"} >
                       <Breadcrumb.Section>{Literals.Page.Pageheader[Profile.Language]}</Breadcrumb.Section>
                     </Link>
                   </Breadcrumb>
@@ -133,3 +134,4 @@ export default class Cases extends Component {
     return null
   }
 }
+Cases.contextType = FormContext

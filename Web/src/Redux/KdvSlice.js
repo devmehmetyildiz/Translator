@@ -4,6 +4,34 @@ import AxiosErrorHelper from "../Utils/AxiosErrorHelper"
 import instanse from "./axios";
 import config from "../Config";
 
+const Literals = {
+    addcode: {
+        en: 'Data Save',
+        tr: 'Veri Kaydetme'
+    },
+    adddescription: {
+        en: 'Kdv added successfully',
+        tr: 'Kdv Başarı ile eklendi'
+    },
+    updatecode: {
+        en: 'Data Update',
+        tr: 'Veri Güncelleme'
+    },
+    updatedescription: {
+        en: 'Kdv updated successfully',
+        tr: 'Kdv Başarı ile güncellendi'
+    },
+    deletecode: {
+        en: 'Data Delete',
+        tr: 'Veri Silme'
+    },
+    deletedescription: {
+        en: 'Kdv Deleted successfully',
+        tr: 'Kdv Başarı ile Silindi'
+    },
+}
+
+
 export const GetKdvs = createAsyncThunk(
     'Kdvs/GetKdvs',
     async (_, { dispatch }) => {
@@ -34,15 +62,22 @@ export const GetKdv = createAsyncThunk(
 
 export const AddKdvs = createAsyncThunk(
     'Kdvs/AddKdvs',
-    async ({ data, history }, { dispatch }) => {
+    async ({ data, history }, { dispatch, getState }) => {
         try {
+            const state = getState()
+            const Language = state.Profile.Language || 'en'
             const response = await instanse.post(config.services.Setting, ROUTES.KDV, data);
             dispatch(fillKdvnotification({
                 type: 'Success',
-                code: 'Veri Kaydetme',
-                description: 'Kdv başarı ile Eklendi',
+                code: Literals.addcode[Language],
+                description: Literals.adddescription[Language],
             }));
-            history.push('/Kdvs');
+            dispatch(fillKdvnotification({
+                type: 'Clear',
+                code: 'JobsCreate',
+                description: '',
+            }));
+            history && history.push('/Kdvs');
             return response.data;
         } catch (error) {
             const errorPayload = AxiosErrorHelper(error);
@@ -54,15 +89,22 @@ export const AddKdvs = createAsyncThunk(
 
 export const EditKdvs = createAsyncThunk(
     'Kdvs/EditKdvs',
-    async ({ data, history }, { dispatch }) => {
+    async ({ data, history }, { dispatch, getState }) => {
         try {
+            const state = getState()
+            const Language = state.Profile.Language || 'en'
             const response = await instanse.put(config.services.Setting, ROUTES.KDV, data);
             dispatch(fillKdvnotification({
                 type: 'Success',
-                code: 'Veri Güncelleme',
-                description: 'Kdv başarı ile Güncellendi',
+                code: Literals.updatecode[Language],
+                description: Literals.updatedescription[Language],
             }));
-            history.push('/Kdvs');
+            dispatch(fillKdvnotification({
+                type: 'Clear',
+                code: 'JobsEdit',
+                description: '',
+            }));
+            history && history.push('/Kdvs');
             return response.data;
         } catch (error) {
             const errorPayload = AxiosErrorHelper(error);
@@ -74,15 +116,17 @@ export const EditKdvs = createAsyncThunk(
 
 export const DeleteKdvs = createAsyncThunk(
     'Kdvs/DeleteKdvs',
-    async (data, { dispatch }) => {
+    async (data, { dispatch, getState }) => {
         try {
+            const state = getState()
+            const Language = state.Profile.Language || 'en'
             delete data['edit'];
             delete data['delete'];
             const response = await instanse.delete(config.services.Setting, `${ROUTES.KDV}/${data.Uuid}`);
             dispatch(fillKdvnotification({
                 type: 'Success',
-                code: 'Veri Silme',
-                description: 'Kdv başarı ile Silindi',
+                code: Literals.deletecode[Language],
+                description: Literals.deletedescription[Language],
             }));
             return response.data;
         } catch (error) {

@@ -4,6 +4,33 @@ import AxiosErrorHelper from "../Utils/AxiosErrorHelper"
 import instanse from "./axios";
 import config from "../Config";
 
+const Literals = {
+    addcode: {
+        en: 'Data Save',
+        tr: 'Veri Kaydetme'
+    },
+    adddescription: {
+        en: 'Defined costumer added successfully',
+        tr: 'Tanımlı Müşteri ile eklendi'
+    },
+    updatecode: {
+        en: 'Data Update',
+        tr: 'Veri Güncelleme'
+    },
+    updatedescription: {
+        en: 'Defined costumer updated successfully',
+        tr: 'Tanımlı Müşteri ile güncellendi'
+    },
+    deletecode: {
+        en: 'Data Delete',
+        tr: 'Veri Silme'
+    },
+    deletedescription: {
+        en: 'Defined costumer Deleted successfully',
+        tr: 'Tanımlı Müşteri ile Silindi'
+    },
+}
+
 export const GetDefinedcostumers = createAsyncThunk(
     'Definedcostumers/GetDefinedcostumers',
     async (_, { dispatch }) => {
@@ -34,15 +61,22 @@ export const GetDefinedcostumer = createAsyncThunk(
 
 export const AddDefinedcostumers = createAsyncThunk(
     'Definedcostumers/AddDefinedcostumers',
-    async ({ data, history }, { dispatch }) => {
+    async ({ data, history }, { dispatch, getState }) => {
         try {
+            const state = getState()
+            const Language = state.Profile.Language || 'en'
             const response = await instanse.post(config.services.Setting, ROUTES.DEFINEDCOSTUMER, data);
             dispatch(fillDefinedcostumernotification({
                 type: 'Success',
-                code: 'Veri Kaydetme',
-                description: 'Tanımlı Müşteri başarı ile Eklendi',
+                code: Literals.addcode[Language],
+                description: Literals.adddescription[Language],
             }));
-            history.push('/Definedcostumers');
+            dispatch(fillDefinedcostumernotification({
+                type: 'Clear',
+                code: 'DefinedcostumersCreate',
+                description: '',
+            }));
+            history && history.push('/Definedcostumers');
             return response.data;
         } catch (error) {
             const errorPayload = AxiosErrorHelper(error);
@@ -54,15 +88,22 @@ export const AddDefinedcostumers = createAsyncThunk(
 
 export const EditDefinedcostumers = createAsyncThunk(
     'Definedcostumers/EditDefinedcostumers',
-    async ({ data, history }, { dispatch }) => {
+    async ({ data, history }, { dispatch, getState }) => {
         try {
+            const state = getState()
+            const Language = state.Profile.Language || 'en'
             const response = await instanse.put(config.services.Setting, ROUTES.DEFINEDCOSTUMER, data);
             dispatch(fillDefinedcostumernotification({
                 type: 'Success',
-                code: 'Veri Güncelleme',
-                description: 'Tanımlı Müşteri başarı ile Güncellendi',
+                code: Literals.updatecode[Language],
+                description: Literals.updatedescription[Language],
             }));
-            history.push('/Definedcostumers');
+            dispatch(fillDefinedcostumernotification({
+                type: 'Clear',
+                code: 'DefinedcostumersEdit',
+                description: '',
+            }));
+            history && history.push('/Definedcostumers');
             return response.data;
         } catch (error) {
             const errorPayload = AxiosErrorHelper(error);
@@ -74,15 +115,17 @@ export const EditDefinedcostumers = createAsyncThunk(
 
 export const DeleteDefinedcostumers = createAsyncThunk(
     'Definedcostumers/DeleteDefinedcostumers',
-    async (data, { dispatch }) => {
+    async (data, { dispatch, getState }) => {
         try {
+            const state = getState()
+            const Language = state.Profile.Language || 'en'
             delete data['edit'];
             delete data['delete'];
             const response = await instanse.delete(config.services.Setting, `${ROUTES.DEFINEDCOSTUMER}/${data.Uuid}`);
             dispatch(fillDefinedcostumernotification({
                 type: 'Success',
-                code: 'Veri Silme',
-                description: 'Tanımlı Müşteri başarı ile Silindi',
+                code: Literals.deletecode[Language],
+                description: Literals.deletedescription[Language],
             }));
             return response.data;
         } catch (error) {

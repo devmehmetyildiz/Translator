@@ -14,12 +14,15 @@ import Pagedivider from '../../Common/Styled/Pagedivider'
 import Contentwrapper from '../../Common/Wrappers/Contentwrapper'
 import Footerwrapper from '../../Common/Wrappers/Footerwrapper'
 import Headerbredcrump from '../../Common/Wrappers/Headerbredcrump'
+import { FormContext } from '../../Provider/FormProvider'
 
 export default class CourtsCreate extends Component {
 
+  PAGE_NAME = 'CourtsCreate'
+  
   componentDidUpdate() {
     const { Courts, removeCourtnotification } = this.props
-    Notification(Courts.notifications, removeCourtnotification)
+    Notification(Courts.notifications, removeCourtnotification, this.context.clearForm)
   }
 
   render() {
@@ -40,11 +43,14 @@ export default class CourtsCreate extends Component {
           <Pagedivider />
           <Contentwrapper>
             <Form onSubmit={this.handleSubmit}>
-              <FormInput required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
+              <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
               <Footerwrapper>
-                <Link to="/Courts">
-                  <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
-                </Link>
+                <Form.Group widths={'equal'}>
+                  <Link to="/Courts">
+                    <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
+                  </Link>
+                  <Button floated="right" type="button" color='grey' onClick={(e) => { this.context.clearForm(this.PAGE_NAME) }}>{Literals.Button.Clear[Profile.Language]}</Button>
+                </Form.Group>
                 <Button floated="right" type='submit' color='blue'>{Literals.Button.Create[Profile.Language]}</Button>
               </Footerwrapper>
             </Form>
@@ -71,3 +77,4 @@ export default class CourtsCreate extends Component {
     }
   }
 }
+CourtsCreate.contextType = FormContext

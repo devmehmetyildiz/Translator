@@ -14,12 +14,15 @@ import Pagedivider from '../../Common/Styled/Pagedivider'
 import Contentwrapper from '../../Common/Wrappers/Contentwrapper'
 import Footerwrapper from '../../Common/Wrappers/Footerwrapper'
 import Headerbredcrump from '../../Common/Wrappers/Headerbredcrump'
+import { FormContext } from '../../Provider/FormProvider'
 
 export default class KdvsCreate extends Component {
 
+    PAGE_NAME = 'KdvsCreate'
+
     componentDidUpdate() {
         const { Kdvs, removeKdvnotification } = this.props
-        Notification(Kdvs.notifications, removeKdvnotification)
+        Notification(Kdvs.notifications, removeKdvnotification, this.context.clearForm)
     }
 
     render() {
@@ -41,13 +44,16 @@ export default class KdvsCreate extends Component {
                     <Contentwrapper>
                         <Form onSubmit={this.handleSubmit}>
                             <Form.Group widths={'equal'}>
-                                <FormInput required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
-                                <FormInput required placeholder={Literals.Columns.Percent[Profile.Language]} name="Percent" type='number' step='0.01' attention='yüzde değer giriniz' display='percent'/>
+                                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
+                                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Percent[Profile.Language]} name="Percent" type='number' step='0.01' attention='yüzde değer giriniz' display='percent' />
                             </Form.Group>
                             <Footerwrapper>
-                                <Link to="/Kdvs">
-                                    <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
-                                </Link>
+                                <Form.Group widths={'equal'}>
+                                    <Link to="/Kdvs">
+                                        <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
+                                    </Link>
+                                    <Button floated="right" type="button" color='grey' onClick={(e) => { this.context.clearForm(this.PAGE_NAME) }}>{Literals.Button.Clear[Profile.Language]}</Button>
+                                </Form.Group>
                                 <Button floated="right" type='submit' color='blue'>{Literals.Button.Create[Profile.Language]}</Button>
                             </Footerwrapper>
                         </Form>
@@ -78,3 +84,4 @@ export default class KdvsCreate extends Component {
         }
     }
 }
+KdvsCreate.contextType = FormContext

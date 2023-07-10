@@ -211,7 +211,10 @@ const Literals = {
             tr: "İş Ekle",
             en: "Add Job"
         },
-
+        Clear: {
+            tr: "Temizle",
+            en: "Clear"
+        }
     },
     Messages: {
         Nodatafind: {

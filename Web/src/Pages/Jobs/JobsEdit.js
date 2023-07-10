@@ -18,6 +18,8 @@ import { FormContext } from '../../Provider/FormProvider'
 
 export default class JobsEdit extends Component {
 
+  PAGE_NAME = 'JobsEdit'
+
   constructor(props) {
     super(props)
     this.state = {
@@ -65,13 +67,13 @@ export default class JobsEdit extends Component {
         selectedDocument: selected_record.DocumentID,
         selectedCase: selected_record.CaseID
       })
-      this.context.setFormstates(selected_record)
+      this.context.setForm(this.PAGE_NAME, selected_record)
     }
-    Notification(Jobs.notifications, removeJobnotification)
-    Notification(Orders.notifications, removeOrdernotification)
-    Notification(Languages.notifications, removeLanguagenotification)
-    Notification(Documents.notifications, removeDocumentnotification)
-    Notification(Cases.notifications, removeCasenotification)
+    Notification(Jobs.notifications, removeJobnotification, this.context.clearForm)
+    Notification(Orders.notifications, removeOrdernotification, this.context.clearForm)
+    Notification(Languages.notifications, removeLanguagenotification, this.context.clearForm)
+    Notification(Documents.notifications, removeDocumentnotification, this.context.clearForm)
+    Notification(Cases.notifications, removeCasenotification, this.context.clearForm)
   }
 
 
@@ -113,25 +115,28 @@ export default class JobsEdit extends Component {
           <Pagedivider />
           <Contentwrapper>
             <Form onSubmit={this.handleSubmit}>
-              <FormInput required placeholder={Literals.Columns.Order[Profile.Language]} options={Orderoption} onChange={(e, { value }) => { this.setState({ selectedOrder: value }) }} value={this.state.selectedOrder} formtype='dropdown' />
+              <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Order[Profile.Language]} name='OrderID' options={Orderoption} formtype='dropdown' />
               <Form.Group widths={'equal'}>
-                <FormInput required placeholder={Literals.Columns.Sourcelanguage[Profile.Language]} options={Languageoption} onChange={(e, { value }) => { this.setState({ selectedSourcelanguage: value }) }} value={this.state.selectedSourcelanguage} formtype='dropdown' />
-                <FormInput required placeholder={Literals.Columns.Targetlanguage[Profile.Language]} options={Languageoption} onChange={(e, { value }) => { this.setState({ selectedTargetlanguage: value }) }} value={this.state.selectedTargetlanguage} formtype='dropdown' />
+                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Sourcelanguage[Profile.Language]} name='OrderID' options={Languageoption} formtype='dropdown' />
+                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Targetlanguage[Profile.Language]} name='OrderID' options={Languageoption} formtype='dropdown' />
               </Form.Group>
               <Form.Group widths={'equal'}>
-                <FormInput required placeholder={Literals.Columns.Document[Profile.Language]} options={Documentoption} onChange={(e, { value }) => { this.setState({ selectedDocument: value }) }} value={this.state.selectedDocument} formtype='dropdown' />
-                <FormInput required placeholder={Literals.Columns.Amount[Profile.Language]} type={'number'} />
+                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Document[Profile.Language]} name='OrderID' options={Documentoption} formtype='dropdown' />
+                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Amount[Profile.Language]} name='OrderID' type={'number'} />
               </Form.Group>
               <Form.Group widths={'equal'}>
-                <FormInput required placeholder={Literals.Columns.Price[Profile.Language]} type={'number'} />
-                <FormInput required placeholder={Literals.Columns.Case[Profile.Language]} options={Caseoption} onChange={(e, { value }) => { this.setState({ selectedCase: value }) }} value={this.state.selectedCase} formtype='dropdown' />
+                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Price[Profile.Language]} name='OrderID' type={'number'} />
+                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Case[Profile.Language]} name='OrderID' options={Caseoption} formtype='dropdown' />
               </Form.Group>
-              <FormInput placeholder={Literals.Columns.Info[Profile.Language]} />
+              <FormInput name='Info' placeholder={Literals.Columns.Info[Profile.Language]} />
               <Footerwrapper>
-                <Link to="/Jobs">
-                  <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
-                </Link>
-                <Button floated="right" type='submit' color='blue'>{Literals.Button.Create[Profile.Language]}</Button>
+                <Form.Group widths={'equal'}>
+                  <Link to="/Jobs">
+                    <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
+                  </Link>
+                  <Button floated="right" type="button" color='grey' onClick={(e) => { this.context.setForm(this.PAGE_NAME, Jobs.selected_record) }}>{Literals.Button.Clear[Profile.Language]}</Button>
+                </Form.Group>
+                <Button floated="right" type='submit' color='blue'>{Literals.Button.Update[Profile.Language]}</Button>
               </Footerwrapper>
             </Form>
           </Contentwrapper>
@@ -144,11 +149,11 @@ export default class JobsEdit extends Component {
     e.preventDefault()
     const { EditJobs, Jobs, history, fillJobnotification, Profile } = this.props
     const data = formToObject(e.target)
-    data.OrderID = this.state.selectedOrder
-    data.SourcelanguageID = this.state.selectedSourcelanguage
-    data.TargetlanguageID = this.state.selectedTargetlanguage
-    data.DocumentID = this.state.selectedDocument
-    data.CaseID = this.state.selectedCase
+    data.OrderID = this.context.formstates[`${this.PAGE_NAME}/OrderID`]
+    data.SourcelanguageID = this.context.formstates[`${this.PAGE_NAME}/SourcelanguageID`]
+    data.TargetlanguageID = this.context.formstates[`${this.PAGE_NAME}/TargetlanguageID`]
+    data.DocumentID = this.context.formstates[`${this.PAGE_NAME}/DocumentID`]
+    data.CaseID = this.context.formstates[`${this.PAGE_NAME}/CaseID`]
     data.Amount = parseInt(data.Amount)
     data.Price = parseFloat(data.Price)
 

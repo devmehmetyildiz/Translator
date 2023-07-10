@@ -16,6 +16,8 @@ import Headerwrapper from '../../Common/Wrappers/Headerwrapper'
 import Footerwrapper from '../../Common/Wrappers/Footerwrapper'
 export default class DocumentsEdit extends Component {
 
+    PAGE_NAME = 'DocumentsEdit'
+
     constructor(props) {
         super(props)
         this.state = {
@@ -28,7 +30,7 @@ export default class DocumentsEdit extends Component {
         if (validator.isUUID(match.params.DocumentID)) {
             GetDocument(match.params.DocumentID)
         } else {
-            history.push("/Documents")
+history && history.push("/Documents")
         }
     }
 
@@ -37,9 +39,9 @@ export default class DocumentsEdit extends Component {
         const { selected_record, isLoading } = Documents
         if (selected_record && Object.keys(selected_record).length > 0 && selected_record.Id !== 0 && !isLoading && !this.state.isDatafetched) {
             this.setState({ isDatafetched: true })
-            this.context.setFormstates(selected_record)
+            this.context.setForm(this.PAGE_NAME, selected_record)
         }
-        Notification(Documents.notifications, removeDocumentnotification)
+        Notification(Documents.notifications, removeDocumentnotification, this.context.clearForm)
     }
 
     render() {
@@ -61,11 +63,14 @@ export default class DocumentsEdit extends Component {
                     <Pagedivider />
                     <Contentwrapper>
                         <Form onSubmit={this.handleSubmit}>
-                            <FormInput required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
+                            <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
                             <Footerwrapper>
-                                <Link to="/Documents">
-                                    <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
-                                </Link>
+                                <Form.Group widths={'equal'}>
+                                    <Link to="/Documents">
+                                        <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
+                                    </Link>
+                                    <Button floated="right" type="button" color='grey' onClick={(e) => { this.context.setForm(this.PAGE_NAME, Documents.selected_record) }}>{Literals.Button.Clear[Profile.Language]}</Button>
+                                </Form.Group>
                                 <Button floated="right" type='submit' color='blue'>{Literals.Button.Update[Profile.Language]}</Button>
                             </Footerwrapper>
                         </Form>

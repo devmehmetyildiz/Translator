@@ -17,6 +17,8 @@ import Headerbredcrump from '../../Common/Wrappers/Headerbredcrump'
 import { FormContext } from '../../Provider/FormProvider'
 export default class TranslatorsEdit extends Component {
 
+    PAGE_NAME = 'TranslatorsEdit'
+
     constructor(props) {
         super(props)
         this.state = {
@@ -31,7 +33,7 @@ export default class TranslatorsEdit extends Component {
             GetTranslator(match.params.TranslatorID)
             GetUsers()
         } else {
-            history.push("/Translators")
+history && history.push("/Translators")
         }
     }
 
@@ -41,15 +43,15 @@ export default class TranslatorsEdit extends Component {
         if (selected_record && Object.keys(selected_record).length > 0 && selected_record.Id !== 0 &&
             !isLoading && !this.state.isDatafetched && !Users.isLoading && Users.list.length > 0) {
             this.setState({ isDatafetched: true, selectedUser: selected_record.UserID })
-            this.context.setFormstates(selected_record)
+            this.context.setForm(this.PAGE_NAME, selected_record)
         }
-        Notification(Translators.notifications, removeTranslatornotification)
-        Notification(Users.notifications, removeUsernotification)
+        Notification(Translators.notifications, removeTranslatornotification, this.context.clearForm)
+        Notification(Users.notifications, removeUsernotification, this.context.clearForm)
     }
 
 
     render() {
-        const { Translators, Users, Profile } = this.props
+        const { Translators, Users, Profile, history } = this.props
 
         const Useroptions = Users.list.map(user => {
             return { key: user.Uuid, text: user.Username, value: user.Uuid }
@@ -71,13 +73,16 @@ export default class TranslatorsEdit extends Component {
                     <Contentwrapper>
                         <Form onSubmit={this.handleSubmit}>
                             <Form.Group widths='equal'>
-                                <FormInput required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
-                                <FormInput clearable required placeholder={Literals.Columns.UserName[Profile.Language]} options={Useroptions} onChange={this.handleChangeUser} value={this.state.selectedUser} formtype="dropdown" />
+                                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
+                                <FormInput page={this.PAGE_NAME} clearable required placeholder={Literals.Columns.UserName[Profile.Language]} options={Useroptions} onChange={this.handleChangeUser} value={this.state.selectedUser} formtype="dropdown" />
                             </Form.Group>
                             <Footerwrapper>
-                                <Link to="/Translators">
-                                    <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
-                                </Link>
+                                <Form.Group widths={'equal'}>
+                                    {history && <Link to="/Translators">
+                                        <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
+                                    </Link>}
+                                    <Button floated="right" type="button" color='grey' onClick={(e) => { this.context.setForm(this.PAGE_NAME, Translators.selected_record) }}>{Literals.Button.Clear[Profile.Language]}</Button>
+                                </Form.Group>
                                 <Button floated="right" type='submit' color='blue'>{Literals.Button.Update[Profile.Language]}</Button>
                             </Footerwrapper>
                         </Form>

@@ -4,6 +4,34 @@ import AxiosErrorHelper from "../Utils/AxiosErrorHelper"
 import instanse from "./axios";
 import config from "../Config";
 
+const Literals = {
+    addcode: {
+        en: 'Data Save',
+        tr: 'Veri Kaydetme'
+    },
+    adddescription: {
+        en: 'Courthause added successfully',
+        tr: 'Adliye Başarı ile eklendi'
+    },
+    updatecode: {
+        en: 'Data Update',
+        tr: 'Veri Güncelleme'
+    },
+    updatedescription: {
+        en: 'Courthause updated successfully',
+        tr: 'Adliye Başarı ile güncellendi'
+    },
+    deletecode: {
+        en: 'Data Delete',
+        tr: 'Veri Silme'
+    },
+    deletedescription: {
+        en: 'Courthause Deleted successfully',
+        tr: 'Adliye Başarı ile Silindi'
+    },
+}
+
+
 export const GetCourthauses = createAsyncThunk(
     'Courthauses/GetCourthauses',
     async (_, { dispatch }) => {
@@ -34,15 +62,22 @@ export const GetCourthause = createAsyncThunk(
 
 export const AddCourthauses = createAsyncThunk(
     'Courthauses/AddCourthauses',
-    async ({ data, history }, { dispatch }) => {
+    async ({ data, history }, { dispatch, getState }) => {
         try {
+            const state = getState()
+            const Language = state.Profile.Language || 'en'
             const response = await instanse.post(config.services.Setting, ROUTES.COURTHAUSE, data);
             dispatch(fillCourthausenotification({
                 type: 'Success',
-                code: 'Veri Kaydetme',
-                description: 'Adliye başarı ile Eklendi',
+                code: Literals.addcode[Language],
+                description: Literals.adddescription[Language],
             }));
-            history.push('/Courthauses');
+            dispatch(fillCourthausenotification({
+                type: 'Clear',
+                code: 'CourthausesUpdate',
+                description: '',
+            }));
+            history && history.push('/Courthauses');
             return response.data;
         } catch (error) {
             const errorPayload = AxiosErrorHelper(error);
@@ -54,15 +89,17 @@ export const AddCourthauses = createAsyncThunk(
 
 export const EditCourthauses = createAsyncThunk(
     'Courthauses/EditCourthauses',
-    async ({ data, history }, { dispatch }) => {
+    async ({ data, history }, { dispatch, getState }) => {
         try {
+            const state = getState()
+            const Language = state.Profile.Language || 'en'
             const response = await instanse.put(config.services.Setting, ROUTES.COURTHAUSE, data);
             dispatch(fillCourthausenotification({
                 type: 'Success',
-                code: 'Veri Güncelleme',
-                description: 'Adliye başarı ile Güncellendi',
+                code: Literals.updatecode[Language],
+                description: Literals.updatedescription[Language],
             }));
-            history.push('/Courthauses');
+            history && history.push('/Courthauses');
             return response.data;
         } catch (error) {
             const errorPayload = AxiosErrorHelper(error);
@@ -74,15 +111,17 @@ export const EditCourthauses = createAsyncThunk(
 
 export const DeleteCourthauses = createAsyncThunk(
     'Courthauses/DeleteCourthauses',
-    async (data, { dispatch }) => {
+    async (data, { dispatch, getState }) => {
         try {
+            const state = getState()
+            const Language = state.Profile.Language || 'en'
             delete data['edit'];
             delete data['delete'];
             const response = await instanse.delete(config.services.Setting, `${ROUTES.COURTHAUSE}/${data.Uuid}`);
             dispatch(fillCourthausenotification({
                 type: 'Success',
-                code: 'Veri Silme',
-                description: 'Adliye başarı ile Silindi',
+                code: Literals.deletecode[Language],
+                description: Literals.deletedescription[Language],
             }));
             return response.data;
         } catch (error) {

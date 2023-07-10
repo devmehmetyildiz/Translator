@@ -14,26 +14,18 @@ import Pagedivider from '../../Common/Styled/Pagedivider'
 import Contentwrapper from '../../Common/Wrappers/Contentwrapper'
 import Footerwrapper from '../../Common/Wrappers/Footerwrapper'
 import Headerbredcrump from '../../Common/Wrappers/Headerbredcrump'
+import { FormContext } from '../../Provider/FormProvider'
 export default class CasesCreate extends Component {
 
-  constructor(props) {
-    super(props)
-    this.state = {
-      selectedstatusOption: 0
-    }
-  }
-
-
+  PAGE_NAME = 'CasesCreate'
 
   componentDidUpdate() {
     const { Cases, removeCasenotification } = this.props
-    Notification(Cases.notifications, removeCasenotification)
+    Notification(Cases.notifications, removeCasenotification, this.context.clearForm)
   }
 
-
   render() {
-    const { Cases, Profile } = this.props
-
+    const { Cases, Profile, history } = this.props
 
     const casestatusOption = [
       {
@@ -69,17 +61,20 @@ export default class CasesCreate extends Component {
           <Contentwrapper>
             <Form onSubmit={this.handleSubmit}>
               <Form.Group widths='equal'>
-                <FormInput required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
-                <FormInput required placeholder={Literals.Columns.Shortname[Profile.Language]} name="Shortname" />
+                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
+                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Shortname[Profile.Language]} name="Shortname" />
               </Form.Group>
               <Form.Group widths='equal'>
-                <FormInput required placeholder={Literals.Columns.Casecolor[Profile.Language]} name="Casecolor" attention="blue,red,green..." />
-                <FormInput required placeholder={Literals.Columns.CaseStatus[Profile.Language]} options={casestatusOption} onChange={this.handleChangeOption} value={this.state.selectedstatusOption} formtype="dropdown" />
+                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Casecolor[Profile.Language]} name="Casecolor" attention="blue,red,green..." />
+                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.CaseStatus[Profile.Language]} options={casestatusOption} name='CaseStatus' formtype="dropdown" />
               </Form.Group>
               <Footerwrapper>
-                <Link to="/Cases">
-                  <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
-                </Link>
+                <Form.Group widths={'equal'}>
+                  {history && <Link to="/Cases">
+                    <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
+                  </Link>}
+                  <Button floated="right" type="button" color='grey' onClick={(e) => { this.context.clearForm(this.PAGE_NAME) }}>{Literals.Button.Clear[Profile.Language]}</Button>
+                </Form.Group>
                 <Button floated="right" type='submit' color='blue'>{Literals.Button.Create[Profile.Language]}</Button>
               </Footerwrapper>
             </Form>
@@ -88,12 +83,11 @@ export default class CasesCreate extends Component {
     )
   }
 
-
   handleSubmit = (e) => {
     e.preventDefault()
     const { AddCases, history, fillCasenotification, Profile } = this.props
     const data = formToObject(e.target)
-    data.CaseStatus = this.state.selectedstatusOption
+    data.CaseStatus = this.context.formstates[`${this.PAGE_NAME}/CaseStatus`]
 
     let errors = []
     if (!validator.isString(data.Name)) {
@@ -116,8 +110,5 @@ export default class CasesCreate extends Component {
       AddCases({ data, history })
     }
   }
-
-  handleChangeOption = (e, { value }) => {
-    this.setState({ selectedstatusOption: value })
-  }
 }
+CasesCreate.contextType = FormContext

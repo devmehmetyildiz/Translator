@@ -19,6 +19,8 @@ import FormInput from '../../Utils/FormInput'
 import { FormContext } from '../../Provider/FormProvider'
 export default class PrinttemplatesEdit extends Component {
 
+  PAGE_NAME = 'PrinttemplatesEdit'
+
   constructor(props) {
     super(props)
     this.state = {
@@ -45,16 +47,16 @@ export default class PrinttemplatesEdit extends Component {
       this.setState({
         selectedDepartment: selected_record.DepartmentID, isDatafetched: true, template: selected_record.Printtemplate
       })
-      this.context.setFormstates(selected_record)
+      this.context.setForm(this.PAGE_NAME, selected_record)
     }
-    Notification(Printtemplates.notifications, removePrinttemplatenotification)
-    Notification(Departments.notifications, removeDepartmentnotification)
+    Notification(Printtemplates.notifications, removePrinttemplatenotification, this.context.clearForm)
+    Notification(Departments.notifications, removeDepartmentnotification, this.context.clearForm)
   }
 
 
   render() {
 
-    const { Printtemplates, Departments, Profile } = this.props
+    const { Printtemplates, Departments, Profile,history } = this.props
     const { isLoading, isDispatching } = Printtemplates
 
     const Departmentoptions = Departments.list.map(department => {
@@ -84,8 +86,8 @@ export default class PrinttemplatesEdit extends Component {
                       key: 'save',
                       content: <React.Fragment>
                         <Form.Group widths={"equal"}>
-                          <FormInput required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
-                          <FormInput required placeholder={Literals.Columns.Valuekey[Profile.Language]} name="Valuekey" />
+                          <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
+                          <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Valuekey[Profile.Language]} name="Valuekey" />
                         </Form.Group>
                         <FormInput required placeholder={Literals.Columns.Department[Profile.Language]} value={this.state.selectedDepartment} clearable search options={Departmentoptions} onChange={(e, { value }) => { this.setState({ selectedDepartment: value }) }} formtype="dropdown" />
                       </React.Fragment>
@@ -122,10 +124,13 @@ export default class PrinttemplatesEdit extends Component {
                   }
                 ]}
                 renderActiveOnly={false} />
-              <Footerwrapper>
-                <Link to="/Printtemplates">
-                  <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
-                </Link>
+               <Footerwrapper>
+                <Form.Group widths={'equal'}>
+                  {history && <Link to="/Printtemplates">
+                    <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
+                  </Link>}
+                  <Button floated="right" type="button" color='grey' onClick={(e) => { this.context.setForm(this.PAGE_NAME, Printtemplates.selected_record) }}>{Literals.Button.Clear[Profile.Language]}</Button>
+                </Form.Group>
                 <Button floated="right" type='submit' color='blue'>{Literals.Button.Update[Profile.Language]}</Button>
               </Footerwrapper>
             </Form>

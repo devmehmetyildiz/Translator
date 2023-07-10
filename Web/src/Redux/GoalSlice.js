@@ -4,6 +4,33 @@ import AxiosErrorHelper from "../Utils/AxiosErrorHelper"
 import instanse from "./axios";
 import config from "../Config";
 
+const Literals = {
+    addcode: {
+        en: 'Data Save',
+        tr: 'Veri Kaydetme'
+    },
+    adddescription: {
+        en: 'Goal added successfully',
+        tr: 'Hedef Başarı ile eklendi'
+    },
+    updatecode: {
+        en: 'Data Update',
+        tr: 'Veri Güncelleme'
+    },
+    updatedescription: {
+        en: 'Goal updated successfully',
+        tr: 'Hedef Başarı ile güncellendi'
+    },
+    deletecode: {
+        en: 'Data Delete',
+        tr: 'Veri Silme'
+    },
+    deletedescription: {
+        en: 'Goal Deleted successfully',
+        tr: 'Hedef Başarı ile Silindi'
+    },
+}
+
 export const GetGoals = createAsyncThunk(
     'Goals/GetGoals',
     async (_, { dispatch }) => {
@@ -34,15 +61,22 @@ export const GetGoal = createAsyncThunk(
 
 export const AddGoals = createAsyncThunk(
     'Goals/AddGoals',
-    async ({ data, history }, { dispatch }) => {
+    async ({ data, history }, { dispatch, getState }) => {
         try {
+            const state = getState()
+            const Language = state.Profile.Language || 'en'
             const response = await instanse.post(config.services.Setting, ROUTES.GOAL, data);
             dispatch(fillGoalnotification({
                 type: 'Success',
-                code: 'Veri Kaydetme',
-                description: 'Hedef başarı ile Eklendi',
+                code: Literals.addcode[Language],
+                description: Literals.adddescription[Language],
             }));
-            history.push('/Goals');
+            dispatch(fillGoalnotification({
+                type: 'Clear',
+                code: 'GoalsCreate',
+                description: '',
+            }));
+            history && history.push('/Goals');
             return response.data;
         } catch (error) {
             const errorPayload = AxiosErrorHelper(error);
@@ -54,15 +88,22 @@ export const AddGoals = createAsyncThunk(
 
 export const EditGoals = createAsyncThunk(
     'Goals/EditGoals',
-    async ({ data, history }, { dispatch }) => {
+    async ({ data, history }, { dispatch, getState }) => {
         try {
+            const state = getState()
+            const Language = state.Profile.Language || 'en'
             const response = await instanse.put(config.services.Setting, ROUTES.GOAL, data);
             dispatch(fillGoalnotification({
                 type: 'Success',
-                code: 'Veri Güncelleme',
-                description: 'Hedef başarı ile Güncellendi',
+                code: Literals.updatecode[Language],
+                description: Literals.updatedescription[Language],
             }));
-            history.push('/Goals');
+            dispatch(fillGoalnotification({
+                type: 'Clear',
+                code: 'GoalsEdit',
+                description: '',
+            }));
+            history && history.push('/Goals');
             return response.data;
         } catch (error) {
             const errorPayload = AxiosErrorHelper(error);
@@ -74,15 +115,17 @@ export const EditGoals = createAsyncThunk(
 
 export const DeleteGoals = createAsyncThunk(
     'Goals/DeleteGoals',
-    async (data, { dispatch }) => {
+    async (data, { dispatch, getState }) => {
         try {
+            const state = getState()
+            const Language = state.Profile.Language || 'en'
             delete data['edit'];
             delete data['delete'];
             const response = await instanse.delete(config.services.Setting, `${ROUTES.GOAL}/${data.Uuid}`);
             dispatch(fillGoalnotification({
                 type: 'Success',
-                code: 'Veri Silme',
-                description: 'Hedef başarı ile Silindi',
+                code: Literals.deletecode[Language],
+                description: Literals.deletedescription[Language],
             }));
             return response.data;
         } catch (error) {

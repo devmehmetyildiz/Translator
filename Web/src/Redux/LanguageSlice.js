@@ -4,6 +4,33 @@ import AxiosErrorHelper from "../Utils/AxiosErrorHelper"
 import instanse from "./axios";
 import config from "../Config";
 
+const Literals = {
+    addcode: {
+        en: 'Data Save',
+        tr: 'Veri Kaydetme'
+    },
+    adddescription: {
+        en: 'Language added successfully',
+        tr: 'Dil Başarı ile eklendi'
+    },
+    updatecode: {
+        en: 'Data Update',
+        tr: 'Veri Güncelleme'
+    },
+    updatedescription: {
+        en: 'Language updated successfully',
+        tr: 'Dil Başarı ile güncellendi'
+    },
+    deletecode: {
+        en: 'Data Delete',
+        tr: 'Veri Silme'
+    },
+    deletedescription: {
+        en: 'Language Deleted successfully',
+        tr: 'Dil Başarı ile Silindi'
+    },
+}
+
 export const GetLanguages = createAsyncThunk(
     'Languages/GetLanguages',
     async (_, { dispatch }) => {
@@ -34,13 +61,20 @@ export const GetLanguage = createAsyncThunk(
 
 export const AddLanguages = createAsyncThunk(
     'Languages/AddLanguages',
-    async ({ data, history }, { dispatch }) => {
+    async ({ data, history }, { dispatch, getState }) => {
         try {
+            const state = getState()
+            const Language = state.Profile.Language || 'en'
             const response = await instanse.post(config.services.Setting, ROUTES.LANGUAGE, data);
             dispatch(fillLanguagenotification({
                 type: 'Success',
-                code: 'Veri Kaydetme',
-                description: 'Dil başarı ile Eklendi',
+                code: Literals.addcode[Language],
+                description: Literals.adddescription[Language],
+            }));
+            dispatch(fillLanguagenotification({
+                type: 'Clear',
+                code: 'LanguagesCreate',
+                description: '',
             }));
             history && history.push('/Languages');
             return response.data;
@@ -54,15 +88,22 @@ export const AddLanguages = createAsyncThunk(
 
 export const EditLanguages = createAsyncThunk(
     'Languages/EditLanguages',
-    async ({ data, history }, { dispatch }) => {
+    async ({ data, history }, { dispatch, getState }) => {
         try {
+            const state = getState()
+            const Language = state.Profile.Language || 'en'
             const response = await instanse.put(config.services.Setting, ROUTES.LANGUAGE, data);
             dispatch(fillLanguagenotification({
                 type: 'Success',
-                code: 'Veri Güncelleme',
-                description: 'Dil başarı ile Güncellendi',
+                code: Literals.updatecode[Language],
+                description: Literals.updatedescription[Language],
             }));
-            history.push('/Languages');
+            dispatch(fillLanguagenotification({
+                type: 'Clear',
+                code: 'LanguagesEdit',
+                description: '',
+            }));
+            history && history.push('/Languages');
             return response.data;
         } catch (error) {
             const errorPayload = AxiosErrorHelper(error);
@@ -74,15 +115,17 @@ export const EditLanguages = createAsyncThunk(
 
 export const DeleteLanguages = createAsyncThunk(
     'Languages/DeleteLanguages',
-    async (data, { dispatch }) => {
+    async (data, { dispatch, getState }) => {
         try {
+            const state = getState()
+            const Language = state.Profile.Language || 'en'
             delete data['edit'];
             delete data['delete'];
             const response = await instanse.delete(config.services.Setting, `${ROUTES.LANGUAGE}/${data.Uuid}`);
             dispatch(fillLanguagenotification({
                 type: 'Success',
-                code: 'Veri Silme',
-                description: 'Dil başarı ile Silindi',
+                code: Literals.deletecode[Language],
+                description: Literals.deletedescription[Language],
             }));
             return response.data;
         } catch (error) {

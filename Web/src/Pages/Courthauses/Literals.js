@@ -39,6 +39,7 @@ const Literals = {
             tr: 'Sil',
             en: 'Delete'
         },
+      
     },
     Page: {
         Pageheader: {
@@ -79,6 +80,10 @@ const Literals = {
             tr: "Geri Dön",
             en: "Go Back"
         },
+        Clear: {
+            tr: "Temizle",
+            en: "Clear"
+        }
 
     },
     Messages: {

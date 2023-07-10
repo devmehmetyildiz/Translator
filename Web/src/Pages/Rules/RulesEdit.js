@@ -18,6 +18,8 @@ import Editor from '@monaco-editor/react'
 
 export default class RulesEdit extends Component {
 
+    PAGE_NAME = 'RulesEdit'
+
     constructor(props) {
         super(props)
         this.state = {
@@ -32,7 +34,7 @@ export default class RulesEdit extends Component {
         if (match.params.RuleID) {
             GetRule(match.params.RuleID)
         } else {
-            history.push("/Rules")
+history && history.push("/Rules")
         }
     }
 
@@ -41,14 +43,14 @@ export default class RulesEdit extends Component {
         const { selected_record, isLoading } = Rules
         if (selected_record && Object.keys(selected_record).length > 0 && selected_record.Id !== 0 && !isLoading && !this.state.isDatafetched) {
             this.setState({ template: selected_record.Rule, isDatafetched: true })
-            this.context.setFormstates(selected_record)
+            this.context.setForm(this.PAGE_NAME, selected_record)
         }
-        Notification(Rules.notifications, removeRulenotification)
+        Notification(Rules.notifications, removeRulenotification, this.context.clearForm)
     }
 
     render() {
 
-        const { Rules, Profile } = this.props
+        const { Rules, Profile, history } = this.props
         const { isLoading, isDispatching } = Rules
 
         return (
@@ -73,7 +75,7 @@ export default class RulesEdit extends Component {
                                         pane: {
                                             key: 'save',
                                             content: <React.Fragment>
-                                                <FormInput required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
+                                                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
                                             </React.Fragment>
                                         }
                                     },
@@ -96,9 +98,12 @@ export default class RulesEdit extends Component {
                                 ]}
                                 renderActiveOnly={false} />
                             <Footerwrapper>
-                                <Link to="/Rules">
-                                    <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
-                                </Link>
+                                <Form.Group widths={'equal'}>
+                                    {history && <Link to="/Rules">
+                                        <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
+                                    </Link>}
+                                    <Button floated="right" type="button" color='grey' onClick={(e) => { this.context.setForm(this.PAGE_NAME, Rules.selected_record) }}>{Literals.Button.Clear[Profile.Language]}</Button>
+                                </Form.Group>
                                 <Button floated="right" type='submit' color='blue'>{Literals.Button.Update[Profile.Language]}</Button>
                             </Footerwrapper>
                         </Form>

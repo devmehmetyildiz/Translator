@@ -37,7 +37,7 @@ export const register = createAsyncThunk(
                 code: 'Elder Camp',
                 description: 'Admin kullanıcı oluşturuldu.',
             }));
-            history.push("/Login")
+            history && history.push("/Login")
             return response.data;
         } catch (error) {
             const errorPayload = AxiosErrorHelper(error);

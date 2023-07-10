@@ -14,7 +14,10 @@ import Headerbredcrump from '../../Common/Wrappers/Headerbredcrump'
 import Contentwrapper from '../../Common/Wrappers/Contentwrapper'
 import Pagedivider from '../../Common/Styled/Pagedivider'
 import Footerwrapper from '../../Common/Wrappers/Footerwrapper'
+import { FormContext } from '../../Provider/FormProvider'
 export default class MailsettingsCreate extends Component {
+
+  PAGE_NAME = 'MailsettingsCreate'
 
   constructor(props) {
     super(props)
@@ -26,12 +29,12 @@ export default class MailsettingsCreate extends Component {
 
   componentDidUpdate() {
     const { removeMailsettingnotification, Mailsettings } = this.props
-    Notification(Mailsettings.notifications, removeMailsettingnotification)
+    Notification(Mailsettings.notifications, removeMailsettingnotification, this.context.clearForm)
   }
 
   render() {
 
-    const { Mailsettings, Profile } = this.props
+    const { Mailsettings, Profile, history } = this.props
     const { isLoading, isDispatching } = Mailsettings
 
     return (
@@ -50,35 +53,28 @@ export default class MailsettingsCreate extends Component {
           <Contentwrapper>
             <Form onSubmit={this.handleSubmit}>
               <Form.Group widths={"equal"}>
-                <FormInput required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
-                <FormInput required placeholder={Literals.Columns.User[Profile.Language]} name="User" />
+                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
+                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.User[Profile.Language]} name="User" />
               </Form.Group>
               <Form.Group widths={"equal"}>
-                <FormInput required placeholder={Literals.Columns.Password[Profile.Language]} name="Password" type='password' />
-                <FormInput required placeholder={Literals.Columns.Smtpport[Profile.Language]} name="Smtpport" />
+                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Password[Profile.Language]} name="Password" type='password' />
+                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Smtpport[Profile.Language]} name="Smtpport" />
               </Form.Group>
               <Form.Group widths={"equal"}>
-                <FormInput required placeholder={Literals.Columns.Smtphost[Profile.Language]} name="Smtphost" />
-                <FormInput required placeholder={Literals.Columns.Mailaddress[Profile.Language]} name="Mailaddress" />
+                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Smtphost[Profile.Language]} name="Smtphost" />
+                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Mailaddress[Profile.Language]} name="Mailaddress" />
               </Form.Group>
               <Form.Group widths={"equal"}>
-                <Form.Field>
-                  <Checkbox toggle className='m-2'
-                    checked={this.state.isbodyhtml}
-                    onClick={(e) => { this.setState({ isbodyhtml: !this.state.isbodyhtml }) }}
-                    label={Literals.Columns.Isbodyhtml[Profile.Language]} />
-                </Form.Field>
-                <Form.Field>
-                  <Checkbox toggle className='m-2'
-                    checked={this.state.issettingactive}
-                    onClick={(e) => { this.setState({ issettingactive: !this.state.issettingactive }) }}
-                    label={Literals.Columns.Issettingactive[Profile.Language]} />
-                </Form.Field>
+                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Isbodyhtml[Profile.Language]} name="Isbodyhtml" formtype='checkbox' />
+                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Issettingactive[Profile.Language]} name="Issettingactive" formtype='checkbox' />
               </Form.Group>
               <Footerwrapper>
-                <Link to="/Mailsettings">
-                  <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
-                </Link>
+                <Form.Group widths={'equal'}>
+                  {history && <Link to="/Mailsettings">
+                    <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
+                  </Link>}
+                  <Button floated="right" type="button" color='grey' onClick={(e) => { this.context.clearForm(this.PAGE_NAME) }}>{Literals.Button.Clear[Profile.Language]}</Button>
+                </Form.Group>
                 <Button floated="right" type='submit' color='blue'>{Literals.Button.Create[Profile.Language]}</Button>
               </Footerwrapper>
             </Form>
@@ -93,8 +89,8 @@ export default class MailsettingsCreate extends Component {
     const { AddMailsettings, history, fillMailsettingnotification, Profile } = this.props
 
     const data = formToObject(e.target)
-    data.Isbodyhtml = this.state.isbodyhtml
-    data.Issettingactive = this.state.issettingactive
+    data.Isbodyhtml = this.context.formstates[`${this.PAGE_NAME}/Isbodyhtml`]
+    data.Issettingactive = this.context.formstates[`${this.PAGE_NAME}/Issettingactive`]
 
     let errors = []
     if (!validator.isString(data.Name)) {
@@ -123,6 +119,5 @@ export default class MailsettingsCreate extends Component {
       AddMailsettings({ data, history })
     }
   }
-
-
 }
+MailsettingsCreate.contextType = FormContext

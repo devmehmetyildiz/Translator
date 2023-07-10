@@ -4,6 +4,33 @@ import AxiosErrorHelper from "../Utils/AxiosErrorHelper"
 import instanse from "./axios";
 import config from "../Config";
 
+const Literals = {
+    addcode: {
+        en: 'Data Save',
+        tr: 'Veri Kaydetme'
+    },
+    adddescription: {
+        en: 'Job added successfully',
+        tr: 'İş Başarı ile eklendi'
+    },
+    updatecode: {
+        en: 'Data Update',
+        tr: 'Veri Güncelleme'
+    },
+    updatedescription: {
+        en: 'Job updated successfully',
+        tr: 'İş Başarı ile güncellendi'
+    },
+    deletecode: {
+        en: 'Data Delete',
+        tr: 'Veri Silme'
+    },
+    deletedescription: {
+        en: 'Job Deleted successfully',
+        tr: 'İş Başarı ile Silindi'
+    },
+}
+
 export const GetJobs = createAsyncThunk(
     'Jobs/GetJobs',
     async (_, { dispatch }) => {
@@ -34,15 +61,22 @@ export const GetJob = createAsyncThunk(
 
 export const AddJobs = createAsyncThunk(
     'Jobs/AddJobs',
-    async ({ data, history }, { dispatch }) => {
+    async ({ data, history }, { dispatch, getState }) => {
         try {
+            const state = getState()
+            const Language = state.Profile.Language || 'en'
             const response = await instanse.post(config.services.Business, ROUTES.JOB, data);
             dispatch(fillJobnotification({
                 type: 'Success',
-                code: 'Veri Kaydetme',
-                description: 'Job başarı ile Eklendi',
+                code: Literals.addcode[Language],
+                description: Literals.adddescription[Language],
             }));
-            history.push('/Jobs');
+            dispatch(fillJobnotification({
+                type: 'Clear',
+                code: 'JobsCreate',
+                description: '',
+            }));
+            history && history.push('/Jobs');
             return response.data;
         } catch (error) {
             const errorPayload = AxiosErrorHelper(error);
@@ -54,15 +88,17 @@ export const AddJobs = createAsyncThunk(
 
 export const EditJobs = createAsyncThunk(
     'Jobs/EditJobs',
-    async ({ data, history }, { dispatch }) => {
+    async ({ data, history }, { dispatch, getState }) => {
         try {
+            const state = getState()
+            const Language = state.Profile.Language || 'en'
             const response = await instanse.put(config.services.Business, ROUTES.JOB, data);
             dispatch(fillJobnotification({
                 type: 'Success',
                 code: 'Veri Güncelleme',
                 description: 'İş başarı ile Güncellendi',
             }));
-            history.push('/Jobs');
+            history && history.push('/Jobs');
             return response.data;
         } catch (error) {
             const errorPayload = AxiosErrorHelper(error);
@@ -74,8 +110,10 @@ export const EditJobs = createAsyncThunk(
 
 export const DeleteJobs = createAsyncThunk(
     'Jobs/DeleteJobs',
-    async (data, { dispatch }) => {
+    async (data, { dispatch, getState }) => {
         try {
+            const state = getState()
+            const Language = state.Profile.Language || 'en'
             delete data['edit'];
             delete data['delete'];
             const response = await instanse.delete(config.services.Business, `${ROUTES.JOB}/${data.Uuid}`);

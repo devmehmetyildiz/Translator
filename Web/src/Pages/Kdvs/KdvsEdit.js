@@ -16,6 +16,8 @@ import Headerwrapper from '../../Common/Wrappers/Headerwrapper'
 import Footerwrapper from '../../Common/Wrappers/Footerwrapper'
 export default class KdvsEdit extends Component {
 
+    PAGE_NAME = 'KdvsEdit'
+
     constructor(props) {
         super(props)
         this.state = {
@@ -28,7 +30,7 @@ export default class KdvsEdit extends Component {
         if (validator.isUUID(match.params.KdvID)) {
             GetKdv(match.params.KdvID)
         } else {
-            history.push("/Kdvs")
+history && history.push("/Kdvs")
         }
     }
 
@@ -37,9 +39,9 @@ export default class KdvsEdit extends Component {
         const { selected_record, isLoading } = Kdvs
         if (selected_record && Object.keys(selected_record).length > 0 && selected_record.Id !== 0 && !isLoading && !this.state.isDatafetched) {
             this.setState({ isDatafetched: true })
-            this.context.setFormstates(selected_record)
+            this.context.setForm(this.PAGE_NAME, selected_record)
         }
-        Notification(Kdvs.notifications, removeKdvnotification)
+        Notification(Kdvs.notifications, removeKdvnotification, this.context.clearForm)
     }
 
     render() {
@@ -62,13 +64,16 @@ export default class KdvsEdit extends Component {
                     <Contentwrapper>
                         <Form onSubmit={this.handleSubmit}>
                             <Form.Group widths={'equal'}>
-                                <FormInput required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
-                                <FormInput required placeholder={Literals.Columns.Percent[Profile.Language]} name="Percent" type='number' step='0.01' display='percent' />
+                                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
+                                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Percent[Profile.Language]} name="Percent" type='number' step='0.01' display='percent' />
                             </Form.Group>
                             <Footerwrapper>
-                                <Link to="/Kdvs">
-                                    <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
-                                </Link>
+                                <Form.Group widths={'equal'}>
+                                    <Link to="/Kdvs">
+                                        <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
+                                    </Link>
+                                    <Button floated="right" type="button" color='grey' onClick={(e) => { this.context.setForm(this.PAGE_NAME, Kdvs.selected_record) }}>{Literals.Button.Clear[Profile.Language]}</Button>
+                                </Form.Group>
                                 <Button floated="right" type='submit' color='blue'>{Literals.Button.Update[Profile.Language]}</Button>
                             </Footerwrapper>
                         </Form>

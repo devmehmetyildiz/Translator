@@ -1,6 +1,6 @@
 import cogoToast from "@successtar/cogo-toast";
 
-function notification(notifications,removeNotification) {
+function notification(notifications, removeNotification, clearForm) {
     if (notifications && notifications.length > 0) {
         const { type, code, description } = notifications[0]
         const toastoptions = {
@@ -15,6 +15,9 @@ function notification(notifications,removeNotification) {
             case "Error":
                 cogoToast.error(description, toastoptions)
                 break;
+            case "Clear":
+                clearForm(code)
+                console.log("temizlendi")
             default:
                 break;
         }

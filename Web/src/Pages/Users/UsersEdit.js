@@ -16,11 +16,11 @@ import FormInput from '../../Utils/FormInput'
 import { FormContext } from '../../Provider/FormProvider'
 export default class UsersEdit extends Component {
 
+  PAGE_NAME = 'UsersEdit'
+
   constructor(props) {
     super(props)
     this.state = {
-      selectedroles: [],
-      selectedlanguage: {},
       isDatafetched: false,
     }
   }
@@ -44,22 +44,22 @@ export default class UsersEdit extends Component {
       Roles.list.length > 0 && !Roles.isLoading &&
       !isLoading && !this.state.isDatafetched) {
       this.setState({
-        selectedroles: selected_record.Roles.map(role => {
-          return role.Uuid
-        }),
-        selectedlanguage: selected_record.Language,
         isDatafetched: true
       })
-      this.context.setFormstates(selected_record)
+      this.context.setForm(this.PAGE_NAME, {
+        ...selected_record, Roles: selected_record.Roles.map(role => {
+          return role.Uuid
+        })
+      })
     }
-    Notification(Users.notifications, removeUsernotification)
-    Notification(Roles.notifications, removeRolenotification)
+    Notification(Users.notifications, removeUsernotification, this.context.clearForm)
+    Notification(Roles.notifications, removeRolenotification, this.context.clearForm)
   }
 
 
   render() {
 
-    const { Users, Roles, Profile } = this.props
+    const { Users, Roles, Profile, history } = this.props
 
     const Roleoptions = Roles.list.map(roles => {
       return { key: roles.Uuid, text: roles.Name, value: roles.Uuid }
@@ -88,27 +88,30 @@ export default class UsersEdit extends Component {
           <Contentwrapper>
             <Form onSubmit={this.handleSubmit}>
               <Form.Group widths={'equal'}>
-                <FormInput placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
-                <FormInput placeholder={Literals.Columns.Surname[Profile.Language]} name="Surname" />
+                <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
+                <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Surname[Profile.Language]} name="Surname" />
               </Form.Group>
               <Form.Group widths={'equal'}>
-                <FormInput placeholder={Literals.Columns.Email[Profile.Language]} name="Email" />
-                <FormInput placeholder={Literals.Columns.Username[Profile.Language]} name="Username" />
-                <FormInput placeholder={Literals.Columns.UserID[Profile.Language]} name="UserID" type='Number' />
+                <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Email[Profile.Language]} name="Email" />
+                <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Username[Profile.Language]} name="Username" />
+                <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.UserID[Profile.Language]} name="UserID" type='Number' />
               </Form.Group>
               <Form.Group widths={'equal'}>
-                <FormInput placeholder={Literals.Columns.City[Profile.Language]} name="City" />
-                <FormInput placeholder={Literals.Columns.Town[Profile.Language]} name="Town" />
-                <FormInput placeholder={Literals.Columns.Address[Profile.Language]} name="Address" />
+                <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.City[Profile.Language]} name="City" />
+                <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Town[Profile.Language]} name="Town" />
+                <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Address[Profile.Language]} name="Address" />
               </Form.Group>
               <Form.Group widths={'equal'}>
-                <FormInput placeholder={Literals.Columns.Roles[Profile.Language]} value={this.state.selectedroles} clearable search multiple options={Roleoptions} onChange={this.handleChangeRoles} formtype='dropdown' />
-                <FormInput placeholder={Literals.Columns.Language[Profile.Language]} value={this.state.selectedlanguage} options={Languageoptions} onChange={this.handleChangeLanguage} formtype='dropdown' />
+                <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Roles[Profile.Language]} name='Roles' clearable search multiple options={Roleoptions} formtype='dropdown' />
+                <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Language[Profile.Language]} name='Language' options={Languageoptions} formtype='dropdown' />
               </Form.Group>
               <Footerwrapper>
-                <Link to="/Users">
-                  <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
-                </Link>
+                <Form.Group widths={'equal'}>
+                  {history && <Link to="/Users">
+                    <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
+                  </Link>}
+                  <Button floated="right" type="button" color='grey' onClick={(e) => { this.context.setForm(this.PAGE_NAME, Users.selected_record) }}>{Literals.Button.Clear[Profile.Language]}</Button>
+                </Form.Group>
                 <Button floated="right" type='submit' color='blue'>{Literals.Button.Update[Profile.Language]}</Button>
               </Footerwrapper>
             </Form>
@@ -121,10 +124,10 @@ export default class UsersEdit extends Component {
     const { EditUsers, history, fillUsernotification, Roles, Users, Profile } = this.props
     const data = formToObject(e.target)
     data.UserID = parseInt(data.UserID, 10)
-    data.Roles = this.state.selectedroles.map(roles => {
+    data.Roles = this.context.formstates[`${this.PAGE_NAME}/Roles`].map(roles => {
       return Roles.list.find(u => u.Uuid === roles)
     })
-    data.Language = this.state.selectedlanguage
+    data.Language = this.context.formstates[`${this.PAGE_NAME}/Language`]
 
     let errors = []
     if (!validator.isString(data.Name)) {
@@ -154,11 +157,6 @@ export default class UsersEdit extends Component {
     }
   }
 
-  handleChangeRoles = (e, { value }) => {
-    this.setState({ selectedroles: value })
-  }
-  handleChangeLanguage = (e, { value }) => {
-    this.setState({ selectedlanguage: value })
-  }
+
 }
 UsersEdit.contextType = FormContext

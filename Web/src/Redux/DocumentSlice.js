@@ -4,6 +4,33 @@ import AxiosErrorHelper from "../Utils/AxiosErrorHelper"
 import instanse from "./axios";
 import config from "../Config";
 
+const Literals = {
+    addcode: {
+        en: 'Data Save',
+        tr: 'Veri Kaydetme'
+    },
+    adddescription: {
+        en: 'Document added successfully',
+        tr: 'Doküman Başarı ile eklendi'
+    },
+    updatecode: {
+        en: 'Data Update',
+        tr: 'Veri Güncelleme'
+    },
+    updatedescription: {
+        en: 'Document updated successfully',
+        tr: 'Doküman Başarı ile güncellendi'
+    },
+    deletecode: {
+        en: 'Data Delete',
+        tr: 'Veri Silme'
+    },
+    deletedescription: {
+        en: 'Document Deleted successfully',
+        tr: 'Doküman Başarı ile Silindi'
+    },
+}
+
 export const GetDocuments = createAsyncThunk(
     'Documents/GetDocuments',
     async (_, { dispatch }) => {
@@ -34,15 +61,22 @@ export const GetDocument = createAsyncThunk(
 
 export const AddDocuments = createAsyncThunk(
     'Documents/AddDocuments',
-    async ({ data, history }, { dispatch }) => {
+    async ({ data, history }, { dispatch, getState }) => {
         try {
+            const state = getState()
+            const Language = state.Profile.Language || 'en'
             const response = await instanse.post(config.services.Setting, ROUTES.DOCUMENT, data);
             dispatch(fillDocumentnotification({
                 type: 'Success',
-                code: 'Veri Kaydetme',
-                description: 'Belge başarı ile Eklendi',
+                code: Literals.addcode[Language],
+                description: Literals.adddescription[Language],
             }));
-            history.push('/Documents');
+            dispatch(fillDocumentnotification({
+                type: 'Clear',
+                code: 'DocumentsCreate',
+                description: '',
+            }));
+            history && history.push('/Documents');
             return response.data;
         } catch (error) {
             const errorPayload = AxiosErrorHelper(error);
@@ -54,15 +88,22 @@ export const AddDocuments = createAsyncThunk(
 
 export const EditDocuments = createAsyncThunk(
     'Documents/EditDocuments',
-    async ({ data, history }, { dispatch }) => {
+    async ({ data, history }, { dispatch, getState }) => {
         try {
+            const state = getState()
+            const Language = state.Profile.Language || 'en'
             const response = await instanse.put(config.services.Setting, ROUTES.DOCUMENT, data);
             dispatch(fillDocumentnotification({
                 type: 'Success',
-                code: 'Veri Güncelleme',
-                description: 'Belge başarı ile Güncellendi',
+                code: Literals.updatecode[Language],
+                description: Literals.updatedescription[Language],
             }));
-            history.push('/Documents');
+            dispatch(fillDocumentnotification({
+                type: 'Clear',
+                code: 'DocumentsEdit',
+                description: '',
+            }));
+            history && history.push('/Documents');
             return response.data;
         } catch (error) {
             const errorPayload = AxiosErrorHelper(error);
@@ -74,15 +115,17 @@ export const EditDocuments = createAsyncThunk(
 
 export const DeleteDocuments = createAsyncThunk(
     'Documents/DeleteDocuments',
-    async (data, { dispatch }) => {
+    async (data, { dispatch, getState }) => {
         try {
+            const state = getState()
+            const Language = state.Profile.Language || 'en'
             delete data['edit'];
             delete data['delete'];
             const response = await instanse.delete(config.services.Setting, `${ROUTES.DOCUMENT}/${data.Uuid}`);
             dispatch(fillDocumentnotification({
                 type: 'Success',
-                code: 'Veri Silme',
-                description: 'Belge başarı ile Silindi',
+                code: Literals.deletecode[Language],
+                description: Literals.deletedescription[Language],
             }));
             return response.data;
         } catch (error) {

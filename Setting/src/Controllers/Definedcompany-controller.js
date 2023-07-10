@@ -130,7 +130,7 @@ async function UpdateDefinedcompany(req, res, next) {
         if (!definedcompany) {
             return next(createNotfounderror([messages.ERROR.DEFINEDCOMPANY_NOT_FOUND], req.language))
         }
-        if (coudefinedcompanyrthause.Isactive === false) {
+        if (definedcompany.Isactive === false) {
             return next(createAccessDenied([messages.ERROR.DEFINEDCOMPANY_NOT_ACTIVE], req.language))
         }
 

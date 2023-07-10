@@ -14,12 +14,15 @@ import Pagedivider from '../../Common/Styled/Pagedivider'
 import Contentwrapper from '../../Common/Wrappers/Contentwrapper'
 import Footerwrapper from '../../Common/Wrappers/Footerwrapper'
 import Headerbredcrump from '../../Common/Wrappers/Headerbredcrump'
+import { FormContext } from '../../Provider/FormProvider'
 
 export default class GoalsCreate extends Component {
 
+    PAGE_NAME = 'GoalsCreate'
+
     componentDidUpdate() {
         const { Goals, removeGoalnotification } = this.props
-        Notification(Goals.notifications, removeGoalnotification)
+        Notification(Goals.notifications, removeGoalnotification, this.context.clearForm)
     }
 
     render() {
@@ -41,13 +44,16 @@ export default class GoalsCreate extends Component {
                     <Contentwrapper>
                         <Form onSubmit={this.handleSubmit}>
                             <Form.Group widths={'equal'}>
-                                <FormInput required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
-                                <FormInput required placeholder={Literals.Columns.Goal[Profile.Language]} name="Goal" type='number' step='0.01' />
+                                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
+                                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Goal[Profile.Language]} name="Goal" type='number' step='0.01' display='try'/>
                             </Form.Group>
                             <Footerwrapper>
-                                <Link to="/Goals">
-                                    <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
-                                </Link>
+                                <Form.Group widths={'equal'}>
+                                    <Link to="/Goals">
+                                        <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
+                                    </Link>
+                                    <Button floated="right" type="button" color='grey' onClick={(e) => { this.context.clearForm(this.PAGE_NAME) }}>{Literals.Button.Clear[Profile.Language]}</Button>
+                                </Form.Group>
                                 <Button floated="right" type='submit' color='blue'>{Literals.Button.Create[Profile.Language]}</Button>
                             </Footerwrapper>
                         </Form>
@@ -78,3 +84,4 @@ export default class GoalsCreate extends Component {
         }
     }
 }
+GoalsCreate.contextType = FormContext

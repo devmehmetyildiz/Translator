@@ -14,16 +14,19 @@ import Pagedivider from '../../Common/Styled/Pagedivider'
 import Contentwrapper from '../../Common/Wrappers/Contentwrapper'
 import Footerwrapper from '../../Common/Wrappers/Footerwrapper'
 import Headerbredcrump from '../../Common/Wrappers/Headerbredcrump'
+import { FormContext } from '../../Provider/FormProvider'
 
 export default class PaymentsCreate extends Component {
 
+    PAGE_NAME = 'PaymentsCreate'
+
     componentDidUpdate() {
         const { Payments, removePaymentnotification } = this.props
-        Notification(Payments.notifications, removePaymentnotification)
+        Notification(Payments.notifications, removePaymentnotification, this.context.clearForm)
     }
 
     render() {
-        const { Payments, Profile } = this.props
+        const { Payments, Profile,history } = this.props
 
         return (
             Payments.isLoading || Payments.isDispatching ? <LoadingPage /> :
@@ -41,12 +44,15 @@ export default class PaymentsCreate extends Component {
                     <Contentwrapper>
                         <Form onSubmit={this.handleSubmit}>
                             <Form.Group widths={'equal'}>
-                                <FormInput required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
+                                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
                             </Form.Group>
                             <Footerwrapper>
-                                <Link to="/Payments">
-                                    <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
-                                </Link>
+                                <Form.Group widths={'equal'}>
+                                    {history && <Link to="/Payments">
+                                        <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
+                                    </Link>}
+                                    <Button floated="right" type="button" color='grey' onClick={(e) => { this.context.clearForm(this.PAGE_NAME) }}>{Literals.Button.Clear[Profile.Language]}</Button>
+                                </Form.Group>
                                 <Button floated="right" type='submit' color='blue'>{Literals.Button.Create[Profile.Language]}</Button>
                             </Footerwrapper>
                         </Form>
@@ -73,3 +79,4 @@ export default class PaymentsCreate extends Component {
         }
     }
 }
+PaymentsCreate.contextType = FormContext

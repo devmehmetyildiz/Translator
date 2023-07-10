@@ -14,12 +14,15 @@ import Pagedivider from '../../Common/Styled/Pagedivider'
 import Contentwrapper from '../../Common/Wrappers/Contentwrapper'
 import Footerwrapper from '../../Common/Wrappers/Footerwrapper'
 import Headerbredcrump from '../../Common/Wrappers/Headerbredcrump'
+import { FormContext } from '../../Provider/FormProvider'
 
 export default class DefinedcostumersCreate extends Component {
 
+    PAGE_NAME = 'DefinedcostumersCreate'
+
     componentDidUpdate() {
         const { Definedcostumers, removeDefinedcostumernotification } = this.props
-        Notification(Definedcostumers.notifications, removeDefinedcostumernotification)
+        Notification(Definedcostumers.notifications, removeDefinedcostumernotification, this.context.clearForm)
     }
 
     render() {
@@ -41,22 +44,25 @@ export default class DefinedcostumersCreate extends Component {
                     <Contentwrapper>
                         <Form onSubmit={this.handleSubmit}>
                             <Form.Group widths={'equal'}>
-                                <FormInput required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
-                                <FormInput placeholder={Literals.Columns.CountryID[Profile.Language]} name="CountryID" />
+                                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
+                                <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.CountryID[Profile.Language]} name="CountryID" />
                             </Form.Group>
                             <Form.Group widths={'equal'}>
-                                <FormInput placeholder={Literals.Columns.Email[Profile.Language]} name="Email" />
-                                <FormInput placeholder={Literals.Columns.Phone[Profile.Language]} name="Phone" />
+                                <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Email[Profile.Language]} name="Email" />
+                                <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Phone[Profile.Language]} name="Phone" />
                             </Form.Group>
                             <Form.Group widths={'equal'}>
-                                <FormInput placeholder={Literals.Columns.City[Profile.Language]} name="City" />
-                                <FormInput placeholder={Literals.Columns.Town[Profile.Language]} name="Town" />
+                                <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.City[Profile.Language]} name="City" />
+                                <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Town[Profile.Language]} name="Town" />
                             </Form.Group>
-                            <FormInput required placeholder={Literals.Columns.Address[Profile.Language]} name="Address" />
+                            <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Address[Profile.Language]} name="Address" />
                             <Footerwrapper>
-                                <Link to="/Definedcostumers">
-                                    <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
-                                </Link>
+                                <Form.Group widths={'equal'}>
+                                    <Link to="/Definedcostumers">
+                                        <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
+                                    </Link>
+                                    <Button floated="right" type="button" color='grey' onClick={(e) => { this.context.clearForm(this.PAGE_NAME) }}>{Literals.Button.Clear[Profile.Language]}</Button>
+                                </Form.Group>
                                 <Button floated="right" type='submit' color='blue'>{Literals.Button.Create[Profile.Language]}</Button>
                             </Footerwrapper>
                         </Form>
@@ -83,3 +89,4 @@ export default class DefinedcostumersCreate extends Component {
         }
     }
 }
+DefinedcostumersCreate.contextType = FormContext

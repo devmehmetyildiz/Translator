@@ -17,6 +17,8 @@ import Headerbredcrump from '../../Common/Wrappers/Headerbredcrump'
 import { FormContext } from '../../Provider/FormProvider'
 export default class LanguagesEdit extends Component {
 
+    PAGE_NAME = 'LanguagesCreate'
+
     constructor(props) {
         super(props)
         this.state = {
@@ -31,7 +33,7 @@ export default class LanguagesEdit extends Component {
             GetLanguage(match.params.LanguageID)
             GetKdvs()
         } else {
-            history.push("/Languages")
+history && history.push("/Languages")
         }
     }
 
@@ -41,15 +43,15 @@ export default class LanguagesEdit extends Component {
         if (selected_record && Object.keys(selected_record).length > 0 && selected_record.Id !== 0 &&
             !isLoading && !this.state.isDatafetched && !Kdvs.isLoading && Kdvs.list.length > 0) {
             this.setState({ isDatafetched: true, selectedkdv: selected_record.KdvID })
-            this.context.setFormstates(selected_record)
+            this.context.setForm(this.PAGE_NAME, selected_record)
         }
-        Notification(Languages.notifications, removeLanguagenotification)
-        Notification(Kdvs.notifications, removeKdvnotification)
+        Notification(Languages.notifications, removeLanguagenotification, this.context.clearForm)
+        Notification(Kdvs.notifications, removeKdvnotification, this.context.clearForm)
     }
 
 
     render() {
-        const { Languages, Kdvs, Profile } = this.props
+        const { Languages, Kdvs, Profile,history } = this.props
 
         const Kdvoptions = Kdvs.list.map(kdv => {
             return { key: kdv.Uuid, text: kdv.Name, value: kdv.Uuid }
@@ -71,17 +73,20 @@ export default class LanguagesEdit extends Component {
                     <Contentwrapper>
                         <Form onSubmit={this.handleSubmit}>
                             <Form.Group widths='equal'>
-                                <FormInput required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
-                                <FormInput required placeholder={Literals.Columns.Price[Profile.Language]} name="Price" type='number' step='0.01' display='try'/>
+                                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
+                                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Price[Profile.Language]} name="Price" type='number' step='0.01' display='try' />
                             </Form.Group>
                             <Form.Group widths='equal'>
-                                <FormInput required placeholder={Literals.Columns.KdvPercent[Profile.Language]} options={Kdvoptions} onChange={this.handleChangeKdv} value={this.state.selectedkdv} formtype="dropdown" />
-                                <FormInput required placeholder={Literals.Columns.Discount[Profile.Language]} name="Discount" type='number' step='0.01' />
+                                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.KdvPercent[Profile.Language]} options={Kdvoptions} name='KdvID' formtype="dropdown" />
+                                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Discount[Profile.Language]} name="Discount" type='number' step='0.01' />
                             </Form.Group>
                             <Footerwrapper>
-                                <Link to="/Languages">
-                                    <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
-                                </Link>
+                                <Form.Group widths={'equal'}>
+                                    {history && <Link to="/Languages">
+                                        <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
+                                    </Link>}
+                                    <Button floated="right" type="button" color='grey' onClick={(e) => { this.context.setForm(this.PAGE_NAME, Languages.selected_record) }}>{Literals.Button.Clear[Profile.Language]}</Button>
+                                </Form.Group>
                                 <Button floated="right" type='submit' color='blue'>{Literals.Button.Update[Profile.Language]}</Button>
                             </Footerwrapper>
                         </Form>
@@ -95,7 +100,7 @@ export default class LanguagesEdit extends Component {
         e.preventDefault()
         const { EditLanguages, Languages, history, fillLanguagenotification, Profile } = this.props
         const data = formToObject(e.target)
-        data.KdvID = this.state.selectedkdv
+        data.KdvID = this.context.formstates[`${this.PAGE_NAME}/KdvID`]
         data.Price = parseFloat(data.Price)
         data.Discount = parseFloat(data.Discount)
 

@@ -16,6 +16,8 @@ import Headerwrapper from '../../Common/Wrappers/Headerwrapper'
 import Footerwrapper from '../../Common/Wrappers/Footerwrapper'
 export default class DefinedcostumersEdit extends Component {
 
+    PAGE_NAME = 'DefinedcostumersEdit'
+
     constructor(props) {
         super(props)
         this.state = {
@@ -28,7 +30,7 @@ export default class DefinedcostumersEdit extends Component {
         if (validator.isUUID(match.params.DefinedcostumerID)) {
             GetDefinedcostumer(match.params.DefinedcostumerID)
         } else {
-            history.push("/Definedcostumers")
+history && history.push("/Definedcostumers")
         }
     }
 
@@ -37,9 +39,9 @@ export default class DefinedcostumersEdit extends Component {
         const { selected_record, isLoading } = Definedcostumers
         if (selected_record && Object.keys(selected_record).length > 0 && selected_record.Id !== 0 && !isLoading && !this.state.isDatafetched) {
             this.setState({ isDatafetched: true })
-            this.context.setFormstates(selected_record)
+            this.context.setForm(this.PAGE_NAME, selected_record)
         }
-        Notification(Definedcostumers.notifications, removeDefinedcostumernotification)
+        Notification(Definedcostumers.notifications, removeDefinedcostumernotification, this.context.clearForm)
     }
 
     render() {
@@ -62,23 +64,26 @@ export default class DefinedcostumersEdit extends Component {
                     <Contentwrapper>
                         <Form onSubmit={this.handleSubmit}>
                             <Form.Group widths={'equal'}>
-                                <FormInput required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
-                                <FormInput placeholder={Literals.Columns.CountryID[Profile.Language]} name="CountryID" />
+                                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
+                                <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.CountryID[Profile.Language]} name="CountryID" />
                             </Form.Group>
                             <Form.Group widths={'equal'}>
-                                <FormInput placeholder={Literals.Columns.Email[Profile.Language]} name="Email" />
-                                <FormInput placeholder={Literals.Columns.Phone[Profile.Language]} name="Phone" />
+                                <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Email[Profile.Language]} name="Email" />
+                                <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Phone[Profile.Language]} name="Phone" />
                             </Form.Group>
                             <Form.Group widths={'equal'}>
-                                <FormInput placeholder={Literals.Columns.City[Profile.Language]} name="City" />
-                                <FormInput placeholder={Literals.Columns.Town[Profile.Language]} name="Town" />
+                                <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.City[Profile.Language]} name="City" />
+                                <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Town[Profile.Language]} name="Town" />
                             </Form.Group>
-                            <FormInput required placeholder={Literals.Columns.Address[Profile.Language]} name="Address" />
+                            <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Address[Profile.Language]} name="Address" />
                             <Footerwrapper>
-                                <Link to="/Definedcostumers">
-                                    <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
-                                </Link>
-                                <Button floated="right" type='submit' color='blue'>{Literals.Button.Create[Profile.Language]}</Button>
+                                <Form.Group widths={'equal'}>
+                                    <Link to="/Definedcostumers">
+                                        <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
+                                    </Link>
+                                    <Button floated="right" type="button" color='grey' onClick={(e) => { this.context.setForm(this.PAGE_NAME, Definedcostumers.selected_record) }}>{Literals.Button.Clear[Profile.Language]}</Button>
+                                </Form.Group>
+                                <Button floated="right" type='submit' color='blue'>{Literals.Button.Update[Profile.Language]}</Button>
                             </Footerwrapper>
                         </Form>
                     </Contentwrapper>

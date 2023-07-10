@@ -4,6 +4,33 @@ import AxiosErrorHelper from "../Utils/AxiosErrorHelper"
 import instanse from "./axios";
 import config from "../Config";
 
+const Literals = {
+    addcode: {
+        en: 'Data Save',
+        tr: 'Veri Kaydetme'
+    },
+    adddescription: {
+        en: 'Order added successfully',
+        tr: 'Sipariş Başarı ile eklendi'
+    },
+    updatecode: {
+        en: 'Data Update',
+        tr: 'Veri Güncelleme'
+    },
+    updatedescription: {
+        en: 'Order updated successfully',
+        tr: 'Sipariş Başarı ile güncellendi'
+    },
+    deletecode: {
+        en: 'Data Delete',
+        tr: 'Veri Silme'
+    },
+    deletedescription: {
+        en: 'Order Deleted successfully',
+        tr: 'Sipariş Başarı ile Silindi'
+    },
+}
+
 export const GetOrders = createAsyncThunk(
     'Orders/GetOrders',
     async (_, { dispatch }) => {
@@ -34,15 +61,22 @@ export const GetOrder = createAsyncThunk(
 
 export const AddOrders = createAsyncThunk(
     'Orders/AddOrders',
-    async ({ data, history }, { dispatch }) => {
+    async ({ data, history }, { dispatch, getState }) => {
         try {
+            const state = getState()
+            const Language = state.Profile.Language || 'en'
             const response = await instanse.post(config.services.Business, ROUTES.ORDER, data);
             dispatch(fillOrdernotification({
                 type: 'Success',
-                code: 'Veri Kaydetme',
-                description: 'Sipariş başarı ile Eklendi',
+                code: Literals.addcode[Language],
+                description: Literals.adddescription[Language],
             }));
-            history.push('/Orders');
+            dispatch(fillOrdernotification({
+                type: 'Clear',
+                code: 'OrdersCreate',
+                description: '',
+            }));
+            history && history.push('/Orders');
             return response.data;
         } catch (error) {
             const errorPayload = AxiosErrorHelper(error);
@@ -54,15 +88,22 @@ export const AddOrders = createAsyncThunk(
 
 export const EditOrders = createAsyncThunk(
     'Orders/EditOrders',
-    async ({ data, history }, { dispatch }) => {
+    async ({ data, history }, { dispatch, getState }) => {
         try {
+            const state = getState()
+            const Language = state.Profile.Language || 'en'
             const response = await instanse.put(config.services.Business, ROUTES.ORDER, data);
             dispatch(fillOrdernotification({
                 type: 'Success',
-                code: 'Veri Güncelleme',
-                description: 'Sipariş başarı ile Güncellendi',
+                code: Literals.updatecode[Language],
+                description: Literals.updatedescription[Language],
             }));
-            history.push('/Orders');
+            dispatch(fillOrdernotification({
+                type: 'Clear',
+                code: 'OrdersEdit',
+                description: '',
+            }));
+            history && history.push('/Orders');
             return response.data;
         } catch (error) {
             const errorPayload = AxiosErrorHelper(error);
@@ -74,15 +115,17 @@ export const EditOrders = createAsyncThunk(
 
 export const DeleteOrders = createAsyncThunk(
     'Orders/DeleteOrders',
-    async (data, { dispatch }) => {
+    async (data, { dispatch, getState }) => {
         try {
+            const state = getState()
+            const Language = state.Profile.Language || 'en'
             delete data['edit'];
             delete data['delete'];
             const response = await instanse.delete(config.services.Business, `${ROUTES.ORDER}/${data.Uuid}`);
             dispatch(fillOrdernotification({
                 type: 'Success',
-                code: 'Veri Silme',
-                description: 'Sipariş başarı ile Silindi',
+                code: Literals.deletecode[Language],
+                description: Literals.deletedescription[Language],
             }));
             return response.data;
         } catch (error) {

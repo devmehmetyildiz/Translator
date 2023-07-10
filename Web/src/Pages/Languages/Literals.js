@@ -91,7 +91,10 @@ const Literals = {
             tr: "Geri Dön",
             en: "Go Back"
         },
-
+        Clear: {
+            tr: "Temizle",
+            en: "Clear"
+        }
     },
     Messages: {
         Nodatafind: {

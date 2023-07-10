@@ -26,8 +26,8 @@ export default class LanguagesCreate extends Component {
 
     componentDidUpdate() {
         const { Languages, removeLanguagenotification, Kdvs, removeKdvsnotification } = this.props
-        Notification(Languages.notifications, removeLanguagenotification)
-        Notification(Kdvs.notifications, removeKdvsnotification)
+        Notification(Languages.notifications, removeLanguagenotification, this.context.clearForm)
+        Notification(Kdvs.notifications, removeKdvsnotification, this.context.clearForm)
     }
 
 
@@ -54,7 +54,7 @@ export default class LanguagesCreate extends Component {
                     <Contentwrapper>
                         <Form onSubmit={this.handleSubmit}>
                             <Form.Group widths='equal'>
-                                <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
+                                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
                                 <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Price[Profile.Language]} name="Price" type='number' step='0.01' display='try' />
                             </Form.Group>
                             <Form.Group widths='equal'>
@@ -62,9 +62,12 @@ export default class LanguagesCreate extends Component {
                                 <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Discount[Profile.Language]} name="Discount" type='number' step='0.01' display='try' />
                             </Form.Group>
                             <Footerwrapper>
-                                {history && <Link to="/Languages">
-                                    <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
-                                </Link>}
+                                <Form.Group widths={'equal'}>
+                                    {history && <Link to="/Languages">
+                                        <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
+                                    </Link>}
+                                    <Button floated="right" type="button" color='grey' onClick={(e) => { this.context.clearForm(this.PAGE_NAME) }}>{Literals.Button.Clear[Profile.Language]}</Button>
+                                </Form.Group>
                                 <Button floated="right" type='submit' color='blue'>{Literals.Button.Create[Profile.Language]}</Button>
                             </Footerwrapper>
                         </Form>

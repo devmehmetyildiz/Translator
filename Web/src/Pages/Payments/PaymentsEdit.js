@@ -16,6 +16,8 @@ import Headerwrapper from '../../Common/Wrappers/Headerwrapper'
 import Footerwrapper from '../../Common/Wrappers/Footerwrapper'
 export default class PaymentsEdit extends Component {
 
+    PAGE_NAME = 'PaymentsEdit'
+
     constructor(props) {
         super(props)
         this.state = {
@@ -28,7 +30,7 @@ export default class PaymentsEdit extends Component {
         if (validator.isUUID(match.params.PaymentID)) {
             GetPayment(match.params.PaymentID)
         } else {
-            history.push("/Payments")
+history && history.push("/Payments")
         }
     }
 
@@ -37,14 +39,14 @@ export default class PaymentsEdit extends Component {
         const { selected_record, isLoading } = Payments
         if (selected_record && Object.keys(selected_record).length > 0 && selected_record.Id !== 0 && !isLoading && !this.state.isDatafetched) {
             this.setState({ isDatafetched: true })
-            this.context.setFormstates(selected_record)
+            this.context.setForm(this.PAGE_NAME, selected_record)
         }
-        Notification(Payments.notifications, removePaymentnotification)
+        Notification(Payments.notifications, removePaymentnotification, this.context.clearForm)
     }
 
     render() {
 
-        const { Payments, Profile } = this.props
+        const { Payments, Profile,history } = this.props
 
         return (
             Payments.isLoading || Payments.isDispatching ? <LoadingPage /> :
@@ -62,12 +64,15 @@ export default class PaymentsEdit extends Component {
                     <Contentwrapper>
                         <Form onSubmit={this.handleSubmit}>
                             <Form.Group widths={'equal'}>
-                                <FormInput required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
+                                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
                             </Form.Group>
                             <Footerwrapper>
-                                <Link to="/Payments">
-                                    <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
-                                </Link>
+                                <Form.Group widths={'equal'}>
+                                    {history && <Link to="/Payments">
+                                        <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
+                                    </Link>}
+                                    <Button floated="right" type="button" color='grey' onClick={(e) => { this.context.setForm(this.PAGE_NAME, Payments.selected_record) }}>{Literals.Button.Clear[Profile.Language]}</Button>
+                                </Form.Group>
                                 <Button floated="right" type='submit' color='blue'>{Literals.Button.Update[Profile.Language]}</Button>
                             </Footerwrapper>
                         </Form>

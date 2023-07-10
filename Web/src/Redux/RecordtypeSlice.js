@@ -4,6 +4,33 @@ import AxiosErrorHelper from "../Utils/AxiosErrorHelper"
 import instanse from "./axios";
 import config from "../Config";
 
+const Literals = {
+    addcode: {
+        en: 'Data Save',
+        tr: 'Veri Kaydetme'
+    },
+    adddescription: {
+        en: 'Record type added successfully',
+        tr: 'Kayıt türü Başarı ile eklendi'
+    },
+    updatecode: {
+        en: 'Data Update',
+        tr: 'Veri Güncelleme'
+    },
+    updatedescription: {
+        en: 'Record type updated successfully',
+        tr: 'Kayıt türü Başarı ile güncellendi'
+    },
+    deletecode: {
+        en: 'Data Delete',
+        tr: 'Veri Silme'
+    },
+    deletedescription: {
+        en: 'Record type Deleted successfully',
+        tr: 'Kayıt türü Başarı ile Silindi'
+    },
+}
+
 export const GetRecordtypes = createAsyncThunk(
     'Recordtypes/GetRecordtypes',
     async (_, { dispatch }) => {
@@ -34,15 +61,22 @@ export const GetRecordtype = createAsyncThunk(
 
 export const AddRecordtypes = createAsyncThunk(
     'Recordtypes/AddRecordtypes',
-    async ({ data, history }, { dispatch }) => {
+    async ({ data, history }, { dispatch, getState }) => {
         try {
+            const state = getState()
+            const Language = state.Profile.Language || 'en'
             const response = await instanse.post(config.services.Setting, ROUTES.RECORDTYPE, data);
             dispatch(fillRecordtypenotification({
                 type: 'Success',
-                code: 'Veri Kaydetme',
-                description: 'Kayıt Türü başarı ile Eklendi',
+                code: Literals.addcode[Language],
+                description: Literals.adddescription[Language],
             }));
-            history.push('/Recordtypes');
+            dispatch(fillRecordtypenotification({
+                type: 'Clear',
+                code: 'RecordtypesCreate',
+                description: '',
+            }));
+history && history.push('/Recordtypes');
             return response.data;
         } catch (error) {
             const errorPayload = AxiosErrorHelper(error);
@@ -54,15 +88,22 @@ export const AddRecordtypes = createAsyncThunk(
 
 export const EditRecordtypes = createAsyncThunk(
     'Recordtypes/EditRecordtypes',
-    async ({ data, history }, { dispatch }) => {
+    async ({ data, history }, { dispatch, getState }) => {
         try {
+            const state = getState()
+            const Language = state.Profile.Language || 'en'
             const response = await instanse.put(config.services.Setting, ROUTES.RECORDTYPE, data);
             dispatch(fillRecordtypenotification({
                 type: 'Success',
-                code: 'Veri Güncelleme',
-                description: 'Kayıt Türü başarı ile Güncellendi',
+                code: Literals.updatecode[Language],
+                description: Literals.updatedescription[Language],
             }));
-            history.push('/Recordtypes');
+            dispatch(fillRecordtypenotification({
+                type: 'Clear',
+                code: 'RecordtypesEdit',
+                description: '',
+            }));
+history && history.push('/Recordtypes');
             return response.data;
         } catch (error) {
             const errorPayload = AxiosErrorHelper(error);
@@ -74,15 +115,17 @@ export const EditRecordtypes = createAsyncThunk(
 
 export const DeleteRecordtypes = createAsyncThunk(
     'Recordtypes/DeleteRecordtypes',
-    async (data, { dispatch }) => {
+    async (data, { dispatch, getState }) => {
         try {
+            const state = getState()
+            const Language = state.Profile.Language || 'en'
             delete data['edit'];
             delete data['delete'];
             const response = await instanse.delete(config.services.Setting, `${ROUTES.RECORDTYPE}/${data.Uuid}`);
             dispatch(fillRecordtypenotification({
                 type: 'Success',
-                code: 'Veri Silme',
-                description: 'Kayıt Türü başarı ile Silindi',
+                code: Literals.deletecode[Language],
+                description: Literals.deletedescription[Language],
             }));
             return response.data;
         } catch (error) {

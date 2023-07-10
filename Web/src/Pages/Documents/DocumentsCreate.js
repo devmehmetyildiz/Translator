@@ -14,19 +14,22 @@ import Pagedivider from '../../Common/Styled/Pagedivider'
 import Contentwrapper from '../../Common/Wrappers/Contentwrapper'
 import Footerwrapper from '../../Common/Wrappers/Footerwrapper'
 import Headerbredcrump from '../../Common/Wrappers/Headerbredcrump'
+import { FormContext } from '../../Provider/FormProvider'
 
 export default class DocumentsCreate extends Component {
 
+  PAGE_NAME = 'DocumentsCreate'
+
   componentDidUpdate() {
     const { Documents, removeDocumentnotification } = this.props
-    Notification(Documents.notifications, removeDocumentnotification)
+    Notification(Documents.notifications, removeDocumentnotification, this.context.clearForm)
   }
 
   render() {
-    const { Documents, Profile } = this.props
+    const { Documents, Profile, history } = this.props
 
     return (
-        Documents.isLoading || Documents.isDispatching ? <LoadingPage /> :
+      Documents.isLoading || Documents.isDispatching ? <LoadingPage /> :
         <Pagewrapper>
           <Headerwrapper>
             <Headerbredcrump>
@@ -40,11 +43,14 @@ export default class DocumentsCreate extends Component {
           <Pagedivider />
           <Contentwrapper>
             <Form onSubmit={this.handleSubmit}>
-              <FormInput required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
+              <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
               <Footerwrapper>
-                <Link to="/Documents">
-                  <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
-                </Link>
+                <Form.Group widths={'equal'}>
+                  {history && <Link to="/Documents">
+                    <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
+                  </Link>}
+                  <Button floated="right" type="button" color='grey' onClick={(e) => { this.context.clearForm(this.PAGE_NAME) }}>{Literals.Button.Clear[Profile.Language]}</Button>
+                </Form.Group>
                 <Button floated="right" type='submit' color='blue'>{Literals.Button.Create[Profile.Language]}</Button>
               </Footerwrapper>
             </Form>
@@ -67,7 +73,8 @@ export default class DocumentsCreate extends Component {
         fillDocumentnotification(error)
       })
     } else {
-        AddDocuments({ data, history })
+      AddDocuments({ data, history })
     }
   }
 }
+DocumentsCreate.contextType = FormContext

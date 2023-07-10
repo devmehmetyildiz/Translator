@@ -14,12 +14,15 @@ import Pagedivider from '../../Common/Styled/Pagedivider'
 import Contentwrapper from '../../Common/Wrappers/Contentwrapper'
 import Footerwrapper from '../../Common/Wrappers/Footerwrapper'
 import Headerbredcrump from '../../Common/Wrappers/Headerbredcrump'
+import { FormContext } from '../../Provider/FormProvider'
 
 export default class DefinedcompaniesCreate extends Component {
 
+    PAGE_NAME = 'DefinedcompaniesCreate'
+
     componentDidUpdate() {
         const { Definedcompanies, removeDefinedcompanynotification } = this.props
-        Notification(Definedcompanies.notifications, removeDefinedcompanynotification)
+        Notification(Definedcompanies.notifications, removeDefinedcompanynotification, this.context.clearForm)
     }
 
     render() {
@@ -41,17 +44,20 @@ export default class DefinedcompaniesCreate extends Component {
                     <Contentwrapper>
                         <Form onSubmit={this.handleSubmit}>
                             <Form.Group widths={'equal'}>
-                                <FormInput required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
-                                <FormInput required placeholder={Literals.Columns.Address[Profile.Language]} name="Address" />
+                                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
+                                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Address[Profile.Language]} name="Address" />
                             </Form.Group>
                             <Form.Group widths={'equal'}>
-                                <FormInput required placeholder={Literals.Columns.Acccountcode[Profile.Language]} name="Acccountcode" />
-                                <FormInput required placeholder={Literals.Columns.Accountname[Profile.Language]} name="Accountname" />
+                                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Acccountcode[Profile.Language]} name="Acccountcode" />
+                                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Accountname[Profile.Language]} name="Accountname" />
                             </Form.Group>
                             <Footerwrapper>
-                                <Link to="/Definedcompanies">
-                                    <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
-                                </Link>
+                                <Form.Group widths={'equal'}>
+                                    <Link to="/Definedcompanies">
+                                        <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
+                                    </Link>
+                                    <Button floated="right" type="button" color='grey' onClick={(e) => { this.context.clearForm(this.PAGE_NAME) }}>{Literals.Button.Clear[Profile.Language]}</Button>
+                                </Form.Group>
                                 <Button floated="right" type='submit' color='blue'>{Literals.Button.Create[Profile.Language]}</Button>
                             </Footerwrapper>
                         </Form>
@@ -87,3 +93,4 @@ export default class DefinedcompaniesCreate extends Component {
         }
     }
 }
+DefinedcompaniesCreate.contextType = FormContext

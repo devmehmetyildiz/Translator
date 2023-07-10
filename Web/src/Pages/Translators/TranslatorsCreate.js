@@ -14,7 +14,10 @@ import Pagedivider from '../../Common/Styled/Pagedivider'
 import Contentwrapper from '../../Common/Wrappers/Contentwrapper'
 import Footerwrapper from '../../Common/Wrappers/Footerwrapper'
 import Headerbredcrump from '../../Common/Wrappers/Headerbredcrump'
+import { FormContext } from '../../Provider/FormProvider'
 export default class TranslatorsCreate extends Component {
+
+    PAGE_NAME = 'TranslatorsCreate'
 
     constructor(props) {
         super(props)
@@ -23,7 +26,6 @@ export default class TranslatorsCreate extends Component {
         }
     }
 
-
     componentDidMount() {
         const { GetUsers } = this.props
         GetUsers()
@@ -31,13 +33,12 @@ export default class TranslatorsCreate extends Component {
 
     componentDidUpdate() {
         const { Translators, removeTranslatornotification, Users, removeUsernotification } = this.props
-        Notification(Translators.notifications, removeTranslatornotification)
-        Notification(Users.notifications, removeUsernotification)
+        Notification(Translators.notifications, removeTranslatornotification, this.context.clearForm)
+        Notification(Users.notifications, removeUsernotification, this.context.clearForm)
     }
 
-
     render() {
-        const { Translators, Users, Profile } = this.props
+        const { Translators, Users, Profile, history } = this.props
 
         const Useroptions = Users.list.map(user => {
             return { key: user.Uuid, text: user.Username, value: user.Uuid }
@@ -59,13 +60,16 @@ export default class TranslatorsCreate extends Component {
                     <Contentwrapper>
                         <Form onSubmit={this.handleSubmit}>
                             <Form.Group widths='equal'>
-                                <FormInput required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
-                                <FormInput required placeholder={Literals.Columns.UserName[Profile.Language]} options={Useroptions} onChange={this.handleChangeUser} value={this.state.selectedUser} formtype="dropdown" />
+                                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
+                                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.UserName[Profile.Language]} name="UserID" options={Useroptions} formtype="dropdown" />
                             </Form.Group>
                             <Footerwrapper>
-                                <Link to="/Translators">
-                                    <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
-                                </Link>
+                                <Form.Group widths={'equal'}>
+                                    {history && <Link to="/Translators">
+                                        <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
+                                    </Link>}
+                                    <Button floated="right" type="button" color='grey' onClick={(e) => { this.context.clearForm(this.PAGE_NAME) }}>{Literals.Button.Clear[Profile.Language]}</Button>
+                                </Form.Group>
                                 <Button floated="right" type='submit' color='blue'>{Literals.Button.Create[Profile.Language]}</Button>
                             </Footerwrapper>
                         </Form>
@@ -79,7 +83,7 @@ export default class TranslatorsCreate extends Component {
         e.preventDefault()
         const { AddTranslators, history, fillTranslatornotification, Profile } = this.props
         const data = formToObject(e.target)
-        data.UserID = this.state.selectedUser
+        data.UserID = this.context.formstates[`${this.PAGE_NAME}/UserID`]
 
         let errors = []
         if (!validator.isString(data.Name)) {
@@ -98,3 +102,4 @@ export default class TranslatorsCreate extends Component {
         this.setState({ selectedUser: value })
     }
 }
+TranslatorsCreate.contextType = FormContext

@@ -16,11 +16,12 @@ import Headerwrapper from '../../Common/Wrappers/Headerwrapper'
 import Footerwrapper from '../../Common/Wrappers/Footerwrapper'
 export default class CasesEdit extends Component {
 
+  PAGE_NAME = 'CasesEdit'
+
   constructor(props) {
     super(props)
     this.state = {
       isDatafetched: false,
-      selectedstatusOption: {}
     }
   }
 
@@ -37,19 +38,15 @@ export default class CasesEdit extends Component {
     const { Cases, removeCasenotification } = this.props
     const { selected_record, isLoading } = Cases
     if (selected_record && Object.keys(selected_record).length > 0 && selected_record.Id !== 0 && !isLoading && !this.state.isDatafetched) {
-      this.setState({
-        isDatafetched: true, selectedstatusOption: selected_record.CaseStatus
-      })
-      this.context.setFormstates(selected_record)
+      this.setState({ isDatafetched: true })
+      this.context.setForm(this.PAGE_NAME, selected_record)
     }
-    Notification(Cases.notifications, removeCasenotification)
+    Notification(Cases.notifications, removeCasenotification, this.context.clearForm)
   }
 
   render() {
 
     const { Cases, Profile } = this.props
-
-   
 
     const casestatusOption = [
       {
@@ -85,17 +82,20 @@ export default class CasesEdit extends Component {
           <Contentwrapper>
             <Form onSubmit={this.handleSubmit}>
               <Form.Group widths='equal'>
-                <FormInput required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
-                <FormInput required placeholder={Literals.Columns.Shortname[Profile.Language]} name="Shortname" />
+                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
+                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Shortname[Profile.Language]} name="Shortname" />
               </Form.Group>
               <Form.Group widths='equal'>
-                <FormInput required placeholder={Literals.Columns.Casecolor[Profile.Language]} name="Casecolor" attention="blue,red,green..." />
-                <FormInput required placeholder={Literals.Columns.CaseStatus[Profile.Language]} options={casestatusOption} onChange={this.handleChangeOption} value={this.state.selectedstatusOption} formtype="dropdown" />
+                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Casecolor[Profile.Language]} name="Casecolor" attention="blue,red,green..." />
+                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.CaseStatus[Profile.Language]} options={casestatusOption} name="CaseStatus" formtype="dropdown" />
               </Form.Group>
               <Footerwrapper>
-                <Link to="/Cases">
-                  <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
-                </Link>
+                <Form.Group widths={'equal'}>
+                  <Link to="/Cases">
+                    <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
+                  </Link>
+                  <Button floated="right" type="button" color='grey' onClick={(e) => { this.context.setForm(this.PAGE_NAME, Cases.selected_record) }}>{Literals.Button.Clear[Profile.Language]}</Button>
+                </Form.Group>
                 <Button floated="right" type='submit' color='blue'>{Literals.Button.Update[Profile.Language]}</Button>
               </Footerwrapper>
             </Form>
@@ -108,9 +108,9 @@ export default class CasesEdit extends Component {
   handleSubmit = (e) => {
     e.preventDefault()
 
-    const { EditCases, history, fillCasenotification,  Cases, Profile } = this.props
+    const { EditCases, history, fillCasenotification, Cases, Profile } = this.props
     const data = formToObject(e.target)
-    data.CaseStatus = this.state.selectedstatusOption
+    data.CaseStatus = this.context.formstates[`${this.PAGE_NAME}/CaseStatus`]
 
     let errors = []
     if (!validator.isString(data.Name)) {
@@ -132,10 +132,6 @@ export default class CasesEdit extends Component {
     } else {
       EditCases({ data: { ...Cases.selected_record, ...data }, history })
     }
-  }
-
-  handleChangeOption = (e, { value }) => {
-    this.setState({ selectedstatusOption: value })
   }
 }
 CasesEdit.contextType = FormContext

@@ -15,24 +15,23 @@ import Contentwrapper from '../../Common/Wrappers/Contentwrapper'
 import Footerwrapper from '../../Common/Wrappers/Footerwrapper'
 import Headerbredcrump from '../../Common/Wrappers/Headerbredcrump'
 import LanguagesCreate from '../../Containers/Languages/LanguagesCreate'
+import { FormContext } from '../../Provider/FormProvider'
+import DocumentsCreate from '../../Containers/Documents/DocumentsCreate'
+import CasesCreate from '../../Containers/Cases/CasesCreate'
+import RecordtypesCreate from '../../Containers/Recordtypes/RecordtypesCreate'
 export default class OrdersCreate extends Component {
+
+  PAGE_NAME = 'OrdersCreate'
 
   constructor(props) {
     super(props)
     this.state = {
-      selectedRecordtype: '',
       selectedJobs: [],
-      selectedPrinciblecourthause: '',
-      selectedPrinciblecourt: '',
-      selectedDirectivecourthause: '',
-      selectedDirectivecourt: '',
-      selectedCostumer: '',
-      selectedCompany: '',
-      selectedTranslator: '',
-      selectedKdv: '',
-      selectedPayment: '',
-      selectedCase: '',
-      openLanguage: false
+      openTargetlanguage: false,
+      openSourcelanguage: false,
+      openDocument: false,
+      openCase: false,
+      openRecordtype: false
     }
   }
 
@@ -63,23 +62,23 @@ export default class OrdersCreate extends Component {
       Orders, Recordtypes, Courthauses, Courts, Definedcompanies,
       Definedcostumers, Translators, Kdvs, Payments, Languages, Documents, Cases
     } = this.props
-    Notification(Orders.notifications, removeOrdernotification)
-    Notification(Recordtypes.notifications, removeRecordtypenotification)
-    Notification(Courthauses.notifications, removeCourthausenotification)
-    Notification(Courts.notifications, removeCourtnotification)
-    Notification(Definedcostumers.notifications, removeDefinedcostumernotification)
-    Notification(Definedcompanies.notifications, removeDefinedcompanynotification)
-    Notification(Translators.notifications, removeTranslatornotification)
-    Notification(Kdvs.notifications, removeKdvnotification)
-    Notification(Payments.notifications, removePaymentnotification)
-    Notification(Languages.notifications, removeLanguagenotification)
-    Notification(Documents.notifications, removeDocumentnotification)
-    Notification(Cases.notifications, removeCasenotification)
+    Notification(Orders.notifications, removeOrdernotification, this.context.clearForm)
+    Notification(Recordtypes.notifications, removeRecordtypenotification, this.context.clearForm)
+    Notification(Courthauses.notifications, removeCourthausenotification, this.context.clearForm)
+    Notification(Courts.notifications, removeCourtnotification, this.context.clearForm)
+    Notification(Definedcostumers.notifications, removeDefinedcostumernotification, this.context.clearForm)
+    Notification(Definedcompanies.notifications, removeDefinedcompanynotification, this.context.clearForm)
+    Notification(Translators.notifications, removeTranslatornotification, this.context.clearForm)
+    Notification(Kdvs.notifications, removeKdvnotification, this.context.clearForm)
+    Notification(Payments.notifications, removePaymentnotification, this.context.clearForm)
+    Notification(Languages.notifications, removeLanguagenotification, this.context.clearForm)
+    Notification(Documents.notifications, removeDocumentnotification, this.context.clearForm)
+    Notification(Cases.notifications, removeCasenotification, this.context.clearForm)
   }
 
   render() {
 
-    const { Orders, Recordtypes, Courthauses, Courts, Definedcompanies,
+    const { Orders, Recordtypes, Courthauses, Courts, Definedcompanies, history,
       Definedcostumers, Translators, Kdvs, Payments, Languages, Documents, Cases, Profile,
     } = this.props
     const { isLoading, isDispatching } = Orders
@@ -114,8 +113,13 @@ export default class OrdersCreate extends Component {
     const Documentoption = (Documents.list || []).map(document => {
       return { key: document.Uuid, text: document.Name, value: document.Uuid }
     })
+    const editButton = (
+      <Icon
+        name="edit"
+      />
+    );
     const Caseoption = (Cases.list || []).map(cases => {
-      return { key: cases.Uuid, text: cases.Name, value: cases.Uuid }
+      return { key: cases.Uuid, text: <div className='flex flex-row justify-between'>{cases.Name}{editButton}</div>, value: cases.Uuid }
     })
 
     const formLoading = Recordtypes.isLoading || Recordtypes.isDispatching ||
@@ -152,42 +156,50 @@ export default class OrdersCreate extends Component {
                     pane: {
                       key: 'save',
                       content: <React.Fragment>
-                        <div className='h-[calc(60vh)] overflow-y-auto'>
+                        <div className='h-[calc(60vh)] overflow-y-auto overflow-x-hidden'>
                           <Form.Group widths={'equal'}>
-                            <FormInput placeholder={Literals.Columns.Orderno[Profile.Language]} name="Orderno" />
-                            <FormInput placeholder={Literals.Columns.Recordtype[Profile.Language]} value={this.state.selectedRecordtype} options={Recordtypeoption} onChange={(e, data) => { this.setState({ selectedRecordtype: data.value }) }} formtype='dropdown' />
+                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Orderno[Profile.Language]} name="Orderno" />
+                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Recordtype[Profile.Language]} name="RecordtypeID" options={Recordtypeoption} formtype='dropdown' modal={<span>
+                              <Modal
+                                open={this.state.openRecordtype}
+                                onClose={() => { this.setState({ openRecordtype: false }) }}
+                                onOpen={() => { this.setState({ openRecordtype: true }) }}
+                                trigger={<Icon link name='plus' />}
+                                content={<RecordtypesCreate />}
+                              />
+                            </span>} />
                           </Form.Group>
                           <Form.Group widths={'equal'}>
-                            <FormInput placeholder={Literals.Columns.Princiblecourthause[Profile.Language]} value={this.state.selectedPrinciblecourthause} options={Courthauseoption} onChange={(e, data) => { this.setState({ selectedPrinciblecourthause: data.value }) }} formtype='dropdown' />
-                            <FormInput placeholder={Literals.Columns.Princiblecourt[Profile.Language]} value={this.state.selectedPrinciblecourt} options={Courtoption} onChange={(e, data) => { this.setState({ selectedPrinciblecourt: data.value }) }} formtype='dropdown' />
-                            <FormInput placeholder={Literals.Columns.Princibleno[Profile.Language]} name="Princibleno" />
-                            <FormInput placeholder={Literals.Columns.Desicionno[Profile.Language]} name="Desicionno" />
+                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Princiblecourthause[Profile.Language]} name="PrinciblecourthauseID" options={Courthauseoption} formtype='dropdown' />
+                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Princiblecourt[Profile.Language]} name="PrinciblecourtID" options={Courtoption} formtype='dropdown' />
+                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Princibleno[Profile.Language]} name="Princibleno" />
+                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Desicionno[Profile.Language]} name="Desicionno" />
                           </Form.Group>
                           <Form.Group widths={'equal'}>
-                            <FormInput placeholder={Literals.Columns.Directivecourthause[Profile.Language]} value={this.state.selectedDirectivecourthause} options={Courthauseoption} onChange={(e, data) => { this.setState({ selectedDirectivecourthause: data.value }) }} formtype='dropdown' />
-                            <FormInput placeholder={Literals.Columns.Directivecourt[Profile.Language]} value={this.state.selectedDirectivecourt} options={Courtoption} onChange={(e, data) => { this.setState({ selectedDirectivecourt: data.value }) }} formtype='dropdown' />
-                            <FormInput placeholder={Literals.Columns.Directiveno[Profile.Language]} name="Directiveno" />
-                            <FormInput placeholder={Literals.Columns.Directiveinfo[Profile.Language]} name="Directiveinfo" />
+                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Directivecourthause[Profile.Language]} name="DirectivecourthauseID" options={Courthauseoption} formtype='dropdown' />
+                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Directivecourt[Profile.Language]} name="DirectivecourtID" options={Courtoption} formtype='dropdown' />
+                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Directiveno[Profile.Language]} name="Directiveno" />
+                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Directiveinfo[Profile.Language]} name="Directiveinfo" />
                           </Form.Group>
                           <Form.Group widths={'equal'}>
-                            <FormInput placeholder={Literals.Columns.Company[Profile.Language]} value={this.state.selectedCompany} options={Definedcompanyoption} onChange={(e, data) => { this.setState({ selectedCompany: data.value }) }} formtype='dropdown' />
-                            <FormInput placeholder={Literals.Columns.Costumer[Profile.Language]} value={this.state.selectedCostumer} options={Definedcostumeroption} onChange={(e, data) => { this.setState({ selectedCostumer: data.value }) }} formtype='dropdown' />
+                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Company[Profile.Language]} name="CompanyID" options={Definedcompanyoption} formtype='dropdown' />
+                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Costumer[Profile.Language]} name="CostumerID" options={Definedcostumeroption} formtype='dropdown' />
                           </Form.Group>
                           <Form.Group widths={'equal'}>
-                            <FormInput placeholder={Literals.Columns.Registerdate[Profile.Language]} name="Registerdate" type='date' />
-                            <FormInput placeholder={Literals.Columns.Deliverydate[Profile.Language]} name="Registerdate" type='date' />
+                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Registerdate[Profile.Language]} name="Registerdate" type='date' />
+                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Deliverydate[Profile.Language]} name="Registerdate" type='date' />
                           </Form.Group>
                           <Form.Group widths={'equal'}>
-                            <FormInput placeholder={Literals.Columns.Prepayment[Profile.Language]} name="Prepayment" type='number' step='0.01' />
-                            <FormInput placeholder={Literals.Columns.Notaryexpense[Profile.Language]} name="Notaryexpense" type='number' step='0.01' />
-                            <FormInput placeholder={Literals.Columns.Netprice[Profile.Language]} name="Netprice" type='number' step='0.01' />
-                            <FormInput placeholder={Literals.Columns.Calculatedprice[Profile.Language]} name="Calculatedprice" type='number' step='0.01' />
+                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Prepayment[Profile.Language]} name="Prepayment" type='number' step='0.01' />
+                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Notaryexpense[Profile.Language]} name="Notaryexpense" type='number' step='0.01' />
+                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Netprice[Profile.Language]} name="Netprice" type='number' step='0.01' />
+                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Calculatedprice[Profile.Language]} name="Calculatedprice" type='number' step='0.01' />
                           </Form.Group>
                           <Form.Group widths={'equal'}>
-                            <FormInput placeholder={Literals.Columns.Translator[Profile.Language]} value={this.state.selectedTranslator} options={Translatoroption} onChange={(e, data) => { this.setState({ selectedTranslator: data.value }) }} formtype='dropdown' />
-                            <FormInput placeholder={Literals.Columns.Kdv[Profile.Language]} value={this.state.selectedKdv} options={Kdvoption} onChange={(e, data) => { this.setState({ selectedKdv: data.value }) }} formtype='dropdown' />
-                            <FormInput placeholder={Literals.Columns.Payment[Profile.Language]} value={this.state.selectedPayment} options={Paymentoption} onChange={(e, data) => { this.setState({ selectedPayment: data.value }) }} formtype='dropdown' />
-                            <FormInput placeholder={Literals.Columns.Case[Profile.Language]} value={this.state.selectedCase} options={Caseoption} onChange={(e, data) => { this.setState({ selectedCase: data.value }) }} formtype='dropdown' />
+                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Translator[Profile.Language]} name="TranslatorID" options={Translatoroption} formtype='dropdown' />
+                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Kdv[Profile.Language]} name="KdvID" options={Kdvoption} formtype='dropdown' />
+                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Payment[Profile.Language]} name="PaymentID" options={Paymentoption} formtype='dropdown' />
+                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Case[Profile.Language]} name="CaseID" options={Caseoption} formtype='dropdown' />
                           </Form.Group>
                         </div>
                       </React.Fragment>
@@ -206,19 +218,46 @@ export default class OrdersCreate extends Component {
                                 <Table.HeaderCell width={2}>{Literals.Columns.Jobno[Profile.Language]} </Table.HeaderCell>
                                 <Table.HeaderCell width={2}>{Literals.Columns.Sourcelanguage[Profile.Language]} <span>
                                   <Modal
-                                    open={this.state.openLanguage}
-                                    onClose={() => { this.setState({ openLanguage: false }) }}
-                                    onOpen={() => { this.setState({ openLanguage: true }) }}
+                                    open={this.state.openSourcelanguage}
+                                    onClose={() => { this.setState({ openSourcelanguage: false }) }}
+                                    onOpen={() => { this.setState({ openSourcelanguage: true }) }}
                                     trigger={<Icon link name='plus' />}
                                     content={<LanguagesCreate />}
                                   />
                                 </span>
                                 </Table.HeaderCell>
-                                <Table.HeaderCell width={2}>{Literals.Columns.Targetlanguage[Profile.Language]}</Table.HeaderCell>
-                                <Table.HeaderCell width={2}>{Literals.Columns.Document[Profile.Language]}</Table.HeaderCell>
+                                <Table.HeaderCell width={2}>{Literals.Columns.Targetlanguage[Profile.Language]}<span>
+                                  <Modal
+                                    open={this.state.openTargetlanguage}
+                                    onClose={() => { this.setState({ openTargetlanguage: false }) }}
+                                    onOpen={() => { this.setState({ openTargetlanguage: true }) }}
+                                    trigger={<Icon link name='plus' />}
+                                    content={<LanguagesCreate />}
+                                  />
+                                </span>
+                                </Table.HeaderCell>
+                                <Table.HeaderCell width={2}>{Literals.Columns.Document[Profile.Language]}<span>
+                                  <Modal
+                                    open={this.state.openDocument}
+                                    onClose={() => { this.setState({ openDocument: false }) }}
+                                    onOpen={() => { this.setState({ openDocument: true }) }}
+                                    trigger={<Icon link name='plus' />}
+                                    content={<DocumentsCreate />}
+                                  />
+                                </span>
+                                </Table.HeaderCell>
                                 <Table.HeaderCell width={1}>{Literals.Columns.Amount[Profile.Language]}</Table.HeaderCell>
                                 <Table.HeaderCell width={2}>{Literals.Columns.Price[Profile.Language]}</Table.HeaderCell>
-                                <Table.HeaderCell width={2}>{Literals.Columns.Case[Profile.Language]}</Table.HeaderCell>
+                                <Table.HeaderCell width={2}>{Literals.Columns.Case[Profile.Language]}<span>
+                                  <Modal
+                                    open={this.state.openCase}
+                                    onClose={() => { this.setState({ openCase: false }) }}
+                                    onOpen={() => { this.setState({ openCase: true }) }}
+                                    trigger={<Icon link name='plus' />}
+                                    content={<CasesCreate />}
+                                  />
+                                </span>
+                                </Table.HeaderCell>
                                 <Table.HeaderCell width={10}>{Literals.Columns.Info[Profile.Language]}</Table.HeaderCell>
                                 <Table.HeaderCell width={1}>{Literals.Columns.delete[Profile.Language]}</Table.HeaderCell>
                               </Table.Row>
@@ -287,9 +326,12 @@ export default class OrdersCreate extends Component {
                 ]}
                 renderActiveOnly={false} />
               <Footerwrapper>
-                <Link to="/Jobs">
-                  <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
-                </Link>
+                <Form.Group widths={'equal'}>
+                  {history && <Link to="/Jobs">
+                    <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
+                  </Link>}
+                  <Button floated="right" type="button" color='grey' onClick={(e) => { this.context.clearForm(this.PAGE_NAME) }}>{Literals.Button.Clear[Profile.Language]}</Button>
+                </Form.Group>
                 <Button floated="right" type='submit' color='blue'>{Literals.Button.Create[Profile.Language]}</Button>
               </Footerwrapper>
             </Form>
@@ -300,7 +342,8 @@ export default class OrdersCreate extends Component {
 
   handleSubmit = async (e) => {
     e.preventDefault()
-    if (this.state.openLanguage) {
+    const { openTargetlanguage, openSourcelanguage, openDocument, openCase, openRecordtype } = this.state
+    if (openTargetlanguage || openSourcelanguage || openDocument || openCase || openRecordtype) {
       return
     }
     const { AddOrders, history, fillOrdernotification, Profile } = this.props
@@ -326,16 +369,16 @@ export default class OrdersCreate extends Component {
       Notaryexpense: parseFloat(formData.Notaryexpense),
       Netprice: parseFloat(formData.Netprice),
       Calculatedprice: parseFloat(formData.Calculatedprice),
-      RecordtypeID: this.state.selectedRecordtype,
-      PrinciblecourthauseID: this.state.selectedPrinciblecourthause,
-      PrinciblecourtID: this.state.selectedPrinciblecourt,
-      DirectivecourthauseID: this.state.selectedDirectivecourthause,
-      DirectivecourtID: this.state.selectedDirectivecourt,
-      CostumerID: this.state.selectedCostumer,
-      CompanyID: this.state.selectedCompany,
-      TranslatorID: this.state.selectedTranslator,
-      KdvID: this.state.selectedKdv,
-      PaymentID: this.state.selectedPayment,
+      RecordtypeID: this.context.formstates[`${this.PAGE_NAME}/RecordtypeID`],
+      PrinciblecourthauseID: this.context.formstates[`${this.PAGE_NAME}/PrinciblecourthauseID`],
+      PrinciblecourtID: this.context.formstates[`${this.PAGE_NAME}/PrinciblecourtID`],
+      DirectivecourthauseID: this.context.formstates[`${this.PAGE_NAME}/DirectivecourthauseID`],
+      DirectivecourtID: this.context.formstates[`${this.PAGE_NAME}/DirectivecourtID`],
+      CostumerID: this.context.formstates[`${this.PAGE_NAME}/CostumerID`],
+      CompanyID: this.context.formstates[`${this.PAGE_NAME}/CompanyID`],
+      TranslatorID: this.context.formstates[`${this.PAGE_NAME}/TranslatorID`],
+      KdvID: this.context.formstates[`${this.PAGE_NAME}/KdvID`],
+      PaymentID: this.context.formstates[`${this.PAGE_NAME}/PaymentID`],
       Jobs: jobs
     }
 
@@ -426,3 +469,4 @@ export default class OrdersCreate extends Component {
   }
 
 }
+OrdersCreate.contextType = FormContext
