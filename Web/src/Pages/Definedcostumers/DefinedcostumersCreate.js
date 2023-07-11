@@ -26,7 +26,7 @@ export default class DefinedcostumersCreate extends Component {
     }
 
     render() {
-        const { Definedcostumers, Profile } = this.props
+        const { Definedcostumers, Profile, history } = this.props
 
         return (
             Definedcostumers.isLoading || Definedcostumers.isDispatching ? <LoadingPage /> :
@@ -58,9 +58,9 @@ export default class DefinedcostumersCreate extends Component {
                             <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Address[Profile.Language]} name="Address" />
                             <Footerwrapper>
                                 <Form.Group widths={'equal'}>
-                                    <Link to="/Definedcostumers">
+                                    {history && <Link to="/Definedcostumers">
                                         <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
-                                    </Link>
+                                    </Link>}
                                     <Button floated="right" type="button" color='grey' onClick={(e) => { this.context.clearForm(this.PAGE_NAME) }}>{Literals.Button.Clear[Profile.Language]}</Button>
                                 </Form.Group>
                                 <Button floated="right" type='submit' color='blue'>{Literals.Button.Create[Profile.Language]}</Button>

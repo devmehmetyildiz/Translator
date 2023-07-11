@@ -31,9 +31,10 @@ export default class PrinttemplatesEdit extends Component {
     this.templateEditorRef = React.createRef()
   }
   componentDidMount() {
-    const { GetPrinttemplate, match, history, GetDepartments } = this.props
-    if (match.params.PrinttemplateID) {
-      GetPrinttemplate(match.params.PrinttemplateID)
+    const { GetPrinttemplate, match, history, GetDepartments, PrinttemplateID } = this.props
+    let Id = PrinttemplateID || match.params.PrinttemplateID
+    if (validator.isUUID(Id)) {
+      GetPrinttemplate(Id)
       GetDepartments()
     } else {
       history.push("/Printtemplates")
@@ -56,7 +57,7 @@ export default class PrinttemplatesEdit extends Component {
 
   render() {
 
-    const { Printtemplates, Departments, Profile,history } = this.props
+    const { Printtemplates, Departments, Profile, history } = this.props
     const { isLoading, isDispatching } = Printtemplates
 
     const Departmentoptions = Departments.list.map(department => {
@@ -124,7 +125,7 @@ export default class PrinttemplatesEdit extends Component {
                   }
                 ]}
                 renderActiveOnly={false} />
-               <Footerwrapper>
+              <Footerwrapper>
                 <Form.Group widths={'equal'}>
                   {history && <Link to="/Printtemplates">
                     <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>

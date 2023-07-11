@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import ProfileEdit from '../../Pages/Auth/ProfileEdit'
-import { GetUserMeta, removenotification, fillnotification } from "../../Redux/ProfileSlice"
+import { removenotification, fillnotification } from "../../Redux/ProfileSlice"
 import { EditUsers, removeUsernotification } from "../../Redux/UserSlice"
 import { EditFiles, removeFilenotification, fillFilenotification } from "../../Redux/FileSlice"
 
@@ -11,7 +11,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = {
-    GetUserMeta, EditUsers, EditFiles, removeFilenotification,
+    EditUsers, EditFiles, removeFilenotification,
     fillFilenotification, removenotification, fillnotification, removeUsernotification
 }
 

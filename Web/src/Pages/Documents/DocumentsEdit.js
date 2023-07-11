@@ -26,11 +26,12 @@ export default class DocumentsEdit extends Component {
     }
 
     componentDidMount() {
-        const { GetDocument, match, history } = this.props
-        if (validator.isUUID(match.params.DocumentID)) {
-            GetDocument(match.params.DocumentID)
+        const { GetDocument, match, history, DocumentID } = this.props
+        let Id = DocumentID || match?.params?.DocumentID
+        if (validator.isUUID(Id)) {
+            GetDocument(Id)
         } else {
-history && history.push("/Documents")
+            history && history.push("/Documents")
         }
     }
 
@@ -46,7 +47,7 @@ history && history.push("/Documents")
 
     render() {
 
-        const { Documents, Profile } = this.props
+        const { Documents, Profile, history } = this.props
 
         return (
             Documents.isLoading || Documents.isDispatching ? <LoadingPage /> :
@@ -66,9 +67,9 @@ history && history.push("/Documents")
                             <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
                             <Footerwrapper>
                                 <Form.Group widths={'equal'}>
-                                    <Link to="/Documents">
+                                    {history && <Link to="/Documents">
                                         <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
-                                    </Link>
+                                    </Link>}
                                     <Button floated="right" type="button" color='grey' onClick={(e) => { this.context.setForm(this.PAGE_NAME, Documents.selected_record) }}>{Literals.Button.Clear[Profile.Language]}</Button>
                                 </Form.Group>
                                 <Button floated="right" type='submit' color='blue'>{Literals.Button.Update[Profile.Language]}</Button>

@@ -19,17 +19,17 @@ import { FormContext } from '../../Provider/FormProvider'
 export default class CourtsCreate extends Component {
 
   PAGE_NAME = 'CourtsCreate'
-  
+
   componentDidUpdate() {
     const { Courts, removeCourtnotification } = this.props
     Notification(Courts.notifications, removeCourtnotification, this.context.clearForm)
   }
 
   render() {
-    const { Courts, Profile } = this.props
+    const { Courts, Profile,history } = this.props
 
     return (
-        Courts.isLoading || Courts.isDispatching ? <LoadingPage /> :
+      Courts.isLoading || Courts.isDispatching ? <LoadingPage /> :
         <Pagewrapper>
           <Headerwrapper>
             <Headerbredcrump>
@@ -46,9 +46,9 @@ export default class CourtsCreate extends Component {
               <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
               <Footerwrapper>
                 <Form.Group widths={'equal'}>
-                  <Link to="/Courts">
+                  {history && <Link to="/Courts">
                     <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
-                  </Link>
+                  </Link>}
                   <Button floated="right" type="button" color='grey' onClick={(e) => { this.context.clearForm(this.PAGE_NAME) }}>{Literals.Button.Clear[Profile.Language]}</Button>
                 </Form.Group>
                 <Button floated="right" type='submit' color='blue'>{Literals.Button.Create[Profile.Language]}</Button>
@@ -73,7 +73,7 @@ export default class CourtsCreate extends Component {
         fillCourtnotification(error)
       })
     } else {
-        AddCourts({ data, history })
+      AddCourts({ data, history })
     }
   }
 }

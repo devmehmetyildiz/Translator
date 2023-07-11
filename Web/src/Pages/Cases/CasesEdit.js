@@ -26,11 +26,12 @@ export default class CasesEdit extends Component {
   }
 
   componentDidMount() {
-    const { GetCase, match, history } = this.props
-    if (validator.isUUID(match.params.CaseID)) {
-      GetCase(match.params.CaseID)
+    const { GetCase, match, history, CaseID } = this.props
+    let Id = CaseID || match?.params?.CaseID
+    if (validator.isUUID(Id)) {
+      GetCase(Id)
     } else {
-      history.push("/Cases")
+      history && history.push("/Cases")
     }
   }
 
@@ -46,7 +47,7 @@ export default class CasesEdit extends Component {
 
   render() {
 
-    const { Cases, Profile } = this.props
+    const { Cases, Profile, history } = this.props
 
     const casestatusOption = [
       {
@@ -91,9 +92,9 @@ export default class CasesEdit extends Component {
               </Form.Group>
               <Footerwrapper>
                 <Form.Group widths={'equal'}>
-                  <Link to="/Cases">
+                  {history && <Link to="/Cases">
                     <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
-                  </Link>
+                  </Link>}
                   <Button floated="right" type="button" color='grey' onClick={(e) => { this.context.setForm(this.PAGE_NAME, Cases.selected_record) }}>{Literals.Button.Clear[Profile.Language]}</Button>
                 </Form.Group>
                 <Button floated="right" type='submit' color='blue'>{Literals.Button.Update[Profile.Language]}</Button>

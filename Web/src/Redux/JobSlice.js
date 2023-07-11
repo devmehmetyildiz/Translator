@@ -45,6 +45,20 @@ export const GetJobs = createAsyncThunk(
     }
 );
 
+export const GetJobsbyorderID = createAsyncThunk(
+    'Jobs/GetJobsbyorderID',
+    async (guid, { dispatch }) => {
+        try {
+            const response = await instanse.get(config.services.Business, ROUTES.JOB + `/GetbyorderID/${guid}`);
+            return response.data;
+        } catch (error) {
+            const errorPayload = AxiosErrorHelper(error);
+            dispatch(fillJobnotification(errorPayload));
+            throw errorPayload;
+        }
+    }
+);
+
 export const GetJob = createAsyncThunk(
     'Jobs/GetJob',
     async (guid, { dispatch }) => {
@@ -170,6 +184,19 @@ export const JobsSlice = createSlice({
                 state.list = action.payload;
             })
             .addCase(GetJobs.rejected, (state, action) => {
+                state.isLoading = false;
+                state.errMsg = action.error.message;
+            })
+            .addCase(GetJobsbyorderID.pending, (state) => {
+                state.isLoading = true;
+                state.errMsg = null;
+                state.list = [];
+            })
+            .addCase(GetJobsbyorderID.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.list = action.payload;
+            })
+            .addCase(GetJobsbyorderID.rejected, (state, action) => {
                 state.isLoading = false;
                 state.errMsg = action.error.message;
             })

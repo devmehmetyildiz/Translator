@@ -304,6 +304,17 @@ code {
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.e1ditIcon{
+  visibility: hidden;
+}
+
+.e1ditIcon:hover {
+  background-color: red;
+  animation: effect 1s infinite 2s;
+  transition-delay:1s;
+  visibility: visible;
 }

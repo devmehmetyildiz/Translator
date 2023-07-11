@@ -29,9 +29,10 @@ export default class MailsettingsEdit extends Component {
   }
 
   componentDidMount() {
-    const { GetMailsetting, match, history } = this.props
-    if (match.params.MailsettingID) {
-      GetMailsetting(match.params.MailsettingID)
+    const { GetMailsetting, match, history, MailsettingID } = this.props
+    let Id = MailsettingID || match.params.MailsettingID
+    if (validator.isUUID(Id)) {
+      GetMailsetting(Id)
     } else {
       history.push("/Mailsettings")
     }
@@ -87,7 +88,7 @@ export default class MailsettingsEdit extends Component {
                   {history && <Link to="/Mailsettings">
                     <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
                   </Link>}
-                  <Button floated="right" type="button" color='grey' onClick={(e) => { this.context.setForm(this.PAGE_NAME, Mailsettings.selected_record)}}>{Literals.Button.Clear[Profile.Language]}</Button>
+                  <Button floated="right" type="button" color='grey' onClick={(e) => { this.context.setForm(this.PAGE_NAME, Mailsettings.selected_record) }}>{Literals.Button.Clear[Profile.Language]}</Button>
                 </Form.Group>
                 <Button floated="right" type='submit' color='blue'>{Literals.Button.Update[Profile.Language]}</Button>
               </Footerwrapper>

@@ -26,6 +26,9 @@ async function Getnumerator(next, transaction) {
 
 async function Getcurrentnumerator(next) {
     try {
+        const currentDate = moment();
+        const year = currentDate.format('YY');
+        const month = currentDate.format('MM');
         const nums = await db.filenumeratorModel.findAll()
         if (nums && Array.isArray(nums) && nums.length > 0) {
             return nums[0].Current

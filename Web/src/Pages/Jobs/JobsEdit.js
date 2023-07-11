@@ -34,9 +34,10 @@ export default class JobsEdit extends Component {
 
   componentDidMount() {
     const { GetJob, GetLanguages, GetDocuments,
-      GetCases, GetOrders, match, history } = this.props
-    if (validator.isUUID(match.params.JobID)) {
-      GetJob(match.params.JobID)
+      GetCases, GetOrders, match, history, JobID } = this.props
+    let Id = JobID || match.params.JobID
+    if (validator.isUUID(Id)) {
+      GetJob(Id)
       GetLanguages()
       GetDocuments()
       GetCases()
@@ -117,16 +118,16 @@ export default class JobsEdit extends Component {
             <Form onSubmit={this.handleSubmit}>
               <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Order[Profile.Language]} name='OrderID' options={Orderoption} formtype='dropdown' />
               <Form.Group widths={'equal'}>
-                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Sourcelanguage[Profile.Language]} name='OrderID' options={Languageoption} formtype='dropdown' />
-                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Targetlanguage[Profile.Language]} name='OrderID' options={Languageoption} formtype='dropdown' />
+                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Sourcelanguage[Profile.Language]} name='SourcelanguageID' options={Languageoption} formtype='dropdown' />
+                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Targetlanguage[Profile.Language]} name='TargetlanguageID' options={Languageoption} formtype='dropdown' />
               </Form.Group>
               <Form.Group widths={'equal'}>
-                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Document[Profile.Language]} name='OrderID' options={Documentoption} formtype='dropdown' />
-                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Amount[Profile.Language]} name='OrderID' type={'number'} />
+                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Document[Profile.Language]} name='DocumentID' options={Documentoption} formtype='dropdown' />
+                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Amount[Profile.Language]} name='Amount' type={'number'} />
               </Form.Group>
               <Form.Group widths={'equal'}>
-                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Price[Profile.Language]} name='OrderID' type={'number'} />
-                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Case[Profile.Language]} name='OrderID' options={Caseoption} formtype='dropdown' />
+                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Price[Profile.Language]} name='Price' type={'number'} display='try'/>
+                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Case[Profile.Language]} name='CaseID' options={Caseoption} formtype='dropdown' />
               </Form.Group>
               <FormInput name='Info' placeholder={Literals.Columns.Info[Profile.Language]} />
               <Footerwrapper>

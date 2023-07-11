@@ -69,6 +69,7 @@ export const DataTable = ({ Columns, Data, Config, renderRowSubComponent }) => {
             pageIndex,
             pageSize,
             filters,
+            expanded,
             hiddenColumns: tableHiddenColumns,
             columnOrder: tableOrderColumns,
         },
@@ -165,7 +166,7 @@ export const DataTable = ({ Columns, Data, Config, renderRowSubComponent }) => {
                             {headerGroups.map(headerGroup => (
                                 <tr {...headerGroup.getHeaderGroupProps()}>
                                     {headerGroup.headers.map(column => {
-                                        return <th {...column.getHeaderProps()} style={column.newWidht && { width:column.newWidht }}>
+                                        return <th {...column.getHeaderProps()} style={column.newWidht && { width: column.newWidht }}>
                                             <div className='react-table-header-column'>
                                                 {
                                                     column.sortable ?

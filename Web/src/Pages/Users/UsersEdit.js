@@ -26,9 +26,10 @@ export default class UsersEdit extends Component {
   }
 
   componentDidMount() {
-    const { GetUser, GetRoles, match, history } = this.props
-    if (match.params.UserID) {
-      GetUser(match.params.UserID)
+    const { GetUser, GetRoles, match, history, UserID } = this.props
+    let Id = UserID || match.params.UserID
+    if (validator.isUUID(Id)) {
+      GetUser(Id)
       GetRoles()
     } else {
       history.push("/Users")

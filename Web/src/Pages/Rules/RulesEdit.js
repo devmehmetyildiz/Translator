@@ -30,11 +30,12 @@ export default class RulesEdit extends Component {
     }
 
     componentDidMount() {
-        const { GetRule, match, history } = this.props
-        if (match.params.RuleID) {
-            GetRule(match.params.RuleID)
+        const { GetRule, match, history, RuleID } = this.props
+        let Id = RuleID || match.params.RuleID
+        if (validator.isUUID(Id)) {
+            GetRule(Id)
         } else {
-history && history.push("/Rules")
+            history && history.push("/Rules")
         }
     }
 

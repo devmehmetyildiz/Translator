@@ -26,11 +26,12 @@ export default class RecordtypesEdit extends Component {
     }
 
     componentDidMount() {
-        const { GetRecordtype, match, history } = this.props
-        if (validator.isUUID(match.params.RecordtypeID)) {
-            GetRecordtype(match.params.RecordtypeID)
+        const { GetRecordtype, match, history, RecordtypeID } = this.props
+        let Id = RecordtypeID || match.params.RecordtypeID
+        if (validator.isUUID(Id)) {
+            GetRecordtype(Id)
         } else {
-history && history.push("/Recordtypes")
+            history && history.push("/Recordtypes")
         }
     }
 
@@ -46,7 +47,7 @@ history && history.push("/Recordtypes")
 
     render() {
 
-        const { Recordtypes, Profile ,history} = this.props
+        const { Recordtypes, Profile, history } = this.props
 
         return (
             Recordtypes.isLoading || Recordtypes.isDispatching ? <LoadingPage /> :
@@ -71,7 +72,7 @@ history && history.push("/Recordtypes")
                                     {history && <Link to="/Recordtypes">
                                         <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
                                     </Link>}
-                                    <Button floated="right" type="button" color='grey' onClick={(e) => { this.context.setForm(this.PAGE_NAME, Recordtypes.selected_record)}}>{Literals.Button.Clear[Profile.Language]}</Button>
+                                    <Button floated="right" type="button" color='grey' onClick={(e) => { this.context.setForm(this.PAGE_NAME, Recordtypes.selected_record) }}>{Literals.Button.Clear[Profile.Language]}</Button>
                                 </Form.Group>
                                 <Button floated="right" type='submit' color='blue'>{Literals.Button.Update[Profile.Language]}</Button>
                             </Footerwrapper>

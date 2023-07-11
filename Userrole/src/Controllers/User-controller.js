@@ -99,7 +99,7 @@ async function Register(req, res, next) {
             res.status(200).json({
                 messages: "Admin User Created Successfully"
             })
-        } catch (err) {
+        } catch (error) {
             await t.rollback()
             next(sequelizeErrorCatcher(error))
         }

@@ -28,12 +28,13 @@ export default class LanguagesEdit extends Component {
 
 
     componentDidMount() {
-        const { GetLanguage, GetKdvs, match, history } = this.props
-        if (validator.isUUID(match.params.LanguageID)) {
-            GetLanguage(match.params.LanguageID)
+        const { GetLanguage, GetKdvs, match, history, LanguageID } = this.props
+        let Id = LanguageID || match.params.LanguageID
+        if (validator.isUUID(Id)) {
+            GetLanguage(Id)
             GetKdvs()
         } else {
-history && history.push("/Languages")
+            history && history.push("/Languages")
         }
     }
 
@@ -51,7 +52,7 @@ history && history.push("/Languages")
 
 
     render() {
-        const { Languages, Kdvs, Profile,history } = this.props
+        const { Languages, Kdvs, Profile, history } = this.props
 
         const Kdvoptions = Kdvs.list.map(kdv => {
             return { key: kdv.Uuid, text: kdv.Name, value: kdv.Uuid }

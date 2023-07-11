@@ -26,11 +26,12 @@ export default class PaymentsEdit extends Component {
     }
 
     componentDidMount() {
-        const { GetPayment, match, history } = this.props
-        if (validator.isUUID(match.params.PaymentID)) {
-            GetPayment(match.params.PaymentID)
+        const { GetPayment, match, history, PaymentID } = this.props
+        let Id = PaymentID || match.params.PaymentID
+        if (validator.isUUID(Id)) {
+            GetPayment(Id)
         } else {
-history && history.push("/Payments")
+            history && history.push("/Payments")
         }
     }
 
@@ -46,7 +47,7 @@ history && history.push("/Payments")
 
     render() {
 
-        const { Payments, Profile,history } = this.props
+        const { Payments, Profile, history } = this.props
 
         return (
             Payments.isLoading || Payments.isDispatching ? <LoadingPage /> :

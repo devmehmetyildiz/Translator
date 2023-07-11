@@ -26,7 +26,7 @@ export default class CourthausesCreate extends Component {
   }
 
   render() {
-    const { Courthauses, Profile } = this.props
+    const { Courthauses, Profile, history } = this.props
 
     return (
       Courthauses.isLoading || Courthauses.isDispatching ? <LoadingPage /> :
@@ -46,9 +46,9 @@ export default class CourthausesCreate extends Component {
               <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
               <Footerwrapper>
                 <Form.Group widths={'equal'}>
-                  <Link to="/Courthauses">
+                  {history && <Link to="/Courthauses">
                     <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
-                  </Link>
+                  </Link>}
                   <Button floated="right" type="button" color='grey' onClick={(e) => { this.context.clearForm(this.PAGE_NAME) }}>{Literals.Button.Clear[Profile.Language]}</Button>
                 </Form.Group>
                 <Button floated="right" type='submit' color='blue'>{Literals.Button.Create[Profile.Language]}</Button>

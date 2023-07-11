@@ -6,8 +6,67 @@ const createValidationError = require("../Utilities/Error").createValidation
 const createNotfounderror = require("../Utilities/Error").createNotfounderror
 const validator = require("../Utilities/Validator")
 const uuid = require('uuid').v4
+const axios = require('axios')
 
-
+async function GetbyorderID(req, res, next) {
+    try {
+        let validationErrors = []
+        if (!req.params.orderId) {
+            validationErrors.push(messages.VALIDATION_ERROR.ORDERID_REQUIRED)
+        }
+        if (!validator.isUUID(req.params.orderId)) {
+            validationErrors.push(messages.VALIDATION_ERROR.UNSUPPORTED_ORDERID)
+        }
+        if (validationErrors.length > 0) {
+            return next(createValidationError(validationErrors, req.language))
+        }
+        const jobs = await db.jobModel.findAll({ where: { OrderID: req.params.orderId, Isactive: true } })
+        if (jobs && Array.isArray(jobs) && jobs.length > 0) {
+            let languages = []
+            let documents = []
+            let cases = []
+            try {
+                const languageresponse = axios({
+                    method: 'GET',
+                    url: config.services.Setting + `Languages`,
+                    headers: {
+                        session_key: config.session.secret
+                    }
+                })
+                const documentresponse = axios({
+                    method: 'GET',
+                    url: config.services.Setting + `Documents`,
+                    headers: {
+                        session_key: config.session.secret
+                    }
+                })
+                const caseresponse = axios({
+                    method: 'GET',
+                    url: config.services.Setting + `Cases`,
+                    headers: {
+                        session_key: config.session.secret
+                    }
+                })
+                const res = await Promise.all([languageresponse, documentresponse, caseresponse])
+                languages = res[0].data
+                documents = res[1].data
+                cases = res[2].data
+            } catch (error) {
+                return next(requestErrorCatcher(error, 'Setting'))
+            }
+            for (const job of jobs) {
+                job.Order = await db.orderModel.findOne({ where: { Uuid: job.OrderID } })
+                job.Sourcelanguage = languages.find(u => u.Uuid === job.SourcelanguageID)
+                job.Targetlanguage = languages.find(u => u.Uuid === job.TargetlanguageID)
+                job.Document = documents.find(u => u.Uuid === job.DocumentID)
+                job.Case = cases.find(u => u.Uuid === job.CaseID)
+            }
+        }
+        res.status(200).json(jobs)
+    } catch (error) {
+        return next(sequelizeErrorCatcher(error))
+    }
+}
 async function GetJobs(req, res, next) {
     try {
         const jobs = await db.jobModel.findAll({ where: { Isactive: true } })
@@ -45,7 +104,7 @@ async function GetJobs(req, res, next) {
                 return next(requestErrorCatcher(error, 'Setting'))
             }
             for (const job of jobs) {
-                job.Order = await db.orderModel.findOne({ where: { Uuid: OrderID } })
+                job.Order = await db.orderModel.findOne({ where: { Uuid: job.OrderID } })
                 job.Sourcelanguage = languages.find(u => u.Uuid === job.SourcelanguageID)
                 job.Targetlanguage = languages.find(u => u.Uuid === job.TargetlanguageID)
                 job.Document = documents.find(u => u.Uuid === job.DocumentID)
@@ -115,7 +174,7 @@ async function GetJob(req, res, next) {
         } catch (error) {
             return next(requestErrorCatcher(error, 'Setting'))
         }
-        job.Order = await db.orderModel.findOne({ where: { Uuid: OrderID } })
+        job.Order = await db.orderModel.findOne({ where: { Uuid: job.OrderID } })
         res.status(200).json(job)
     } catch (error) {
         return next(sequelizeErrorCatcher(error))
@@ -290,4 +349,5 @@ module.exports = {
     AddJobs,
     UpdateJobs,
     DeleteJobs,
+    GetbyorderID
 }

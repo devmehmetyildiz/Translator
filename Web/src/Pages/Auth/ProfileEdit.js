@@ -22,10 +22,6 @@ export default class ProfileEdit extends Component {
         }
     }
 
-    componentDidMount() {
-        const { GetUserMeta } = this.props
-        GetUserMeta()
-    }
 
     componentDidUpdate() {
         const { Profile, removenotification, Files, removeFilenotification } = this.props
@@ -33,10 +29,7 @@ export default class ProfileEdit extends Component {
         if (meta && meta.Id !== 0 && Object.keys(meta).length > 0 && !this.state.isDatafetched) {
             if (meta.Files && Array.isArray(meta.Files)) {
                 let pp = meta.Files.find(u => u.Usagetype === "PP")
-                this.setState({ file: pp ? pp : {}, isDatafetched: true, fetchedFromapi: true, showImg: pp ? true : false }, () => {
-                    console.log('file: ', this.state);
-
-                })
+                this.setState({ file: pp ? pp : {}, isDatafetched: true, fetchedFromapi: true, showImg: pp ? true : false })
             }
         }
         Notification(notifications, removenotification)
@@ -100,6 +93,7 @@ export default class ProfileEdit extends Component {
                 </div >
         )
     }
+
     handleSubmit = (e) => {
         e.preventDefault()
         const { EditUsers, history, fillnotification, Profile } = this.props

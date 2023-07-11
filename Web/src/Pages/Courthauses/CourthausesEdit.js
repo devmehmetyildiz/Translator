@@ -26,11 +26,12 @@ export default class CourthausesEdit extends Component {
     }
 
     componentDidMount() {
-        const { GetCourthause, match, history } = this.props
-        if (validator.isUUID(match.params.CourthauseID)) {
-            GetCourthause(match.params.CourthauseID)
+        const { GetCourthause, match, history, CourthauseID } = this.props
+        let Id = CourthauseID || match.params.CourthauseID
+        if (validator.isUUID(Id)) {
+            GetCourthause(Id)
         } else {
-history && history.push("/Courthauses")
+            history && history.push("/Courthauses")
         }
     }
 
@@ -46,7 +47,7 @@ history && history.push("/Courthauses")
 
     render() {
 
-        const { Courthauses, Profile } = this.props
+        const { Courthauses, Profile, history } = this.props
 
         return (
             Courthauses.isLoading || Courthauses.isDispatching ? <LoadingPage /> :
@@ -66,9 +67,9 @@ history && history.push("/Courthauses")
                             <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
                             <Footerwrapper>
                                 <Form.Group widths={'equal'}>
-                                    <Link to="/Courthauses">
+                                    {history && <Link to="/Courthauses">
                                         <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
-                                    </Link>
+                                    </Link>}
                                     <Button floated="right" type="button" color='grey' onClick={(e) => { this.context.setForm(this.PAGE_NAME, Courthauses.selected_record) }}>{Literals.Button.Clear[Profile.Language]}</Button>
                                 </Form.Group>
                                 <Button floated="right" type='submit' color='blue'>{Literals.Button.Update[Profile.Language]}</Button>

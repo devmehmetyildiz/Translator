@@ -28,12 +28,13 @@ export default class TranslatorsEdit extends Component {
 
 
     componentDidMount() {
-        const { GetTranslator, GetUsers, match, history } = this.props
-        if (validator.isUUID(match.params.TranslatorID)) {
-            GetTranslator(match.params.TranslatorID)
+        const { GetTranslator, GetUsers, match, history, TranslatorID } = this.props
+        let Id = TranslatorID || match.params.TranslatorID
+        if (validator.isUUID(Id)) {
+            GetTranslator(Id)
             GetUsers()
         } else {
-history && history.push("/Translators")
+            history && history.push("/Translators")
         }
     }
 

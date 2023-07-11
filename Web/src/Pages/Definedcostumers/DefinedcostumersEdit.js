@@ -26,11 +26,12 @@ export default class DefinedcostumersEdit extends Component {
     }
 
     componentDidMount() {
-        const { GetDefinedcostumer, match, history } = this.props
-        if (validator.isUUID(match.params.DefinedcostumerID)) {
-            GetDefinedcostumer(match.params.DefinedcostumerID)
+        const { GetDefinedcostumer, match, history, DefinedcostumerID } = this.props
+        let Id = DefinedcostumerID || match.params.DefinedcostumerID
+        if (validator.isUUID(Id)) {
+            GetDefinedcostumer(Id)
         } else {
-history && history.push("/Definedcostumers")
+            history && history.push("/Definedcostumers")
         }
     }
 
@@ -46,7 +47,7 @@ history && history.push("/Definedcostumers")
 
     render() {
 
-        const { Definedcostumers, Profile } = this.props
+        const { Definedcostumers, Profile, history } = this.props
 
         return (
             Definedcostumers.isLoading || Definedcostumers.isDispatching ? <LoadingPage /> :
@@ -78,9 +79,9 @@ history && history.push("/Definedcostumers")
                             <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Address[Profile.Language]} name="Address" />
                             <Footerwrapper>
                                 <Form.Group widths={'equal'}>
-                                    <Link to="/Definedcostumers">
+                                    {history && <Link to="/Definedcostumers">
                                         <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
-                                    </Link>
+                                    </Link>}
                                     <Button floated="right" type="button" color='grey' onClick={(e) => { this.context.setForm(this.PAGE_NAME, Definedcostumers.selected_record) }}>{Literals.Button.Clear[Profile.Language]}</Button>
                                 </Form.Group>
                                 <Button floated="right" type='submit' color='blue'>{Literals.Button.Update[Profile.Language]}</Button>

@@ -229,6 +229,7 @@ export const ProfileSlice = createSlice({
             .addCase(GetUserMeta.pending, (state) => {
                 state.isLogging = true;
                 state.errMsg = null;
+                state.meta = {}
             })
             .addCase(GetUserMeta.fulfilled, (state, action) => {
                 state.isLogging = false;

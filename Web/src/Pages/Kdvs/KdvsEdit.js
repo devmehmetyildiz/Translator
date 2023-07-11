@@ -26,11 +26,12 @@ export default class KdvsEdit extends Component {
     }
 
     componentDidMount() {
-        const { GetKdv, match, history } = this.props
-        if (validator.isUUID(match.params.KdvID)) {
-            GetKdv(match.params.KdvID)
+        const { GetKdv, match, history, KdvID } = this.props
+        let Id = KdvID || match.params.KdvID
+        if (validator.isUUID(Id)) {
+            GetKdv(Id)
         } else {
-history && history.push("/Kdvs")
+            history && history.push("/Kdvs")
         }
     }
 

@@ -6,6 +6,7 @@ const createValidationError = require("../Utilities/Error").createValidation
 const createNotfounderror = require("../Utilities/Error").createNotfounderror
 const validator = require("../Utilities/Validator")
 const uuid = require('uuid').v4
+const axios = require('axios')
 
 async function GetOrders(req, res, next) {
     try {
@@ -44,14 +45,14 @@ async function GetOrders(req, res, next) {
                 })
                 const costumerresponse = axios({
                     method: 'GET',
-                    url: config.services.Setting + `Costumers`,
+                    url: config.services.Setting + `Definedcostumers`,
                     headers: {
                         session_key: config.session.secret
                     }
                 })
                 const companyresponse = axios({
                     method: 'GET',
-                    url: config.services.Setting + `Companies`,
+                    url: config.services.Setting + `Definedcompanies`,
                     headers: {
                         session_key: config.session.secret
                     }
@@ -372,15 +373,23 @@ async function AddOrders(req, res, next) {
                 ...job,
                 Uuid: jobuuid,
                 Jobno: jobnumerator,
+                OrderID: orderuuid,
                 Createduser: "System",
                 Createtime: new Date(),
                 Isactive: true
             }, { transaction: t })
-            jobnumerator = Createnewnumerator(jobnumerator, next)
+            jobnumerator = await Createnewnumerator(jobnumerator, next)
         }
-        await db.filenumeratorModel.update({
-            Current: jobnumerator
-        }, {}, { transaction: t })
+        const filenumerator = await db.filenumeratorModel.findAll()
+        if (Array.isArray(filenumerator) && filenumerator.length > 0) {
+            await db.filenumeratorModel.update({
+                Current: jobnumerator
+            }, { where: { Id: filenumerator[0].Id } }, { transaction: t })
+        } else {
+            await db.filenumeratorModel.create({
+                Current: jobnumerator
+            }, { transaction: t })
+        }
         await t.commit()
     } catch (err) {
         await t.rollback()

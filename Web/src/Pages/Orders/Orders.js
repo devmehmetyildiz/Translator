@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import { Divider, Icon } from 'semantic-ui-react'
 import { Breadcrumb, Button, Grid, GridColumn } from 'semantic-ui-react'
 import ColumnChooser from '../../Containers/Utils/ColumnChooser'
-import DataTable from '../../Utils/DataTable'
 import LoadingPage from '../../Utils/LoadingPage'
 import NoDataScreen from '../../Utils/NoDataScreen'
 import Notification from '../../Utils/Notification'
@@ -12,25 +11,37 @@ import Pagewrapper from '../../Common/Wrappers/Pagewrapper'
 import Headerwrapper from '../../Common/Wrappers/Headerwrapper'
 import OrdersDelete from '../../Containers/Orders/OrdersDelete'
 import Pagedivider from '../../Common/Styled/Pagedivider'
+import OrdersList from './OrdersList'
 
 export default class Orders extends Component {
 
   componentDidMount() {
-    const { GetOrders } = this.props
+    const { GetOrders, GetJobs } = this.props
     GetOrders()
+    GetJobs()
   }
 
   componentDidUpdate() {
-    const { Orders, removeOrdernotification } = this.props
+    const { Orders, removeOrdernotification, Jobs, removeJobnotification } = this.props
     Notification(Orders.notifications, removeOrdernotification)
+    Notification(Jobs.notifications, removeJobnotification)
   }
 
   render() {
 
-    const { Orders, Profile, handleSelectedOrder, handleDeletemodal } = this.props
+    const { Orders, Profile, handleSelectedOrder, handleDeletemodal, Jobs } = this.props
     const { isLoading, isDispatching } = Orders
 
     const Columns = [
+      {
+        Header: () => null,
+        id: 'expander', accessor: 'expander', sortable: false, canGroupBy: false, canFilter: false, filterDisable: true, newWidht: '10px',
+        Cell: ({ row }) => (
+          <span {...row.getToggleRowExpandedProps()} >
+            {row.isExpanded ? <Icon name='triangle down' /> : <Icon name='triangle right' />}
+          </span>
+        ),
+      },
       { Header: Literals.Columns.Id[Profile.Language], accessor: 'Id', sortable: true, canGroupBy: true, canFilter: true, },
       { Header: Literals.Columns.Uuid[Profile.Language], accessor: 'Uuid', sortable: true, canGroupBy: true, canFilter: true, },
       { Header: Literals.Columns.Orderno[Profile.Language], accessor: 'Orderno', sortable: true, canGroupBy: true, canFilter: true },
@@ -75,7 +86,6 @@ export default class Orders extends Component {
     };
 
     const list = (Orders.list || []).map(item => {
-
       return {
         ...item,
         edit: <Link to={`/Orders/${item.Uuid}/edit`} ><Icon size='large' className='row-edit' name='edit' /></Link>,
@@ -87,7 +97,7 @@ export default class Orders extends Component {
     })
 
     return (
-      isLoading || isDispatching ? <LoadingPage /> :
+      isLoading || isDispatching || Jobs.isLoading || Jobs.isDispatching ? <LoadingPage /> :
         <React.Fragment>
           <Pagewrapper>
             <Headerwrapper>
@@ -112,7 +122,14 @@ export default class Orders extends Component {
             <Pagedivider />
             {list.length > 0 ?
               <div className='w-full mx-auto '>
-                <DataTable Columns={Columns} Data={list} Config={initialConfig} />
+                <OrdersList
+                  Data={list}
+                  Columns={Columns}
+                  initialConfig={initialConfig}
+                  Profile={Profile}
+                  Jobs={Jobs}
+                  setselectedRow={this.setselectedRow}
+                />
               </div> : <NoDataScreen message={Literals.Messages.Nodatafind[Profile.Language]} />
             }
           </Pagewrapper>

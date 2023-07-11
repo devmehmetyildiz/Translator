@@ -11,7 +11,7 @@ const FormProvider = ({ children }) => {
         Object.keys(form).map(u => {
             newform[pageName + '/' + u] = form[u]
         })
-        setFormstates(newform)
+        setFormstates({ ...formstates, ...newform })
     }
 
     const clearForm = (pageName) => {

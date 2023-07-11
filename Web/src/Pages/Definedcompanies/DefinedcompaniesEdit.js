@@ -26,11 +26,12 @@ export default class DefinedcompaniesEdit extends Component {
     }
 
     componentDidMount() {
-        const { GetDefinedcompany, match, history } = this.props
-        if (validator.isUUID(match.params.DefinedcompanyID)) {
-            GetDefinedcompany(match.params.DefinedcompanyID)
+        const { GetDefinedcompany, match, history, DefinedcompanyID } = this.props
+        let Id = DefinedcompanyID || match.params.DefinedcompanyID
+        if (validator.isUUID(Id)) {
+            GetDefinedcompany(Id)
         } else {
-history && history.push("/Definedcompanies")
+            history && history.push("/Definedcompanies")
         }
     }
 
@@ -46,7 +47,7 @@ history && history.push("/Definedcompanies")
 
     render() {
 
-        const { Definedcompanies, Profile } = this.props
+        const { Definedcompanies, Profile, history } = this.props
 
         return (
             Definedcompanies.isLoading || Definedcompanies.isDispatching ? <LoadingPage /> :
@@ -73,9 +74,9 @@ history && history.push("/Definedcompanies")
                             </Form.Group>
                             <Footerwrapper>
                                 <Form.Group widths={'equal'}>
-                                    <Link to="/Definedcompanies">
+                                    {history && <Link to="/Definedcompanies">
                                         <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
-                                    </Link>
+                                    </Link>}
                                     <Button floated="right" type="button" color='grey' onClick={(e) => { this.context.setForm(this.PAGE_NAME, Definedcompanies.selected_record) }}>{Literals.Button.Clear[Profile.Language]}</Button>
                                 </Form.Group>
                                 <Button floated="right" type='submit' color='blue'>{Literals.Button.Update[Profile.Language]}</Button>

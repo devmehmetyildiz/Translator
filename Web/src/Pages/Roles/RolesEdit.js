@@ -15,7 +15,7 @@ import Footerwrapper from '../../Common/Wrappers/Footerwrapper'
 import validator from '../../Utils/Validator'
 import { FormContext } from '../../Provider/FormProvider'
 export default class RolesEdit extends Component {
-    
+
     PAGE_NAME = 'RolesEdit'
 
     constructor(props) {
@@ -27,13 +27,14 @@ export default class RolesEdit extends Component {
     }
 
     componentDidMount() {
-        const { GetRole, GetPrivileges, GetPrivilegegroups, match, history } = this.props
-        if (match.params.RoleID) {
-            GetRole(match.params.RoleID)
+        const { GetRole, GetPrivileges, GetPrivilegegroups, match, history, RoleID } = this.props
+        let Id = RoleID || match.params.RoleID
+        if (validator.isUUID(Id)) {
+            GetRole(Id)
             GetPrivileges()
             GetPrivilegegroups()
         } else {
-history && history.push("/Roles")
+            history && history.push("/Roles")
         }
     }
 
@@ -49,7 +50,7 @@ history && history.push("/Roles")
 
     render() {
 
-        const { Roles, Profile,history } = this.props
+        const { Roles, Profile, history } = this.props
         const { privileges, privilegegroups, isLoading, isDispatching } = Roles
 
         return (

@@ -26,11 +26,12 @@ export default class GoalsEdit extends Component {
     }
 
     componentDidMount() {
-        const { GetGoal, match, history } = this.props
-        if (validator.isUUID(match.params.GoalID)) {
-            GetGoal(match.params.GoalID)
+        const { GetGoal, match, history, GoalID } = this.props
+        let Id = GoalID || match.params.GoalID
+        if (validator.isUUID(Id)) {
+            GetGoal(Id)
         } else {
-history && history.push("/Goals")
+            history && history.push("/Goals")
         }
     }
 
@@ -65,7 +66,7 @@ history && history.push("/Goals")
                         <Form onSubmit={this.handleSubmit}>
                             <Form.Group widths={'equal'}>
                                 <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
-                                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Goal[Profile.Language]} name="Goal" type='number' step='0.01' display='try'/>
+                                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Goal[Profile.Language]} name="Goal" type='number' step='0.01' display='try' />
                             </Form.Group>
                             <Footerwrapper>
                                 <Form.Group widths={'equal'}>

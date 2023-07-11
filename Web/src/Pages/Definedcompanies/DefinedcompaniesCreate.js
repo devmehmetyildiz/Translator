@@ -26,7 +26,7 @@ export default class DefinedcompaniesCreate extends Component {
     }
 
     render() {
-        const { Definedcompanies, Profile } = this.props
+        const { Definedcompanies, Profile, history } = this.props
 
         return (
             Definedcompanies.isLoading || Definedcompanies.isDispatching ? <LoadingPage /> :
@@ -53,9 +53,9 @@ export default class DefinedcompaniesCreate extends Component {
                             </Form.Group>
                             <Footerwrapper>
                                 <Form.Group widths={'equal'}>
-                                    <Link to="/Definedcompanies">
+                                    {history && <Link to="/Definedcompanies">
                                         <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
-                                    </Link>
+                                    </Link>}
                                     <Button floated="right" type="button" color='grey' onClick={(e) => { this.context.clearForm(this.PAGE_NAME) }}>{Literals.Button.Clear[Profile.Language]}</Button>
                                 </Form.Group>
                                 <Button floated="right" type='submit' color='blue'>{Literals.Button.Create[Profile.Language]}</Button>
