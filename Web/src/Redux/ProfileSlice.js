@@ -102,6 +102,20 @@ export const GetTableMeta = createAsyncThunk(
         }
     }
 );
+export const ResetTableMeta = createAsyncThunk(
+    'Profile/ResetTableMeta',
+    async (metaKey, { dispatch }) => {
+        console.log('metaKey: ', metaKey);
+        try {
+            const response = await instanse.delete(config.services.Userrole, ROUTES.USER + `/Resettablemeta/${metaKey}`);
+            return response.data;
+        } catch (error) {
+            const errorPayload = AxiosErrorHelper(error);
+            dispatch(fillnotification(errorPayload));
+            throw errorPayload;
+        }
+    }
+);
 
 export const SaveTableMeta = createAsyncThunk(
     'Profile/SaveTableMeta',
@@ -211,6 +225,18 @@ export const ProfileSlice = createSlice({
                 state.tablemeta = action.payload
             })
             .addCase(GetTableMeta.rejected, (state, action) => {
+                state.isLogging = false;
+                state.errMsg = action.error.message;
+            })
+            .addCase(ResetTableMeta.pending, (state) => {
+                state.isLogging = true;
+                state.errMsg = null;
+            })
+            .addCase(ResetTableMeta.fulfilled, (state, action) => {
+                state.isLogging = false;
+                state.tablemeta = action.payload
+            })
+            .addCase(ResetTableMeta.rejected, (state, action) => {
                 state.isLogging = false;
                 state.errMsg = action.error.message;
             })

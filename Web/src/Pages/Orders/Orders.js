@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Divider, Icon } from 'semantic-ui-react'
+import { Divider, Icon, Loader } from 'semantic-ui-react'
 import { Breadcrumb, Button, Grid, GridColumn } from 'semantic-ui-react'
 import ColumnChooser from '../../Containers/Utils/ColumnChooser'
 import LoadingPage from '../../Utils/LoadingPage'
@@ -16,20 +16,48 @@ import OrdersList from './OrdersList'
 export default class Orders extends Component {
 
   componentDidMount() {
-    const { GetOrders, GetJobs } = this.props
+    const { GetOrders, GetJobs, GetDefinedcompanies,
+      GetCourthauses, GetCourts, GetDefinedcostumers,
+      GetPayments, GetKdvs, GetTranslators, GetCases, GetRecordtypes, GetLanguages, GetDocuments } = this.props
     GetOrders()
     GetJobs()
+    GetCourthauses()
+    GetCourts()
+    GetDefinedcompanies()
+    GetDefinedcostumers()
+    GetPayments()
+    GetKdvs()
+    GetTranslators()
+    GetCases()
+    GetRecordtypes()
+    GetLanguages()
+    GetDocuments()
   }
 
   componentDidUpdate() {
-    const { Orders, removeOrdernotification, Jobs, removeJobnotification } = this.props
+    const { removeOrdernotification, removeDefinedcompanynotification,
+      removeJobnotification, removeCourthausenotification, removeCourtnotification, removeDefinedcostumernotification,
+      removePaymentnotification, removeKdvnotification, removeTranslatornotification, Orders, Jobs, Documents, removeDocumentNotification, Languages, removeLanguagenotification
+      , Courthauses, Courts, Definedcompanies, Definedcostumers, Kdvs, Translators, Payments, Cases, removeCasenotification, Recordtypes, removeRecordtypenotification
+    } = this.props
     Notification(Orders.notifications, removeOrdernotification)
     Notification(Jobs.notifications, removeJobnotification)
+    Notification(Definedcompanies.notifications, removeDefinedcompanynotification)
+    Notification(Courthauses.notifications, removeCourthausenotification)
+    Notification(Definedcostumers.notifications, removeDefinedcostumernotification)
+    Notification(Payments.notifications, removePaymentnotification)
+    Notification(Courts.notifications, removeCourtnotification)
+    Notification(Translators.notifications, removeTranslatornotification)
+    Notification(Kdvs.notifications, removeKdvnotification)
+    Notification(Cases.notifications, removeCasenotification)
+    Notification(Recordtypes.notifications, removeRecordtypenotification)
+    Notification(Documents.notifications, removeDocumentNotification)
+    Notification(Languages.notifications, removeLanguagenotification)
   }
 
   render() {
 
-    const { Orders, Profile, handleSelectedOrder, handleDeletemodal, Jobs } = this.props
+    const { Orders, Profile, handleSelectedOrder, handleDeletemodal, Jobs, Documents, Languages, Cases } = this.props
     const { isLoading, isDispatching } = Orders
 
     const Columns = [
@@ -45,27 +73,27 @@ export default class Orders extends Component {
       { Header: Literals.Columns.Id[Profile.Language], accessor: 'Id', sortable: true, canGroupBy: true, canFilter: true, },
       { Header: Literals.Columns.Uuid[Profile.Language], accessor: 'Uuid', sortable: true, canGroupBy: true, canFilter: true, },
       { Header: Literals.Columns.Orderno[Profile.Language], accessor: 'Orderno', sortable: true, canGroupBy: true, canFilter: true },
-      { Header: Literals.Columns.Recordtype[Profile.Language], accessor: 'Recordtype.Name', sortable: true, canGroupBy: true, canFilter: true },
-      { Header: Literals.Columns.Princiblecourthause[Profile.Language], accessor: 'Princiblecourthause.Name', sortable: true, canGroupBy: true, canFilter: true },
-      { Header: Literals.Columns.Princiblecourt[Profile.Language], accessor: 'Princiblecourt.Name', sortable: true, canGroupBy: true, canFilter: true },
+      { Header: Literals.Columns.Recordtype[Profile.Language], accessor: 'RecordtypeID', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.recordtypeCellhandler(col) },
+      { Header: Literals.Columns.Princiblecourthause[Profile.Language], accessor: 'PrinciblecourthauseID', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.courthauseCellhandler(col) },
+      { Header: Literals.Columns.Princiblecourt[Profile.Language], accessor: 'PrinciblecourtID', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.courtCellhandler(col) },
       { Header: Literals.Columns.Princibleno[Profile.Language], accessor: 'Princibleno', sortable: true, canGroupBy: true, canFilter: true },
       { Header: Literals.Columns.Desicionno[Profile.Language], accessor: 'Desicionno', sortable: true, canGroupBy: true, canFilter: true },
-      { Header: Literals.Columns.Directivecourthause[Profile.Language], accessor: 'Directivecourthause.Name', sortable: true, canGroupBy: true, canFilter: true },
-      { Header: Literals.Columns.Directivecourt[Profile.Language], accessor: 'Directivecourt.Name', sortable: true, canGroupBy: true, canFilter: true },
+      { Header: Literals.Columns.Directivecourthause[Profile.Language], accessor: 'DirectivecourthauseID', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.courthauseCellhandler(col) },
+      { Header: Literals.Columns.Directivecourt[Profile.Language], accessor: 'DirectivecourtID', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.courtCellhandler(col) },
       { Header: Literals.Columns.Directiveno[Profile.Language], accessor: 'Directiveno', sortable: true, canGroupBy: true, canFilter: true },
       { Header: Literals.Columns.Directiveinfo[Profile.Language], accessor: 'Directiveinfo', sortable: true, canGroupBy: true, canFilter: true },
-      { Header: Literals.Columns.Costumer[Profile.Language], accessor: 'Costumer.Name', sortable: true, canGroupBy: true, canFilter: true },
-      { Header: Literals.Columns.Company[Profile.Language], accessor: 'Company.Name', sortable: true, canGroupBy: true, canFilter: true },
+      { Header: Literals.Columns.Costumer[Profile.Language], accessor: 'CostumerID', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.costumerCellhandler(col) },
+      { Header: Literals.Columns.Company[Profile.Language], accessor: 'CompanyID', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.companyCellhandler(col) },
       { Header: Literals.Columns.Registerdate[Profile.Language], accessor: 'Registerdate', sortable: true, canGroupBy: true, canFilter: true },
       { Header: Literals.Columns.Deliverydate[Profile.Language], accessor: 'Deliverydate', sortable: true, canGroupBy: true, canFilter: true },
-      { Header: Literals.Columns.Translator[Profile.Language], accessor: 'Translator.Name', sortable: true, canGroupBy: true, canFilter: true },
-      { Header: Literals.Columns.Prepayment[Profile.Language], accessor: 'Prepayment.Name', sortable: true, canGroupBy: true, canFilter: true },
+      { Header: Literals.Columns.Translator[Profile.Language], accessor: 'TranslatorID', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.translatorCellhandler(col) },
+      { Header: Literals.Columns.Prepayment[Profile.Language], accessor: 'Prepayment', sortable: true, canGroupBy: true, canFilter: true },
       { Header: Literals.Columns.Notaryexpense[Profile.Language], accessor: 'Notaryexpense', sortable: true, canGroupBy: true, canFilter: true },
       { Header: Literals.Columns.Netprice[Profile.Language], accessor: 'Netprice', sortable: true, canGroupBy: true, canFilter: true },
       { Header: Literals.Columns.Calculatedprice[Profile.Language], accessor: 'Calculatedprice', sortable: true, canGroupBy: true, canFilter: true },
-      { Header: Literals.Columns.Kdv[Profile.Language], accessor: 'Kdv.Name', sortable: true, canGroupBy: true, canFilter: true },
-      { Header: Literals.Columns.Payment[Profile.Language], accessor: 'Payment.Name', sortable: true, canGroupBy: true, canFilter: true },
-      { Header: Literals.Columns.Case[Profile.Language], accessor: 'Case.Name', sortable: true, canGroupBy: true, canFilter: true },
+      { Header: Literals.Columns.Kdv[Profile.Language], accessor: 'KdvID', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.kdvCellhandler(col) },
+      { Header: Literals.Columns.Payment[Profile.Language], accessor: 'PaymentID', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.paymentCellhandler(col) },
+      { Header: Literals.Columns.Case[Profile.Language], accessor: 'CaseID', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.caseCellhandler(col) },
       { Header: Literals.Columns.Info[Profile.Language], accessor: 'Info', sortable: true, canGroupBy: true, canFilter: true },
       { Header: Literals.Columns.Createduser[Profile.Language], accessor: 'Createduser', sortable: true, canGroupBy: true, canFilter: true, },
       { Header: Literals.Columns.Updateduser[Profile.Language], accessor: 'Updateduser', sortable: true, canGroupBy: true, canFilter: true, },
@@ -129,6 +157,9 @@ export default class Orders extends Component {
                   Profile={Profile}
                   Jobs={Jobs}
                   setselectedRow={this.setselectedRow}
+                  Documents={Documents}
+                  Languages={Languages}
+                  Cases={Cases}
                 />
               </div> : <NoDataScreen message={Literals.Messages.Nodatafind[Profile.Language]} />
             }
@@ -136,5 +167,78 @@ export default class Orders extends Component {
           <OrdersDelete />
         </React.Fragment >
     )
+  }
+
+  courthauseCellhandler = (col) => {
+    const { Courthauses } = this.props
+    if (Courthauses.isLoading) {
+      return <Loader size='small' active inline='centered' ></Loader>
+    } else {
+      return (Courthauses.list || []).find(u => u.Uuid === col.value)?.Name
+    }
+  }
+  courtCellhandler = (col) => {
+    const { Courts } = this.props
+    if (Courts.isLoading) {
+      return <Loader size='small' active inline='centered' ></Loader>
+    } else {
+      return (Courts.list || []).find(u => u.Uuid === col.value)?.Name
+    }
+  }
+  companyCellhandler = (col) => {
+    const { Definedcompanies } = this.props
+    if (Definedcompanies.isLoading) {
+      return <Loader size='small' active inline='centered' ></Loader>
+    } else {
+      return (Definedcompanies.list || []).find(u => u.Uuid === col.value)?.Name
+    }
+  }
+  costumerCellhandler = (col) => {
+    const { Definedcostumers } = this.props
+    if (Definedcostumers.isLoading) {
+      return <Loader size='small' active inline='centered' ></Loader>
+    } else {
+      return (Definedcostumers.list || []).find(u => u.Uuid === col.value)?.Name
+    }
+  }
+  paymentCellhandler = (col) => {
+    const { Payments } = this.props
+    if (Payments.isLoading) {
+      return <Loader size='small' active inline='centered' ></Loader>
+    } else {
+      return (Payments.list || []).find(u => u.Uuid === col.value)?.Name
+    }
+  }
+  translatorCellhandler = (col) => {
+    const { Translators } = this.props
+    if (Translators.isLoading) {
+      return <Loader size='small' active inline='centered' ></Loader>
+    } else {
+      return (Translators.list || []).find(u => u.Uuid === col.value)?.Name
+    }
+  }
+  kdvCellhandler = (col) => {
+    const { Kdvs } = this.props
+    if (Kdvs.isLoading) {
+      return <Loader size='small' active inline='centered' ></Loader>
+    } else {
+      return (Kdvs.list || []).find(u => u.Uuid === col.value)?.Name
+    }
+  }
+  caseCellhandler = (col) => {
+    const { Cases } = this.props
+    if (Cases.isLoading) {
+      return <Loader size='small' active inline='centered' ></Loader>
+    } else {
+      return (Cases.list || []).find(u => u.Uuid === col.value)?.Name
+    }
+  }
+  recordtypeCellhandler = (col) => {
+    const { Recordtypes } = this.props
+    if (Recordtypes.isLoading) {
+      return <Loader size='small' active inline='centered' ></Loader>
+    } else {
+      return (Recordtypes.list || []).find(u => u.Uuid === col.value)?.Name
+    }
   }
 }

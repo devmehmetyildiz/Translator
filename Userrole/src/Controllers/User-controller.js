@@ -531,7 +531,7 @@ async function DeleteUser(req, res, next) {
     }
 
     try {
-        const user =await db.userModel.findOne({ where: { Uuid: Uuid } })
+        const user = await db.userModel.findOne({ where: { Uuid: Uuid } })
         if (!user) {
             return next(createNotfounderror([messages.ERROR.USER_NOT_FOUND], req.language))
         }
@@ -565,6 +565,19 @@ async function GetActiveUserMeta(req, res, next) {
     }
     res.status(200)
     return res.send(req.identity.user)
+}
+
+async function Resettablemeta(req, res, next) {
+    const key = req.params.metaKey
+    if (!req.identity.user) {
+        return next(createNotfounderror([messages.ERROR.USER_NOT_FOUND], req.language))
+    }
+    try {
+        await db.tablemetaconfigModel.destroy({ where: { Meta: key, UserID: req.identity.user.Uuid } })
+    } catch (error) {
+        return next(sequelizeErrorCatcher(error))
+    }
+    Getusertablemetaconfig(req, res, next)
 }
 
 function GetUserByEmail(next, Email, language) {
@@ -603,5 +616,6 @@ module.exports = {
     GetActiveUserMeta,
     Getusertablemetaconfig,
     Saveusertablemetaconfig,
-    Getbyemail
+    Getbyemail,
+    Resettablemeta
 }

@@ -11,6 +11,7 @@ const Routes = [
   { method: 'post', path: '/Users', controller: 'User', action: 'AddUser' },
   { method: 'post', path: '/Users/Register', controller: 'User', action: 'Register' },
   { method: 'put', path: '/Users', controller: 'User', action: 'UpdateUser' },
+  { method: 'delete', path: '/Users/Resettablemeta/:metaKey', controller: 'User', action: 'Resettablemeta' },
   { method: 'delete', path: '/Users/:userId', controller: 'User', action: 'DeleteUser' },
 
   { method: 'get', path: '/Roles', controller: 'Role', action: 'GetRoles' },

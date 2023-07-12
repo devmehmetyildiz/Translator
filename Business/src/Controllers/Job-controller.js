@@ -21,46 +21,8 @@ async function GetbyorderID(req, res, next) {
             return next(createValidationError(validationErrors, req.language))
         }
         const jobs = await db.jobModel.findAll({ where: { OrderID: req.params.orderId, Isactive: true } })
-        if (jobs && Array.isArray(jobs) && jobs.length > 0) {
-            let languages = []
-            let documents = []
-            let cases = []
-            try {
-                const languageresponse = axios({
-                    method: 'GET',
-                    url: config.services.Setting + `Languages`,
-                    headers: {
-                        session_key: config.session.secret
-                    }
-                })
-                const documentresponse = axios({
-                    method: 'GET',
-                    url: config.services.Setting + `Documents`,
-                    headers: {
-                        session_key: config.session.secret
-                    }
-                })
-                const caseresponse = axios({
-                    method: 'GET',
-                    url: config.services.Setting + `Cases`,
-                    headers: {
-                        session_key: config.session.secret
-                    }
-                })
-                const res = await Promise.all([languageresponse, documentresponse, caseresponse])
-                languages = res[0].data
-                documents = res[1].data
-                cases = res[2].data
-            } catch (error) {
-                return next(requestErrorCatcher(error, 'Setting'))
-            }
-            for (const job of jobs) {
-                job.Order = await db.orderModel.findOne({ where: { Uuid: job.OrderID } })
-                job.Sourcelanguage = languages.find(u => u.Uuid === job.SourcelanguageID)
-                job.Targetlanguage = languages.find(u => u.Uuid === job.TargetlanguageID)
-                job.Document = documents.find(u => u.Uuid === job.DocumentID)
-                job.Case = cases.find(u => u.Uuid === job.CaseID)
-            }
+        for (const job of jobs) {
+            job.Order = await db.orderModel.findOne({ where: { Uuid: job.OrderID } })
         }
         res.status(200).json(jobs)
     } catch (error) {
@@ -70,46 +32,8 @@ async function GetbyorderID(req, res, next) {
 async function GetJobs(req, res, next) {
     try {
         const jobs = await db.jobModel.findAll({ where: { Isactive: true } })
-        if (jobs && Array.isArray(jobs) && jobs.length > 0) {
-            let languages = []
-            let documents = []
-            let cases = []
-            try {
-                const languageresponse = axios({
-                    method: 'GET',
-                    url: config.services.Setting + `Languages`,
-                    headers: {
-                        session_key: config.session.secret
-                    }
-                })
-                const documentresponse = axios({
-                    method: 'GET',
-                    url: config.services.Setting + `Documents`,
-                    headers: {
-                        session_key: config.session.secret
-                    }
-                })
-                const caseresponse = axios({
-                    method: 'GET',
-                    url: config.services.Setting + `Cases`,
-                    headers: {
-                        session_key: config.session.secret
-                    }
-                })
-                const res = await Promise.all([languageresponse, documentresponse, caseresponse])
-                languages = res[0].data
-                documents = res[1].data
-                cases = res[2].data
-            } catch (error) {
-                return next(requestErrorCatcher(error, 'Setting'))
-            }
-            for (const job of jobs) {
-                job.Order = await db.orderModel.findOne({ where: { Uuid: job.OrderID } })
-                job.Sourcelanguage = languages.find(u => u.Uuid === job.SourcelanguageID)
-                job.Targetlanguage = languages.find(u => u.Uuid === job.TargetlanguageID)
-                job.Document = documents.find(u => u.Uuid === job.DocumentID)
-                job.Case = cases.find(u => u.Uuid === job.CaseID)
-            }
+        for (const job of jobs) {
+            job.Order = await db.orderModel.findOne({ where: { Uuid: job.OrderID } })
         }
         res.status(200).json(jobs)
     } catch (error) {
@@ -137,42 +61,6 @@ async function GetJob(req, res, next) {
         }
         if (!job.Isactive) {
             return createNotfounderror([messages.ERROR.JOB_NOT_ACTIVE])
-        }
-        try {
-            let languages = []
-            let documents = []
-            let cases = []
-            const languageresponse = axios({
-                method: 'GET',
-                url: config.services.Setting + `Languages`,
-                headers: {
-                    session_key: config.session.secret
-                }
-            })
-            const documentresponse = axios({
-                method: 'GET',
-                url: config.services.Setting + `Documents`,
-                headers: {
-                    session_key: config.session.secret
-                }
-            })
-            const caseresponse = axios({
-                method: 'GET',
-                url: config.services.Setting + `Cases`,
-                headers: {
-                    session_key: config.session.secret
-                }
-            })
-            const res = await Promise.all([languageresponse, documentresponse, caseresponse])
-            languages = res[0].data
-            documents = res[1].data
-            cases = res[2].data
-            job.Sourcelanguage = languages.find(u => u.Uuid === job.SourcelanguageID)
-            job.Targetlanguage = languages.find(u => u.Uuid === job.TargetlanguageID)
-            job.Document = documents.find(u => u.Uuid === job.DocumentID)
-            job.Case = cases.find(u => u.Uuid === job.CaseID)
-        } catch (error) {
-            return next(requestErrorCatcher(error, 'Setting'))
         }
         job.Order = await db.orderModel.findOne({ where: { Uuid: job.OrderID } })
         res.status(200).json(job)

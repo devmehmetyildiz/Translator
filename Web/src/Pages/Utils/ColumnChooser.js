@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Icon, Button, Modal, Table, Label, Checkbox } from 'semantic-ui-react'
+import { Icon, Button, Modal, Table, Label, Checkbox, Form } from 'semantic-ui-react'
 import Literals from './Literals'
 
 class ColumnChooser extends Component {
@@ -76,8 +76,11 @@ class ColumnChooser extends Component {
           </Table>
         </Modal.Content>
         <Modal.Actions>
-          <Button type='button' negative onClick={() => this.setState({ opened: false })}>{Literals.Button.Giveup[Profile.Language]}</Button>
-          <Button floated='right' type='submit' positive onClick={() => this.saveChanges()}>{Literals.Button.Create[Profile.Language]}</Button>
+          <Button type='button' floated='left' negative onClick={() => this.resetTable()}>{Literals.Button.Reset[Profile.Language]}</Button>
+          <Form.Group widths={'equal'}>
+            <Button type='button' negative onClick={() => this.setState({ opened: false })}>{Literals.Button.Giveup[Profile.Language]}</Button>
+            <Button floated='right' type='submit' positive onClick={() => this.saveChanges()}>{Literals.Button.Create[Profile.Language]}</Button>
+          </Form.Group>
         </Modal.Actions>
       </Modal>
     </React.Fragment>
@@ -102,6 +105,11 @@ class ColumnChooser extends Component {
       }
     this.setState({ opened: false })
     SaveTableMeta({ data })
+  }
+
+  resetTable = () => {
+    const { metaKey, ResetTableMeta } = this.props
+    ResetTableMeta(metaKey)
   }
 
   orderChanged = (property, value) => {

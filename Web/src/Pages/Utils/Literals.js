@@ -34,6 +34,10 @@ const Literals = {
             tr: "Vazgeç",
             en: "Give up"
         },
+        Reset: {
+            tr: "Sıfırla",
+            en: "Reset"
+        },
 
     },
     Messages: {

@@ -66,6 +66,9 @@ export default class OrdersCreate extends Component {
     GetLanguages()
     GetDocuments()
     GetCases()
+    if (this.context.formstates[`${this.PAGE_NAME}/Jobs`]) {
+      this.setState({ selectedJobs: this.context.formstates[`${this.PAGE_NAME}/Jobs`] })
+    }
   }
 
   componentDidUpdate() {
@@ -91,9 +94,6 @@ export default class OrdersCreate extends Component {
     Notification(Documents.notifications, removeDocumentnotification, this.context.clearForm)
     Notification(Cases.notifications, removeCasenotification, this.context.clearForm)
 
-  }
-
-  componentWillUnmount() {
   }
 
   render() {
@@ -330,7 +330,10 @@ export default class OrdersCreate extends Component {
                   {history && <Link to="/Jobs">
                     <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
                   </Link>}
-                  <Button floated="right" type="button" color='grey' onClick={(e) => { this.context.clearForm(this.PAGE_NAME) }}>{Literals.Button.Clear[Profile.Language]}</Button>
+                  <Button floated="right" type="button" color='grey' onClick={(e) => {
+                    this.setState({ selectedJobs: [] })
+                    this.context.clearForm(this.PAGE_NAME)
+                  }}>{Literals.Button.Clear[Profile.Language]}</Button>
                 </Form.Group>
                 <Button floated="right" type='submit' color='blue'>{Literals.Button.Create[Profile.Language]}</Button>
               </Footerwrapper>
@@ -465,13 +468,17 @@ export default class OrdersCreate extends Component {
         key: Math.random(),
         Order: this.state.selectedJobs.length,
       }]
+    }, () => {
+      this.context.setFormstates({ ...this.context.formstates, [`${this.PAGE_NAME}/Jobs`]: this.state.selectedJobs })
     })
   }
 
   removeJobs = (key, order) => {
     let jobs = this.state.selectedJobs.filter(jobroute => jobroute.key !== key)
     jobs.filter(job => job.Order > order).forEach(job => job.Order--)
-    this.setState({ selectedJobs: jobs })
+    this.setState({ selectedJobs: jobs }, () => {
+      this.context.setFormstates({ ...this.context.formstates, [`${this.PAGE_NAME}/Jobs`]: this.state.selectedJobs })
+    })
   }
 
   selectedJobChangeHandler = (key, property, value) => {
@@ -482,8 +489,9 @@ export default class OrdersCreate extends Component {
         .forEach((jobroute) => jobroute.Order = jobRoutes[index].Order > value ? jobroute.Order + 1 : jobroute.Order - 1)
     }
     jobRoutes[index][property] = value
-    this.setState({ selectedJobs: jobRoutes })
+    this.setState({ selectedJobs: jobRoutes }, () => {
+      this.context.setFormstates({ ...this.context.formstates, [`${this.PAGE_NAME}/Jobs`]: this.state.selectedJobs })
+    })
   }
-
 }
 OrdersCreate.contextType = FormContext
