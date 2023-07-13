@@ -10,6 +10,7 @@ const recordtypeModel = require('./RecordtypeModel')
 const translatorModel = require('./TranslatorModel')
 const kdvModel = require('./KdvModel')
 const paymentModel = require('./PaymentModel')
+const languageconfigModel = require('./LanguageconfigModel')
 const applog_settingModel = require('./Applog_settingModel')
 
 
@@ -27,4 +28,5 @@ module.exports = {
     applog_settingModel,
     kdvModel,
     paymentModel,
+    languageconfigModel
 }

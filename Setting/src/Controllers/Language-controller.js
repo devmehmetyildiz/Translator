@@ -46,6 +46,89 @@ async function GetLanguage(req, res, next) {
     }
 }
 
+async function GetLanguageconfig(req, res, next) {
+    try {
+        const configs = await db.languageconfigModel.findAll({ where: { Isactive: true } })
+        if (!configs && Array.isArray(configs) && configs.length > 0) {
+            return createNotfounderror([messages.ERROR.LANGUAGECONFIG_NOT_FOUND])
+        }
+        const config = configs[0]
+        if (!config.Isactive) {
+            return createNotfounderror([messages.ERROR.LANGUAGECONFIG_NOT_ACTIVE])
+        }
+        res.status(200).json(config)
+    } catch (error) {
+        return next(sequelizeErrorCatcher(error))
+    }
+}
+
+async function UpdateLanguageconfig(req, res, next) {
+
+    let validationErrors = []
+    const {
+        Wordmaxcount,
+        Linemaxcount,
+        Charmaxcount,
+        Uuid
+    } = req.body
+
+    if (!validator.isNumber(Wordmaxcount)) {
+        validationErrors.push(messages.VALIDATION_ERROR.WORDMAXCOUNT_REQUIRED)
+    }
+    if (!validator.isNumber(Linemaxcount)) {
+        validationErrors.push(messages.VALIDATION_ERROR.LINEMAXCOUNT_REQUIRED)
+    }
+    if (!validator.isNumber(Charmaxcount)) {
+        validationErrors.push(messages.VALIDATION_ERROR.CHARMAXCOUNT_REQUIRED)
+    }
+
+    if (validationErrors.length > 0) {
+        return next(createValidationError(validationErrors, req.language))
+    }
+
+
+    const t = await db.sequelize.transaction();
+
+    try {
+        let isnewRecord = false
+        if (!validator.isUUID(Uuid)) {
+            isnewRecord = true
+        }
+        if (!isnewRecord) {
+            const config = await db.languageconfigModel.findOne({ where: { Uuid: Uuid, Isactive: true } })
+            if (!config) {
+                isnewRecord = true
+            }
+            if (!config.Isactive) {
+                isnewRecord = true
+            }
+        }
+
+        if (isnewRecord) {
+            let languageconfiguuid = uuid()
+            await db.languageModel.create({
+                ...req.body,
+                Uuid: languageconfiguuid,
+                Createduser: "System",
+                Createtime: new Date(),
+                Isactive: true
+            }, { transaction: t })
+        } else {
+            await db.languageModel.create({
+                ...req.body,
+                Createduser: "System",
+                Createtime: new Date(),
+                Isactive: true
+            }, { where: { Uuid: Uuid } }, { transaction: t })
+        }
+
+        await t.commit()
+    } catch (err) {
+        await t.rollback()
+        return next(sequelizeErrorCatcher(err))
+    }
+    GetLanguages(req, res, next)
+}
 
 
 async function AddLanguage(req, res, next) {
@@ -191,4 +274,6 @@ module.exports = {
     AddLanguage,
     UpdateLanguage,
     DeleteLanguage,
+    GetLanguageconfig,
+    UpdateLanguageconfig,
 }

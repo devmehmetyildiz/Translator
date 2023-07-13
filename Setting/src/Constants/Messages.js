@@ -121,6 +121,18 @@ const messages = {
         tr: 'Dil aktif değil',
       }
     },
+    LANGUAGECONFIG_NOT_FOUND: {
+      code: 'LANGUAGECONFIG_NOT_FOUND', description: {
+        en: 'Language config not found',
+        tr: 'Dil ayarı bulunamadı',
+      }
+    },
+    LANGUAGECONFIG_NOT_ACTIVE: {
+      code: 'LANGUAGECONFIG_NOT_ACTIVE', description: {
+        en: 'Language config not active',
+        tr: 'Dil ayarı aktif değil',
+      }
+    },
     RECORDTYPE_NOT_FOUND: {
       code: 'RECORDTYPE_NOT_FOUND', description: {
         en: 'Record type not found',
@@ -395,8 +407,24 @@ const messages = {
         tr: 'Bu işlem için kullanıcı id bilgisi gerekli',
       }
     },
-
+    WORDMAXCOUNT_REQUIRED: {
+      code: 'WORDMAXCOUNT_REQUIRED', description: {
+        en: 'The word max count required',
+        tr: 'Bu işlem için maximum kelime sayısı gerekli',
+      }
+    },
+    LINEMAXCOUNT_REQUIRED: {
+      code: 'LINEMAXCOUNT_REQUIRED', description: {
+        en: 'The line max count required',
+        tr: 'Bu işlem için maximum satır sayısı gerekli',
+      }
+    },
+    CHARMAXCOUNT_REQUIRED: {
+      code: 'CHARMAXCOUNT_REQUIRED', description: {
+        en: 'The char max count required',
+        tr: 'Bu işlem için maximum karakter sayısı gerekli',
+      }
+    },
   }
-
 }
 module.exports = messages

@@ -159,6 +159,10 @@ const Literals = {
             tr: 'Sil',
             en: 'Delete'
         },
+        calculate: {
+            tr: 'Hesapla',
+            en: 'Calculate'
+        },
         orders: {
             tr: 'Sipariş Detayları',
             en: 'Orders Detail'
@@ -166,6 +170,30 @@ const Literals = {
         jobs: {
             tr: 'İş Detayları',
             en: 'Jobs Detail'
+        },
+        Wordcount: {
+            tr: 'Kelime Sayısı',
+            en: 'Word Count'
+        },
+        Linecount: {
+            tr: 'Satır Sayısı',
+            en: 'Line Count'
+        },
+        Charcount: {
+            tr: 'Karakter Sayısı',
+            en: 'Char Count'
+        },
+        Calculatedprice: {
+            tr: 'Hesaplanan Ücret',
+            en: 'Calculated Price'
+        },
+        Calculatedamount: {
+            tr: 'Hesaplanan Adet',
+            en: 'Calculated Amount'
+        },
+        Preferredprice: {
+            tr: 'Tavsiye Edilen Ücret',
+            en: 'Preferred Price'
         },
     },
     Page: {
@@ -184,7 +212,11 @@ const Literals = {
         Pagedeleteheader: {
             tr: "Sipariş Silme",
             en: "Delete Order"
-        }
+        },
+        Pagelanguageeditheader: {
+            tr: "Ücret Hesaplama",
+            en: "Calculate Price"
+        },
     },
     Button: {
         Create: {

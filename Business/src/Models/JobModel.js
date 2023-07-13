@@ -52,8 +52,8 @@ module.exports = sequelize.define('jobModel', {
     Calculatedamount: {
         type: Sequelize.INTEGER,
     },
-    Preferredamount: {
-        type: Sequelize.INTEGER,
+    Preferredprice: {
+        type: Sequelize.FLOAT,
     },
     Createduser: {
         type: Sequelize.STRING

@@ -37,6 +37,7 @@ import DefinedcostumersEdit from '../../Containers/Definedcostumers/Definedcostu
 import CourtsEdit from '../../Containers/Courts/CourtsEdit'
 import CourthausesEdit from '../../Containers/Courthauses/CourthausesEdit'
 import RecordtypesEdit from '../../Containers/Recordtypes/RecordtypesEdit'
+import LanguageCalculate from './LanguageCalculate'
 export default class OrdersCreate extends Component {
 
   PAGE_NAME = 'OrdersCreate'
@@ -259,6 +260,7 @@ export default class OrdersCreate extends Component {
                                 <Table.HeaderCell width={2}>{Literals.Columns.Price[Profile.Language]}</Table.HeaderCell>
                                 <Table.HeaderCell width={2}>{Literals.Columns.Case[Profile.Language]}{addModal(<CasesCreate />)} </Table.HeaderCell>
                                 <Table.HeaderCell width={10}>{Literals.Columns.Info[Profile.Language]}</Table.HeaderCell>
+                                <Table.HeaderCell width={1}>{Literals.Columns.calculate[Profile.Language]}</Table.HeaderCell>
                                 <Table.HeaderCell width={1}>{Literals.Columns.delete[Profile.Language]}</Table.HeaderCell>
                               </Table.Row>
                             </Table.Header>
@@ -304,6 +306,14 @@ export default class OrdersCreate extends Component {
                                   <Table.Cell>
                                     <Form.Input placeholder={Literals.Columns.Info[Profile.Language]} name="Info" fluid value={job.Info} onChange={(e) => { this.selectedJobChangeHandler(job.key, 'Info', e.target.value) }} />
                                   </Table.Cell>
+                                  <Table.Cell>
+                                    <LanguageCalculate
+                                      Key={job.key}
+                                      Jobs={this.state.selectedJobs}
+                                      updateJobs={(data) => { this.setState({ selectedJobs: data }) }}
+                                      Profile={Profile}
+                                    />
+                                  </Table.Cell>
                                   <Table.Cell className='table-last-section'>
                                     <Icon className='type-conversion-remove-icon' link color='red' name='minus circle'
                                       onClick={() => { this.removeJobs(job.key, job.Order) }} />
@@ -313,7 +323,7 @@ export default class OrdersCreate extends Component {
                             </Table.Body>
                             <Table.Footer>
                               <Table.Row>
-                                <Table.HeaderCell colSpan='10'>
+                                <Table.HeaderCell colSpan='11'>
                                   <Button type="button" color='green' className='addMoreButton' size='mini' onClick={() => { this.AddNewJob() }}>{Literals.Button.AddJob[Profile.Language]}</Button>
                                 </Table.HeaderCell>
                               </Table.Row>
@@ -466,6 +476,12 @@ export default class OrdersCreate extends Component {
         CaseID: '',
         Info: '',
         key: Math.random(),
+        Wordcount: 0,
+        Linecount: 0,
+        Charcount: 0,
+        Calculatedamount: 0,
+        Preferredprice: 0,
+        Calculatedprice: 0,
         Order: this.state.selectedJobs.length,
       }]
     }, () => {

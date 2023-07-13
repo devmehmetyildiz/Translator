@@ -8,5 +8,5 @@ module.exports = {
     applog_businessModel,
     orderModel,
     jobModel,
-    filenumeratorModel
+    filenumeratorModel,
 }

@@ -4,7 +4,6 @@ import { FormContext } from '../Provider/FormProvider';
 import store from '..';
 export default function FormInput(props) {
 
-    const inputref = useRef(null)
     const { display, page } = props
     const name = `${page}/${props.name}`
     const context = React.useContext(FormContext)
