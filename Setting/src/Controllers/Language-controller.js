@@ -49,12 +49,12 @@ async function GetLanguage(req, res, next) {
 async function GetLanguageconfig(req, res, next) {
     try {
         const configs = await db.languageconfigModel.findAll({ where: { Isactive: true } })
-        if (!configs && Array.isArray(configs) && configs.length > 0) {
-            return createNotfounderror([messages.ERROR.LANGUAGECONFIG_NOT_FOUND])
+        if (!configs || !Array.isArray(configs) || configs.length <= 0) {
+            return next(createNotfounderror([messages.ERROR.LANGUAGECONFIG_NOT_FOUND]))
         }
         const config = configs[0]
         if (!config.Isactive) {
-            return createNotfounderror([messages.ERROR.LANGUAGECONFIG_NOT_ACTIVE])
+            return next(createNotfounderror([messages.ERROR.LANGUAGECONFIG_NOT_ACTIVE]))
         }
         res.status(200).json(config)
     } catch (error) {
@@ -66,19 +66,19 @@ async function UpdateLanguageconfig(req, res, next) {
 
     let validationErrors = []
     const {
-        Wordmaxcount,
-        Linemaxcount,
-        Charmaxcount,
+        Wordcount,
+        Linecount,
+        Charcount,
         Uuid
     } = req.body
 
-    if (!validator.isNumber(Wordmaxcount)) {
+    if (!validator.isNumber(Wordcount)) {
         validationErrors.push(messages.VALIDATION_ERROR.WORDMAXCOUNT_REQUIRED)
     }
-    if (!validator.isNumber(Linemaxcount)) {
+    if (!validator.isNumber(Linecount)) {
         validationErrors.push(messages.VALIDATION_ERROR.LINEMAXCOUNT_REQUIRED)
     }
-    if (!validator.isNumber(Charmaxcount)) {
+    if (!validator.isNumber(Charcount)) {
         validationErrors.push(messages.VALIDATION_ERROR.CHARMAXCOUNT_REQUIRED)
     }
 
@@ -106,7 +106,7 @@ async function UpdateLanguageconfig(req, res, next) {
 
         if (isnewRecord) {
             let languageconfiguuid = uuid()
-            await db.languageModel.create({
+            await db.languageconfigModel.create({
                 ...req.body,
                 Uuid: languageconfiguuid,
                 Createduser: "System",
@@ -114,10 +114,10 @@ async function UpdateLanguageconfig(req, res, next) {
                 Isactive: true
             }, { transaction: t })
         } else {
-            await db.languageModel.create({
+            await db.languageconfigModel.update({
                 ...req.body,
-                Createduser: "System",
-                Createtime: new Date(),
+                Updateduser: "System",
+                Updatetime: new Date(),
                 Isactive: true
             }, { where: { Uuid: Uuid } }, { transaction: t })
         }

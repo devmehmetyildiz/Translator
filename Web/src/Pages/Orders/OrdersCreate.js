@@ -55,7 +55,7 @@ export default class OrdersCreate extends Component {
   componentDidMount() {
     const { GetRecordtypes, GetCourthauses, GetCourts, GetDefinedcostumers,
       GetDefinedcompanies, GetTranslators, GetKdvs, GetPayments, GetLanguages,
-      GetDocuments, GetCases } = this.props
+      GetDocuments, GetCases, GetLanguageconfig } = this.props
     GetRecordtypes()
     GetCourthauses()
     GetCourts()
@@ -67,6 +67,7 @@ export default class OrdersCreate extends Component {
     GetLanguages()
     GetDocuments()
     GetCases()
+    GetLanguageconfig()
     if (this.context.formstates[`${this.PAGE_NAME}/Jobs`]) {
       this.setState({ selectedJobs: this.context.formstates[`${this.PAGE_NAME}/Jobs`] })
     }
@@ -100,7 +101,7 @@ export default class OrdersCreate extends Component {
   render() {
 
     const { Orders, Recordtypes, Courthauses, Courts, Definedcompanies, history,
-      Definedcostumers, Translators, Kdvs, Payments, Languages, Documents, Cases, Profile,
+      Definedcostumers, Translators, Kdvs, Payments, Languages, Documents, Cases, Profile
     } = this.props
     const { isLoading, isDispatching } = Orders
 
@@ -270,7 +271,7 @@ export default class OrdersCreate extends Component {
                                   <Table.Cell>
                                     <Button.Group basic size='small'>
                                       <Button type='button' disabled={index === 0} icon='angle up' onClick={() => { this.selectedJobChangeHandler(job.key, 'Order', job.Order - 1) }} />
-                                      <Label basic>{job.Order}</Label>
+                                      <Label basic>{job.Order+1}</Label>
                                       <Button type='button' disabled={index + 1 === this.state.selectedJobs.length} icon='angle down' onClick={() => { this.selectedJobChangeHandler(job.key, 'Order', job.Order + 1) }} />
                                     </Button.Group>
                                   </Table.Cell>
@@ -312,6 +313,8 @@ export default class OrdersCreate extends Component {
                                       Jobs={this.state.selectedJobs}
                                       updateJobs={(data) => { this.setState({ selectedJobs: data }) }}
                                       Profile={Profile}
+                                      Languages={Languages}
+                                      context={this.context.formstates}
                                     />
                                   </Table.Cell>
                                   <Table.Cell className='table-last-section'>

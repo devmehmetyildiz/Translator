@@ -10,6 +10,12 @@ module.exports = sequelize.define('recordtypeModel', {
     Name: {
         type: Sequelize.STRING
     },
+    Ishaveprice: {
+        type: Sequelize.BOOLEAN
+    },
+    Price: {
+        type: Sequelize.FLOAT
+    },
     Createduser: {
         type: Sequelize.STRING
     },

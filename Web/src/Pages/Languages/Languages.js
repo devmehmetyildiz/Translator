@@ -12,8 +12,16 @@ import Pagewrapper from '../../Common/Wrappers/Pagewrapper'
 import Headerwrapper from '../../Common/Wrappers/Headerwrapper'
 import LanguagesDelete from '../../Containers/Languages/LanguagesDelete'
 import Pagedivider from '../../Common/Styled/Pagedivider'
+import LanguagesConfig from './LanguagesConfig'
 
 export default class Languages extends Component {
+
+    constructor(props) {
+        super(props)
+        this.state = {
+            isConfigopen: false
+        }
+    }
 
     componentDidMount() {
         const { GetLanguages } = this.props
@@ -27,7 +35,7 @@ export default class Languages extends Component {
 
     render() {
 
-        const { Languages, Profile, handleSelectedLanguage, handleDeletemodal } = this.props
+        const { Languages, Profile, handleSelectedLanguage, handleDeletemodal, fillLanguagenotification, GetLanguageconfig, EditLanguageconfig } = this.props
         const { isLoading, isDispatching } = Languages
 
         const Columns = [
@@ -87,6 +95,10 @@ export default class Languages extends Component {
                                         </Button>
                                     </Link>
                                     <ColumnChooser meta={Profile.tablemeta} columns={Columns} metaKey={metaKey} />
+                                    <Button color='facebook' floated='right' onClick={() => {
+                                        GetLanguageconfig()
+                                        this.setState({ isConfigopen: !this.state.isConfigopen })
+                                    }} >{Literals.Columns.Calculate[Profile.Language]}</Button>
                                 </GridColumn>
                             </Grid>
                         </Headerwrapper>
@@ -98,7 +110,17 @@ export default class Languages extends Component {
                         }
                     </Pagewrapper>
                     <LanguagesDelete />
+                    <LanguagesConfig
+                        open={this.state.isConfigopen}
+                        onOpen={() => { this.setState({ isConfigopen: true }) }}
+                        onClose={() => { this.setState({ isConfigopen: false }) }}
+                        Languages={Languages}
+                        Profile={Profile}
+                        Editconfig={EditLanguageconfig}
+                        fillnotification={fillLanguagenotification}
+                    />
                 </React.Fragment >
         )
     }
+
 }

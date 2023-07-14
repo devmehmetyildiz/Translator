@@ -21,6 +21,10 @@ const Literals = {
         en: 'Language updated successfully',
         tr: 'Dil Başarı ile güncellendi'
     },
+    updateconfigdescription: {
+        en: 'Language config updated successfully',
+        tr: 'Dil hesaplama ayarı Başarı ile güncellendi'
+    },
     deletecode: {
         en: 'Data Delete',
         tr: 'Veri Silme'
@@ -50,6 +54,20 @@ export const GetLanguage = createAsyncThunk(
     async (guid, { dispatch }) => {
         try {
             const response = await instanse.get(config.services.Setting, `${ROUTES.LANGUAGE}/${guid}`);
+            return response.data;
+        } catch (error) {
+            const errorPayload = AxiosErrorHelper(error);
+            dispatch(fillLanguagenotification(errorPayload));
+            throw errorPayload;
+        }
+    }
+);
+
+export const GetLanguageconfig = createAsyncThunk(
+    'Languages/GetLanguageconfig',
+    async (_, { dispatch }) => {
+        try {
+            const response = await instanse.get(config.services.Setting, `${ROUTES.LANGUAGE}/Getconfig`);
             return response.data;
         } catch (error) {
             const errorPayload = AxiosErrorHelper(error);
@@ -113,6 +131,27 @@ export const EditLanguages = createAsyncThunk(
     }
 );
 
+export const EditLanguageconfig = createAsyncThunk(
+    'Languages/EditLanguageconfig',
+    async ({ data }, { dispatch, getState }) => {
+        try {
+            const state = getState()
+            const Language = state.Profile.Language || 'en'
+            const response = await instanse.post(config.services.Setting, ROUTES.LANGUAGE + '/Saveconfig', data);
+            dispatch(fillLanguagenotification({
+                type: 'Success',
+                code: Literals.updatecode[Language],
+                description: Literals.updateconfigdescription[Language],
+            }));
+            return response.data;
+        } catch (error) {
+            const errorPayload = AxiosErrorHelper(error);
+            dispatch(fillLanguagenotification(errorPayload));
+            throw errorPayload;
+        }
+    }
+);
+
 export const DeleteLanguages = createAsyncThunk(
     'Languages/DeleteLanguages',
     async (data, { dispatch, getState }) => {
@@ -140,6 +179,7 @@ export const LanguagesSlice = createSlice({
     name: 'Languages',
     initialState: {
         list: [],
+        config: {},
         selected_record: {},
         errMsg: null,
         notifications: [],
@@ -191,6 +231,19 @@ export const LanguagesSlice = createSlice({
                 state.isLoading = false;
                 state.errMsg = action.error.message;
             })
+            .addCase(GetLanguageconfig.pending, (state) => {
+                state.isLoading = true;
+                state.errMsg = null;
+                state.config = {};
+            })
+            .addCase(GetLanguageconfig.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.config = action.payload;
+            })
+            .addCase(GetLanguageconfig.rejected, (state, action) => {
+                state.isLoading = false;
+                state.errMsg = action.error.message;
+            })
             .addCase(AddLanguages.pending, (state) => {
                 state.isDispatching = true;
             })
@@ -210,6 +263,17 @@ export const LanguagesSlice = createSlice({
                 state.list = action.payload;
             })
             .addCase(EditLanguages.rejected, (state, action) => {
+                state.isDispatching = false;
+                state.errMsg = action.error.message;
+            })
+            .addCase(EditLanguageconfig.pending, (state) => {
+                state.isDispatching = true;
+            })
+            .addCase(EditLanguageconfig.fulfilled, (state, action) => {
+                state.isDispatching = false;
+                state.config = action.payload;
+            })
+            .addCase(EditLanguageconfig.rejected, (state, action) => {
                 state.isDispatching = false;
                 state.errMsg = action.error.message;
             })

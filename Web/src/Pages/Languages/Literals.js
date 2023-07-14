@@ -27,6 +27,18 @@ const Literals = {
             tr: 'İskonto',
             en: 'Discount'
         },
+        Wordcount: {
+            tr: 'Kelime Sayısı',
+            en: 'Word Count'
+        },
+        Linecount: {
+            tr: 'Satır Sayısı',
+            en: 'Line Count'
+        },
+        Charcount: {
+            tr: 'Karakter Sayısı',
+            en: 'Char Count'
+        },
         Createduser: {
             tr: 'Oluşturan Kullanıcı',
             en: 'Created User'
@@ -51,6 +63,10 @@ const Literals = {
             tr: 'Sil',
             en: 'Delete'
         },
+        Calculate: {
+            tr: 'Hesap Ayarı',
+            en: 'Calculate Setting'
+        },
     },
     Page: {
         Pageheader: {
@@ -68,6 +84,10 @@ const Literals = {
         Pagedeleteheader: {
             tr: "Dil Silme",
             en: "Delete Language"
+        },
+        Pagelanguageconfigeditheader: {
+            tr: "Dil Hesaplama Ayarı",
+            en: "Language Calculate Config"
         }
     },
     Button: {
@@ -120,6 +140,18 @@ const Literals = {
         Discountrequired: {
             tr: "iskonto Gerekli",
             en: "discount Required"
+        },
+        Wordrequired: {
+            tr: "Kelime Sayısı Gerekli",
+            en: "Word count Required"
+        },
+        Linerequired: {
+            tr: "Satır Sayısı Gerekli",
+            en: "Line count Required"
+        },
+        Charrequired: {
+            tr: "Karakter Sayısı Gerekli",
+            en: "Char count Required"
         },
     }
 }

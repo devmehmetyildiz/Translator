@@ -7,13 +7,13 @@ module.exports = sequelize.define('languageconfigModel', {
     Uuid: {
         type: Sequelize.STRING
     },
-    Wordmaxcount: {
+    Wordcount: {
         type: Sequelize.INTEGER
     },
-    Linemaxcount: {
+    Linecount: {
         type: Sequelize.INTEGER
     },
-    Charmaxcount: {
+    Charcount: {
         type: Sequelize.INTEGER
     },
     Createduser: {

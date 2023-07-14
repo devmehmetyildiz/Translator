@@ -49,9 +49,9 @@ const Routes = [
   { method: 'put', path: '/Kdvs', controller: 'Kdv', action: 'UpdateKdv' },
   { method: 'delete', path: '/Kdvs/:kdvId', controller: 'Kdv', action: 'DeleteKdv' },
 
-  { method: 'get', path: '/Languages/:languageId', controller: 'Language', action: 'GetLanguage' },
   { method: 'get', path: '/Languages/Getconfig', controller: 'Language', action: 'GetLanguageconfig' },
   { method: 'post', path: '/Languages/Saveconfig', controller: 'Language', action: 'UpdateLanguageconfig' },
+  { method: 'get', path: '/Languages/:languageId', controller: 'Language', action: 'GetLanguage' },
   { method: 'get', path: '/Languages', controller: 'Language', action: 'GetLanguages' },
   { method: 'post', path: '/Languages', controller: 'Language', action: 'AddLanguage' },
   { method: 'put', path: '/Languages', controller: 'Language', action: 'UpdateLanguage' },

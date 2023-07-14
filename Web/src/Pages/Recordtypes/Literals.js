@@ -15,6 +15,14 @@ const Literals = {
             tr: 'Kayıt Tür Adı',
             en: 'Record Type Name'
         },
+        Ishaveprice: {
+            tr: 'Ücret Var mı?',
+            en: 'Is have Price'
+        },
+        Price: {
+            tr: 'Birim Ücret',
+            en: 'Unit Price'
+        },
         Createduser: {
             tr: 'Oluşturan Kullanıcı',
             en: 'Created User'
@@ -97,6 +105,14 @@ const Literals = {
             tr: "İsim Gerekli",
             en: "Name Required"
         },
+        Yes: {
+            tr: "EVET",
+            en: "YES"
+        },
+        No: {
+            tr: "HAYIR",
+            en: "NO"
+        }
     }
 }
 

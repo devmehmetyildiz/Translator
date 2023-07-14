@@ -66,7 +66,11 @@ export default class RecordtypesEdit extends Component {
                         <Form onSubmit={this.handleSubmit}>
                             <Form.Group widths={'equal'}>
                                 <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
+                                {this.context.formstates[`${this.PAGE_NAME}/Ishaveprice`] ?
+                                    <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Price[Profile.Language]} name="Price" type='number' display='try' />
+                                    : null}
                             </Form.Group>
+                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Ishaveprice[Profile.Language]} name="Ishaveprice" formtype={'checkbox'} />
                             <Footerwrapper>
                                 <Form.Group widths={'equal'}>
                                     {history && <Link to="/Recordtypes">
@@ -88,7 +92,7 @@ export default class RecordtypesEdit extends Component {
 
         const { EditRecordtypes, history, fillRecordtypenotification, Recordtypes, Profile } = this.props
         const data = formToObject(e.target)
-
+        data.Ishaveprice = this.context.formstates[`${this.PAGE_NAME}/Ishaveprice`] ? this.context.formstates[`${this.PAGE_NAME}/Ishaveprice`] : false
         let errors = []
         if (!validator.isString(data.Name)) {
             errors.push({ type: 'Error', code: Literals.Page.Pageheader[Profile.Language], description: Literals.Messages.Namerequired[Profile.Language] })

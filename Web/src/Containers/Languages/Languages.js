@@ -1,8 +1,8 @@
 import { connect } from 'react-redux'
 import Languages from "../../Pages/Languages/Languages"
 import {
-  GetLanguages, DeleteLanguages, removeLanguagenotification,
-  fillLanguagenotification, handleDeletemodal, handleSelectedLanguage
+  GetLanguages, DeleteLanguages, removeLanguagenotification, GetLanguageconfig, EditLanguageconfig,
+  fillLanguagenotification, handleDeletemodal, handleSelectedLanguage,
 } from "../../Redux/LanguageSlice"
 
 const mapStateToProps = (state) => ({
@@ -11,7 +11,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = {
-  GetLanguages, DeleteLanguages, removeLanguagenotification,
+  GetLanguages, DeleteLanguages, removeLanguagenotification, GetLanguageconfig, EditLanguageconfig,
   fillLanguagenotification, handleDeletemodal, handleSelectedLanguage
 }
 

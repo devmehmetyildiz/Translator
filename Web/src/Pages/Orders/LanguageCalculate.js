@@ -1,14 +1,34 @@
 import React, { Component } from 'react'
 import { Form, Grid, Icon, Modal } from 'semantic-ui-react'
 import Literals from './Literals'
+import validator from '../../Utils/Validator'
 
 export default class LanguageCalculate extends Component {
 
     handleChange = (e, { value, name }) => {
-        const { Jobs, updateJobs, Key } = this.props
+        const { Jobs, updateJobs, Key, Recordtypes, Languages, context } = this.props
         const selectedJob = Jobs.find(u => u.key === Key)
         selectedJob[name] = value
-        updateJobs(Jobs)
+
+        let calculatedAmount = 0
+        const parameters = ['Wordcount', 'Linecount', 'Charcount']
+        if (parameters.includes(name)) {
+            Object.values(parameters).forEach(param => {
+                let amount = Math.round(selectedJob[param] / Languages.config[param])
+                if (calculatedAmount <= amount) {
+                    calculatedAmount = amount
+                }
+            })
+        }
+        selectedJob.Calculatedamount = calculatedAmount
+        let price = 0
+        if (validator.isString(context['RecordtypeID']) && Recordtypes.list.find(u => u.Uuid === context['RecordtypeID'])?.Ishaveprice) {
+
+        } else {
+            selectedJob.TargetlanguageID && (price = (Languages.list.find(u => u.Uuid === selectedJob.TargetlanguageID)?.Price))
+        }
+        selectedJob.Calculatedprice = calculatedAmount *
+            updateJobs(Jobs)
     }
 
     render() {
