@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { Divider, Icon } from 'semantic-ui-react'
 import { Breadcrumb, Button, Grid, GridColumn } from 'semantic-ui-react'
 import ColumnChooser from '../../Containers/Utils/ColumnChooser'
+import ExcelImport from '../../Containers/Utils/ExcelImport'
 import DataTable from '../../Utils/DataTable'
 import LoadingPage from '../../Utils/LoadingPage'
 import NoDataScreen from '../../Utils/NoDataScreen'
@@ -85,6 +86,7 @@ export default class Courthauses extends Component {
                     </Button>
                   </Link>
                   <ColumnChooser meta={Profile.tablemeta} columns={Columns} metaKey={metaKey} />
+                  <ExcelImport columns={Columns} />
                 </GridColumn>
               </Grid>
             </Headerwrapper>

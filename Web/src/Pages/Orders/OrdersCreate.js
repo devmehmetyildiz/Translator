@@ -271,7 +271,7 @@ export default class OrdersCreate extends Component {
                                   <Table.Cell>
                                     <Button.Group basic size='small'>
                                       <Button type='button' disabled={index === 0} icon='angle up' onClick={() => { this.selectedJobChangeHandler(job.key, 'Order', job.Order - 1) }} />
-                                      <Label basic>{job.Order+1}</Label>
+                                      <Label basic>{job.Order + 1}</Label>
                                       <Button type='button' disabled={index + 1 === this.state.selectedJobs.length} icon='angle down' onClick={() => { this.selectedJobChangeHandler(job.key, 'Order', job.Order + 1) }} />
                                     </Button.Group>
                                   </Table.Cell>
@@ -461,7 +461,7 @@ export default class OrdersCreate extends Component {
         fillOrdernotification(error)
       })
     } else {
-      await AddOrders({ data: responseData, history })
+      AddOrders({ data: responseData, history })
     }
   }
 
