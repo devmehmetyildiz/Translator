@@ -157,6 +157,12 @@ const messages = {
         tr: 'Tercüman aktif değil',
       }
     },
+    DATA_ISNOT_ARRAY: {
+      code: 'DATA_ISNOT_ARRAY', description: {
+        en: 'data is not array',
+        tr: 'Data bir dizi değil',
+      }
+    },
   },
   VALIDATION_ERROR: {
     CASEID_REQUIRED: {

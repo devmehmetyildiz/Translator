@@ -12,6 +12,8 @@ import Pagewrapper from '../../Common/Wrappers/Pagewrapper'
 import Headerwrapper from '../../Common/Wrappers/Headerwrapper'
 import TranslatorsDelete from '../../Containers/Translators/TranslatorsDelete'
 import Pagedivider from '../../Common/Styled/Pagedivider'
+import ExcelImport from '../../Containers/Utils/ExcelImport'
+import ExcelExport from '../../Containers/Utils/ExcelExport'
 
 export default class Translators extends Component {
 
@@ -27,7 +29,7 @@ export default class Translators extends Component {
 
     render() {
 
-        const { Translators, Profile, handleSelectedTranslator, handleDeletemodal } = this.props
+        const { Translators, Profile, handleSelectedTranslator, handleDeletemodal,AddRecordTranslators } = this.props
         const { isLoading, isDispatching } = Translators
 
         const Columns = [
@@ -85,6 +87,8 @@ export default class Translators extends Component {
                                         </Button>
                                     </Link>
                                     <ColumnChooser meta={Profile.tablemeta} columns={Columns} metaKey={metaKey} />
+                                    <ExcelImport columns={Columns} addData={AddRecordTranslators} />
+                                    <ExcelExport data={list} name={metaKey} Config={initialConfig} />
                                 </GridColumn>
                             </Grid>
                         </Headerwrapper>

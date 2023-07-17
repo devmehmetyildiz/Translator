@@ -85,6 +85,27 @@ export const AddCourts = createAsyncThunk(
         }
     }
 );
+export const AddRecordCourts = createAsyncThunk(
+    'Courts/AddRecordCourts',
+    async ({ data, history }, { dispatch, getState }) => {
+        try {
+            const state = getState()
+            const Language = state.Profile.Language || 'en'
+            const response = await instanse.post(config.services.Setting, ROUTES.COURT+ '/AddRecord', data);
+            dispatch(fillCourtnotification({
+                type: 'Success',
+                code: Literals.addcode[Language],
+                description: Literals.adddescription[Language],
+            }));
+            history && history.push('/Courts');
+            return response.data;
+        } catch (error) {
+            const errorPayload = AxiosErrorHelper(error);
+            dispatch(fillCourtnotification(errorPayload));
+            throw errorPayload;
+        }
+    }
+);
 
 export const EditCourts = createAsyncThunk(
     'Courts/EditCourts',
@@ -199,6 +220,17 @@ export const CourtsSlice = createSlice({
                 state.list = action.payload;
             })
             .addCase(AddCourts.rejected, (state, action) => {
+                state.isDispatching = false;
+                state.errMsg = action.error.message;
+            })
+            .addCase(AddRecordCourts.pending, (state) => {
+                state.isDispatching = true;
+            })
+            .addCase(AddRecordCourts.fulfilled, (state, action) => {
+                state.isDispatching = false;
+                state.list = action.payload;
+            })
+            .addCase(AddRecordCourts.rejected, (state, action) => {
                 state.isDispatching = false;
                 state.errMsg = action.error.message;
             })

@@ -74,8 +74,6 @@ async function GetCase(req, res, next) {
     }
 }
 
-
-
 async function AddCase(req, res, next) {
 
     let validationErrors = []
@@ -120,6 +118,56 @@ async function AddCase(req, res, next) {
     } catch (err) {
         await t.rollback()
         return next(sequelizeErrorCatcher(err))
+    }
+    GetCases(req, res, next)
+}
+
+async function AddArrayCase(req, res, next) {
+    let validationErrors = []
+    if (Array.isArray(req.body)) {
+        try {
+            const t = await db.sequelize.transaction();
+            for (const data of req.body) {
+                const {
+                    Name,
+                    Shortname,
+                    Casecolor,
+                    CaseStatus,
+                } = data
+
+                if (!validator.isString(Name)) {
+                    validationErrors.push(messages.VALIDATION_ERROR.NAME_REQUIRED)
+                }
+                if (!validator.isString(Shortname)) {
+                    validationErrors.push(messages.VALIDATION_ERROR.SHORTNAME_REQUIRED)
+                }
+                if (!validator.isString(Casecolor)) {
+                    validationErrors.push(messages.VALIDATION_ERROR.NAME_REQUIRED)
+                }
+                if (!validator.isNumber(CaseStatus)) {
+                    validationErrors.push(messages.VALIDATION_ERROR.CASECOLOR_REQUIRED)
+                }
+
+                if (validationErrors.length > 0) {
+                    return next(createValidationError(validationErrors, req.language))
+                }
+
+                let caseuuid = uuid()
+                await db.caseModel.create({
+                    ...data,
+                    Uuid: caseuuid,
+                    Createduser: "System",
+                    Createtime: new Date(),
+                    Isactive: true
+                }, { transaction: t })
+            }
+            await t.commit()
+        } catch (err) {
+            await t.rollback()
+            return next(sequelizeErrorCatcher(err))
+        }
+    } else {
+        return createValidationError([messages.ERROR.DATA_ISNOT_ARRAY])
     }
     GetCases(req, res, next)
 }
@@ -218,6 +266,7 @@ module.exports = {
     GetCases,
     GetCase,
     AddCase,
+    AddArrayCase,
     UpdateCase,
     DeleteCase,
     GetCompleteCase,

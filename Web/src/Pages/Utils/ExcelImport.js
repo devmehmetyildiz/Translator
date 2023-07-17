@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Icon, Button, Modal, Table, Label, Checkbox, Form } from 'semantic-ui-react'
+import { Icon, Button, Modal, Table, Label, Checkbox, Form, Grid } from 'semantic-ui-react'
 import Literals from './Literals'
 import { read, utils } from 'xlsx';
 
@@ -8,7 +8,8 @@ class ExcelImport extends Component {
         super(props)
         this.state = {
             opened: false,
-            columns: [],
+            columnHeaders: [],
+            data: [],
             dataUploaded: false
         }
     }
@@ -20,7 +21,6 @@ class ExcelImport extends Component {
     render() {
 
         const { Profile } = this.props
-        const { columns } = this.state
 
         return <React.Fragment>
             <Button color='violet' floated='right' onClick={() => { this.setState({ opened: !this.state.opened }) }} >{Literals.Columns.Excelimport[Profile.Language]}</Button>
@@ -30,14 +30,38 @@ class ExcelImport extends Component {
                 centered={true}>
                 <Modal.Header><Icon name='file' />{Literals.Page.Pageheaderexcelimport[Profile.Language]}</Modal.Header>
                 <Modal.Content scrolling>
-                    <Form.Input label={Literals.Columns.File} type='file' accept=".xlsx, .xls" fluid onChange={this.handleFileChange}/>
+                    {this.state.dataUploaded ?
+                        <Table celled>
+                            <Table.Header>
+                                <Table.Row>
+                                    {this.state.columnHeaders.map((key, index) => {
+                                        return <Table.HeaderCell key={index}>{key}</Table.HeaderCell>
+                                    })}
+                                </Table.Row>
+                            </Table.Header>
+                            <Table.Body>
+                                {this.state.data.map((row, i) => {
+                                    return <Table.Row key={i}>
+                                        {Object.values(row).map((cell, ii) => {
+                                            return <Table.Cell key={i + ii}>
+                                                <Label >{cell}</Label>
+                                            </Table.Cell>
+                                        })}
+                                    </Table.Row>
+
+                                })}
+                            </Table.Body>
+                        </Table>
+                        : <Form.Input label={Literals.Columns.File} type='file' accept=".xlsx, .xls" fluid onChange={this.handleFileChange} />}
                 </Modal.Content>
-                <Modal.Actions>
-                    <Button type='button' floated='left' negative onClick={() => this.resetTable()}>{Literals.Button.Reset[Profile.Language]}</Button>
-                    <Form.Group widths={'equal'}>
-                        <Button type='button' negative onClick={() => this.setState({ opened: false })}>{Literals.Button.Giveup[Profile.Language]}</Button>
-                        <Button floated='right' type='submit' positive onClick={() => this.saveChanges()}>{Literals.Button.Create[Profile.Language]}</Button>
-                    </Form.Group>
+                <Modal.Actions >
+                    <Button className='!m-2' floated='left' type='button' negative onClick={() => this.setState({
+                        opened: false,
+                        columnHeaders: [],
+                        data: [],
+                        dataUploaded: false
+                    })}>{Literals.Button.Giveup[Profile.Language]}</Button>
+                    <Button className='!m-2' floated='right' type='submit' positive onClick={() => this.saveChanges()}>{Literals.Button.Create[Profile.Language]}</Button>
                 </Modal.Actions>
             </Modal>
         </React.Fragment>
@@ -52,53 +76,26 @@ class ExcelImport extends Component {
             const sheetName = workbook.SheetNames[0];
             const sheet = workbook.Sheets[sheetName];
             const jsonData = utils.sheet_to_json(sheet, { header: 1 });
-            console.log('jsonData: ', jsonData);
-            // Assuming the first row contains headers, you can adjust the options as needed.
-            // By default, sheet_to_json uses the first row as headers.
+            if (jsonData && Array.isArray(jsonData) && jsonData.length > 0) {
+                const columnHeaders = jsonData[0];
+                const dataArray = jsonData.slice(1).map((row) => {
+                    const obj = {};
+                    columnHeaders.forEach((header, index) => {
+                        obj[header] = row[index];
+                    });
+                    return obj;
+                });
+                this.setState({ columnHeaders: columnHeaders, data: dataArray, dataUploaded: true })
+            }
         };
+        reader.readAsBinaryString(file);
     };
 
     saveChanges = () => {
-        const { SaveTableMeta, meta, metaKey } = this.props
-        let tableMeta = (meta || []).find(u => u.Meta === metaKey)
-        const { decoratedColumns } = this.state
-        delete decoratedColumns['name']
-        const data = tableMeta ? {
-            Id: tableMeta.Id,
-            UserID: tableMeta.UserID,
-            Meta: tableMeta.Meta,
-            Config: JSON.stringify(decoratedColumns)
-        } :
-            {
-                Id: 0,
-                UserID: "",
-                Meta: metaKey,
-                Config: JSON.stringify(decoratedColumns)
-            }
-        this.setState({ opened: false })
-        SaveTableMeta({ data })
+        const { addData } = this.props
+        addData({ data: this.state.data })
     }
 
-    resetTable = () => {
-        const { metaKey, ResetTableMeta } = this.props
-        ResetTableMeta(metaKey)
-    }
-
-    orderChanged = (property, value) => {
-        const Columns = this.state.decoratedColumns
-        const index = Columns.findIndex(column => column.key === property)
-        Columns.filter(column => column.order === value)
-            .forEach((column) => column.order = Columns[index].order > value ? column.order + 1 : column.order - 1)
-        Columns[index].order = value
-        this.setState({ decoratedColumns: Columns })
-    }
-
-    visibleChanged = (property) => {
-        const Columns = this.state.decoratedColumns
-        const index = Columns.findIndex(column => column.key === property)
-        Columns[index].isVisible = !Columns[index].isVisible
-        this.setState({ decoratedColumns: Columns })
-    }
 }
 
 

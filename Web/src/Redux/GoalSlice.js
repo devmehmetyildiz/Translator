@@ -86,6 +86,28 @@ export const AddGoals = createAsyncThunk(
     }
 );
 
+export const AddRecordGoals = createAsyncThunk(
+    'Goals/AddRecordGoals',
+    async ({ data, history }, { dispatch, getState }) => {
+        try {
+            const state = getState()
+            const Language = state.Profile.Language || 'en'
+            const response = await instanse.post(config.services.Setting, ROUTES.GOAL + '/AddRecord', data);
+            dispatch(fillGoalnotification({
+                type: 'Success',
+                code: Literals.addcode[Language],
+                description: Literals.adddescription[Language],
+            }));
+            history && history.push('/Goals');
+            return response.data;
+        } catch (error) {
+            const errorPayload = AxiosErrorHelper(error);
+            dispatch(fillGoalnotification(errorPayload));
+            throw errorPayload;
+        }
+    }
+);
+
 export const EditGoals = createAsyncThunk(
     'Goals/EditGoals',
     async ({ data, history }, { dispatch, getState }) => {
@@ -199,6 +221,17 @@ export const GoalsSlice = createSlice({
                 state.list = action.payload;
             })
             .addCase(AddGoals.rejected, (state, action) => {
+                state.isDispatching = false;
+                state.errMsg = action.error.message;
+            })
+            .addCase(AddRecordGoals.pending, (state) => {
+                state.isDispatching = true;
+            })
+            .addCase(AddRecordGoals.fulfilled, (state, action) => {
+                state.isDispatching = false;
+                state.list = action.payload;
+            })
+            .addCase(AddRecordGoals.rejected, (state, action) => {
                 state.isDispatching = false;
                 state.errMsg = action.error.message;
             })

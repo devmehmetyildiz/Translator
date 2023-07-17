@@ -83,6 +83,48 @@ async function AddKdv(req, res, next) {
     GetKdvs(req, res, next)
 }
 
+async function AddArrayKdv(req, res, next) {
+    let validationErrors = []
+    if (Array.isArray(req.body)) {
+        try {
+            const t = await db.sequelize.transaction();
+            for (const data of req.body) {
+                const {
+                    Name,
+                    Percent
+                } = data
+
+                if (!validator.isString(Name)) {
+                    validationErrors.push(messages.VALIDATION_ERROR.NAME_REQUIRED)
+                }
+                if (!validator.isNumber(Percent)) {
+                    validationErrors.push(messages.VALIDATION_ERROR.PERCENT_REQUIRED)
+                }
+
+                if (validationErrors.length > 0) {
+                    return next(createValidationError(validationErrors, req.language))
+                }
+
+                let kdvuuid = uuid()
+                await db.kdvModel.create({
+                    ...data,
+                    Uuid: kdvuuid,
+                    Createduser: "System",
+                    Createtime: new Date(),
+                    Isactive: true
+                }, { transaction: t })
+            }
+            await t.commit()
+        } catch (err) {
+            await t.rollback()
+            return next(sequelizeErrorCatcher(err))
+        }
+    } else {
+        return createValidationError([messages.ERROR.DATA_ISNOT_ARRAY])
+    }
+    GetKdvs(req, res, next)
+}
+
 async function UpdateKdv(req, res, next) {
 
     let validationErrors = []
@@ -169,6 +211,7 @@ module.exports = {
     GetKdvs,
     GetKdv,
     AddKdv,
+    AddArrayKdv,
     UpdateKdv,
     DeleteKdv,
 }

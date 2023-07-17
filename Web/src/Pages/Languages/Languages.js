@@ -13,6 +13,8 @@ import Headerwrapper from '../../Common/Wrappers/Headerwrapper'
 import LanguagesDelete from '../../Containers/Languages/LanguagesDelete'
 import Pagedivider from '../../Common/Styled/Pagedivider'
 import LanguagesConfig from './LanguagesConfig'
+import ExcelImport from '../../Containers/Utils/ExcelImport'
+import ExcelExport from '../../Containers/Utils/ExcelExport'
 
 export default class Languages extends Component {
 
@@ -35,7 +37,8 @@ export default class Languages extends Component {
 
     render() {
 
-        const { Languages, Profile, handleSelectedLanguage, handleDeletemodal, fillLanguagenotification, GetLanguageconfig, EditLanguageconfig } = this.props
+        const { Languages, Profile, handleSelectedLanguage, handleDeletemodal, fillLanguagenotification, 
+            GetLanguageconfig, EditLanguageconfig,AddRecordLanguages } = this.props
         const { isLoading, isDispatching } = Languages
 
         const Columns = [
@@ -95,6 +98,8 @@ export default class Languages extends Component {
                                         </Button>
                                     </Link>
                                     <ColumnChooser meta={Profile.tablemeta} columns={Columns} metaKey={metaKey} />
+                                    <ExcelImport columns={Columns} addData={AddRecordLanguages} />
+                                    <ExcelExport data={list} name={metaKey} Config={initialConfig} />
                                     <Button color='facebook' floated='right' onClick={() => {
                                         GetLanguageconfig()
                                         this.setState({ isConfigopen: !this.state.isConfigopen })

@@ -178,6 +178,56 @@ async function AddLanguage(req, res, next) {
     GetLanguages(req, res, next)
 }
 
+async function AddArrayLanguage(req, res, next) {
+    let validationErrors = []
+    if (Array.isArray(req.body)) {
+        try {
+            const t = await db.sequelize.transaction();
+            for (const data of req.body) {
+                const {
+                    Name,
+                    Price,
+                    KdvID,
+                    Discount
+                } = data
+
+                if (!validator.isString(Name)) {
+                    validationErrors.push(messages.VALIDATION_ERROR.NAME_REQUIRED)
+                }
+                if (!validator.isNumber(Price)) {
+                    validationErrors.push(messages.VALIDATION_ERROR.PRICE_REQUIRED)
+                }
+                if (!validator.isUUID(KdvID)) {
+                    validationErrors.push(messages.VALIDATION_ERROR.KDVID_REQUIRED)
+                }
+                if (!validator.isNumber(Discount)) {
+                    validationErrors.push(messages.VALIDATION_ERROR.DISCOUNT_REQUIRED)
+                }
+
+                if (validationErrors.length > 0) {
+                    return next(createValidationError(validationErrors, req.language))
+                }
+
+                let languageuuid = uuid()
+                await db.languageModel.create({
+                    ...data,
+                    Uuid: languageuuid,
+                    Createduser: "System",
+                    Createtime: new Date(),
+                    Isactive: true
+                }, { transaction: t })
+            }
+            await t.commit()
+        } catch (err) {
+            await t.rollback()
+            return next(sequelizeErrorCatcher(err))
+        }
+    } else {
+        return createValidationError([messages.ERROR.DATA_ISNOT_ARRAY])
+    }
+    GetLanguages(req, res, next)
+}
+
 async function UpdateLanguage(req, res, next) {
 
     let validationErrors = []
@@ -272,6 +322,7 @@ module.exports = {
     GetLanguages,
     GetLanguage,
     AddLanguage,
+    AddArrayLanguage,
     UpdateLanguage,
     DeleteLanguage,
     GetLanguageconfig,

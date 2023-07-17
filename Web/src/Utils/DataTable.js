@@ -245,8 +245,8 @@ export const DataTable = ({ Columns, Data, Config, renderRowSubComponent }) => {
                 </div>
             </div>
             {
-                pageOptions.length > 1 ?
-                    <div className='flex flex-row justify-between items-center w-full p-2'>
+                (pageOptions.length > 1) ?
+                    <div className='flex flex-row justify-between items-center w-full p-[1px]'>
                         <Select className='ml-2' placeholder='Set Page Size' value={pageSize} onChange={(e, data) => { setPageSize(data.value) }} options={pageSizes} />
                         <div className="pagination">
                             <Pagination

@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import Recordtypes from "../../Pages/Recordtypes/Recordtypes"
 import {
-  GetRecordtypes, DeleteRecordtypes, removeRecordtypenotification,
+  GetRecordtypes, DeleteRecordtypes, removeRecordtypenotification, AddRecordRecordtypes,
   fillRecordtypenotification, handleDeletemodal, handleSelectedRecordtype
 } from "../../Redux/RecordtypeSlice"
 
@@ -11,7 +11,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = {
-  GetRecordtypes, DeleteRecordtypes, removeRecordtypenotification,
+  GetRecordtypes, DeleteRecordtypes, removeRecordtypenotification, AddRecordRecordtypes,
   fillRecordtypenotification, handleDeletemodal, handleSelectedRecordtype
 }
 

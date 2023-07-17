@@ -87,6 +87,28 @@ export const AddCourthauses = createAsyncThunk(
     }
 );
 
+export const AddRecordCourthauses = createAsyncThunk(
+    'Courthauses/AddRecordCourthauses',
+    async ({ data, history }, { dispatch, getState }) => {
+        try {
+            const state = getState()
+            const Language = state.Profile.Language || 'en'
+            const response = await instanse.post(config.services.Setting, ROUTES.COURTHAUSE + '/AddRecord', data);
+            dispatch(fillCourthausenotification({
+                type: 'Success',
+                code: Literals.addcode[Language],
+                description: Literals.adddescription[Language],
+            }));
+            history && history.push('/Courthauses');
+            return response.data;
+        } catch (error) {
+            const errorPayload = AxiosErrorHelper(error);
+            dispatch(fillCourthausenotification(errorPayload));
+            throw errorPayload;
+        }
+    }
+);
+
 export const EditCourthauses = createAsyncThunk(
     'Courthauses/EditCourthauses',
     async ({ data, history }, { dispatch, getState }) => {
@@ -195,6 +217,17 @@ export const CourthausesSlice = createSlice({
                 state.list = action.payload;
             })
             .addCase(AddCourthauses.rejected, (state, action) => {
+                state.isDispatching = false;
+                state.errMsg = action.error.message;
+            })
+            .addCase(AddRecordCourthauses.pending, (state) => {
+                state.isDispatching = true;
+            })
+            .addCase(AddRecordCourthauses.fulfilled, (state, action) => {
+                state.isDispatching = false;
+                state.list = action.payload;
+            })
+            .addCase(AddRecordCourthauses.rejected, (state, action) => {
                 state.isDispatching = false;
                 state.errMsg = action.error.message;
             })

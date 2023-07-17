@@ -1,6 +1,6 @@
 const Literals = {
     Options: {
-       
+
     },
     Columns: {
         Id: {
@@ -39,7 +39,7 @@ const Literals = {
             tr: 'Sil',
             en: 'Delete'
         },
-      
+
     },
     Page: {
         Pageheader: {
@@ -83,6 +83,10 @@ const Literals = {
         Clear: {
             tr: "Temizle",
             en: "Clear"
+        },
+        Settings: {
+            tr: "Ayarlar",
+            en: "Settings"
         }
 
     },

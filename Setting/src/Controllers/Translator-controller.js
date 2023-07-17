@@ -98,6 +98,44 @@ async function AddTranslator(req, res, next) {
     GetTranslators(req, res, next)
 }
 
+async function AddArrayTranslator(req, res, next) {
+    let validationErrors = []
+    if (Array.isArray(req.body)) {
+        try {
+            const t = await db.sequelize.transaction();
+            for (const data of req.body) {
+                const {
+                    Name,
+                } = data
+
+                if (!validator.isString(Name)) {
+                    validationErrors.push(messages.VALIDATION_ERROR.NAME_REQUIRED)
+                }
+
+                if (validationErrors.length > 0) {
+                    return next(createValidationError(validationErrors, req.language))
+                }
+
+                let translatoruuid = uuid()
+                await db.translatorModel.create({
+                    ...data,
+                    Uuid: translatoruuid,
+                    Createduser: "System",
+                    Createtime: new Date(),
+                    Isactive: true
+                }, { transaction: t })
+            }
+            await t.commit()
+        } catch (err) {
+            await t.rollback()
+            return next(sequelizeErrorCatcher(err))
+        }
+    } else {
+        return createValidationError([messages.ERROR.DATA_ISNOT_ARRAY])
+    }
+    GetTranslators(req, res, next)
+}
+
 async function UpdateTranslator(req, res, next) {
 
     let validationErrors = []
@@ -180,6 +218,7 @@ module.exports = {
     GetTranslators,
     GetTranslator,
     AddTranslator,
+    AddArrayTranslator,
     UpdateTranslator,
     DeleteTranslator,
 }

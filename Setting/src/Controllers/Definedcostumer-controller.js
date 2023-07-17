@@ -103,6 +103,68 @@ async function AddDefinedcostumer(req, res, next) {
     GetDefinedcostumers(req, res, next)
 }
 
+async function AddArrayDefinedcostumer(req, res, next) {
+    let validationErrors = []
+    if (Array.isArray(req.body)) {
+        try {
+            const t = await db.sequelize.transaction();
+            for (const data of req.body) {
+                const {
+                    Name,
+                    CountryID,
+                    Phone,
+                    Email,
+                    City,
+                    Town,
+                    Address,
+                } = data
+
+                if (!validator.isString(Name)) {
+                    validationErrors.push(messages.VALIDATION_ERROR.NAME_REQUIRED)
+                }
+                if (!validator.isString(CountryID)) {
+                    validationErrors.push(messages.VALIDATION_ERROR.COUNTRYID_REQUIRED)
+                }
+                if (!validator.isString(Phone)) {
+                    validationErrors.push(messages.VALIDATION_ERROR.PHONE_REQUIRED)
+                }
+                if (!validator.isString(Email)) {
+                    validationErrors.push(messages.VALIDATION_ERROR.EMAIL_REQUIRED)
+                }
+                if (!validator.isString(City)) {
+                    validationErrors.push(messages.VALIDATION_ERROR.CITY_REQUIRED)
+                }
+                if (!validator.isString(Town)) {
+                    validationErrors.push(messages.VALIDATION_ERROR.TOWN_REQUIRED)
+                }
+                if (!validator.isString(Address)) {
+                    validationErrors.push(messages.VALIDATION_ERROR.ADDRESS_REQUIRED)
+                }
+
+                if (validationErrors.length > 0) {
+                    return next(createValidationError(validationErrors, req.language))
+                }
+
+                let definedcostumerId = uuid()
+                await db.definedcostumerModel.create({
+                    ...data,
+                    Uuid: definedcostumerId,
+                    Createduser: "System",
+                    Createtime: new Date(),
+                    Isactive: true
+                }, { transaction: t })
+            }
+            await t.commit()
+        } catch (err) {
+            await t.rollback()
+            return next(sequelizeErrorCatcher(err))
+        }
+    } else {
+        return createValidationError([messages.ERROR.DATA_ISNOT_ARRAY])
+    }
+    GetDefinedcostumers(req, res, next)
+}
+
 async function UpdateDefinedcostumer(req, res, next) {
 
     let validationErrors = []
@@ -209,6 +271,7 @@ module.exports = {
     GetDefinedcostumers,
     GetDefinedcostumer,
     AddDefinedcostumer,
+    AddArrayDefinedcostumer,
     UpdateDefinedcostumer,
     DeleteDefinedcostumer,
 }

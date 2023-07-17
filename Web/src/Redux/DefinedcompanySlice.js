@@ -85,6 +85,27 @@ export const AddDefinedcompanies = createAsyncThunk(
         }
     }
 );
+export const AddRecordDefinedcompanies = createAsyncThunk(
+    'Definedcompanies/AddRecordDefinedcompanies',
+    async ({ data, history }, { dispatch, getState }) => {
+        try {
+            const state = getState()
+            const Language = state.Profile.Language || 'en'
+            const response = await instanse.post(config.services.Setting, ROUTES.DEFINEDCOMPANY + '/AddRecord', data);
+            dispatch(fillDefinedcompanynotification({
+                type: 'Success',
+                code: Literals.addcode[Language],
+                description: Literals.adddescription[Language],
+            }));
+            history && history.push('/Definedcompanies');
+            return response.data;
+        } catch (error) {
+            const errorPayload = AxiosErrorHelper(error);
+            dispatch(fillDefinedcompanynotification(errorPayload));
+            throw errorPayload;
+        }
+    }
+);
 
 export const EditDefinedcompanies = createAsyncThunk(
     'Definedcompanies/EditDefinedcompanies',
@@ -199,6 +220,17 @@ export const DefinedcompaniesSlice = createSlice({
                 state.list = action.payload;
             })
             .addCase(AddDefinedcompanies.rejected, (state, action) => {
+                state.isDispatching = false;
+                state.errMsg = action.error.message;
+            })
+            .addCase(AddRecordDefinedcompanies.pending, (state) => {
+                state.isDispatching = true;
+            })
+            .addCase(AddRecordDefinedcompanies.fulfilled, (state, action) => {
+                state.isDispatching = false;
+                state.list = action.payload;
+            })
+            .addCase(AddRecordDefinedcompanies.rejected, (state, action) => {
                 state.isDispatching = false;
                 state.errMsg = action.error.message;
             })

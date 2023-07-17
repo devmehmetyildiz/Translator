@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import Kdvs from "../../Pages/Kdvs/Kdvs"
 import {
-  GetKdvs, DeleteKdvs, removeKdvnotification,
+  GetKdvs, DeleteKdvs, removeKdvnotification,AddRecordKdvs,
   fillKdvnotification, handleDeletemodal, handleSelectedKdv
 } from "../../Redux/KdvSlice"
 
@@ -11,7 +11,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = {
-  GetKdvs, DeleteKdvs, removeKdvnotification,
+  GetKdvs, DeleteKdvs, removeKdvnotification,AddRecordKdvs,
   fillKdvnotification, handleDeletemodal, handleSelectedKdv
 }
 

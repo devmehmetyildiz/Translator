@@ -12,6 +12,8 @@ import Pagewrapper from '../../Common/Wrappers/Pagewrapper'
 import Headerwrapper from '../../Common/Wrappers/Headerwrapper'
 import GoalsDelete from '../../Containers/Goals/GoalsDelete'
 import Pagedivider from '../../Common/Styled/Pagedivider'
+import ExcelImport from '../../Containers/Utils/ExcelImport'
+import ExcelExport from '../../Containers/Utils/ExcelExport'
 
 export default class Goals extends Component {
 
@@ -27,7 +29,7 @@ export default class Goals extends Component {
 
     render() {
 
-        const { Goals, Profile, handleSelectedGoal, handleDeletemodal } = this.props
+        const { Goals, Profile, handleSelectedGoal, handleDeletemodal,AddRecordGoals } = this.props
         const { isLoading, isDispatching } = Goals
 
         const Columns = [
@@ -85,6 +87,8 @@ export default class Goals extends Component {
                                         </Button>
                                     </Link>
                                     <ColumnChooser meta={Profile.tablemeta} columns={Columns} metaKey={metaKey} />
+                                    <ExcelImport columns={Columns} addData={AddRecordGoals} />
+                                    <ExcelExport data={list} name={metaKey} Config={initialConfig} />
                                 </GridColumn>
                             </Grid>
                         </Headerwrapper>

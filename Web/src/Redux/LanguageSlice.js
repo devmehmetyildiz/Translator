@@ -104,6 +104,28 @@ export const AddLanguages = createAsyncThunk(
     }
 );
 
+export const AddRecordLanguages = createAsyncThunk(
+    'Languages/AddRecordLanguages',
+    async ({ data, history }, { dispatch, getState }) => {
+        try {
+            const state = getState()
+            const Language = state.Profile.Language || 'en'
+            const response = await instanse.post(config.services.Setting, ROUTES.LANGUAGE + '/AddRecord', data);
+            dispatch(fillLanguagenotification({
+                type: 'Success',
+                code: Literals.addcode[Language],
+                description: Literals.adddescription[Language],
+            }));
+            history && history.push('/Languages');
+            return response.data;
+        } catch (error) {
+            const errorPayload = AxiosErrorHelper(error);
+            dispatch(fillLanguagenotification(errorPayload));
+            throw errorPayload;
+        }
+    }
+);
+
 export const EditLanguages = createAsyncThunk(
     'Languages/EditLanguages',
     async ({ data, history }, { dispatch, getState }) => {
@@ -252,6 +274,17 @@ export const LanguagesSlice = createSlice({
                 state.list = action.payload;
             })
             .addCase(AddLanguages.rejected, (state, action) => {
+                state.isDispatching = false;
+                state.errMsg = action.error.message;
+            })
+            .addCase(AddRecordLanguages.pending, (state) => {
+                state.isDispatching = true;
+            })
+            .addCase(AddRecordLanguages.fulfilled, (state, action) => {
+                state.isDispatching = false;
+                state.list = action.payload;
+            })
+            .addCase(AddRecordLanguages.rejected, (state, action) => {
                 state.isDispatching = false;
                 state.errMsg = action.error.message;
             })

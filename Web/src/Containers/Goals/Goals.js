@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import Goals from "../../Pages/Goals/Goals"
 import {
-  GetGoals, DeleteGoals, removeGoalnotification,
+  GetGoals, DeleteGoals, removeGoalnotification,AddRecordGoals,
   fillGoalnotification, handleDeletemodal, handleSelectedGoal
 } from "../../Redux/GoalSlice"
 
@@ -11,7 +11,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = {
-  GetGoals, DeleteGoals, removeGoalnotification,
+  GetGoals, DeleteGoals, removeGoalnotification,AddRecordGoals,
   fillGoalnotification, handleDeletemodal, handleSelectedGoal
 }
 

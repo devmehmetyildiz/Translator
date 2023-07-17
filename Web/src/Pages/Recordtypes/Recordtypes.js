@@ -12,6 +12,8 @@ import Pagewrapper from '../../Common/Wrappers/Pagewrapper'
 import Headerwrapper from '../../Common/Wrappers/Headerwrapper'
 import RecordtypesDelete from '../../Containers/Recordtypes/RecordtypesDelete'
 import Pagedivider from '../../Common/Styled/Pagedivider'
+import ExcelImport from '../../Containers/Utils/ExcelImport'
+import ExcelExport from '../../Containers/Utils/ExcelExport'
 
 export default class Recordtypes extends Component {
 
@@ -27,7 +29,7 @@ export default class Recordtypes extends Component {
 
     render() {
 
-        const { Recordtypes, Profile, handleSelectedRecordtype, handleDeletemodal } = this.props
+        const { Recordtypes, Profile, handleSelectedRecordtype, handleDeletemodal, AddRecordRecordtypes } = this.props
         const { isLoading, isDispatching } = Recordtypes
 
         const Columns = [
@@ -86,6 +88,8 @@ export default class Recordtypes extends Component {
                                         </Button>
                                     </Link>
                                     <ColumnChooser meta={Profile.tablemeta} columns={Columns} metaKey={metaKey} />
+                                    <ExcelImport columns={Columns} addData={AddRecordRecordtypes} />
+                                    <ExcelExport data={list} name={metaKey} Config={initialConfig} />
                                 </GridColumn>
                             </Grid>
                         </Headerwrapper>

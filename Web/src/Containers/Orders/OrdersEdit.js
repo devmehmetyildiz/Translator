@@ -9,7 +9,7 @@ import { GetDefinedcompanies, removeDefinedcompanynotification } from "../../Red
 import { GetTranslators, removeTranslatornotification } from "../../Redux/TranslatorSlice"
 import { GetKdvs, removeKdvnotification } from "../../Redux/KdvSlice"
 import { GetPayments, removePaymentnotification } from "../../Redux/PaymentSlice"
-import { GetLanguages, removeLanguagenotification } from "../../Redux/LanguageSlice"
+import { GetLanguages, removeLanguagenotification, GetLanguageconfig } from "../../Redux/LanguageSlice"
 import { GetDocuments, removeDocumentnotification } from "../../Redux/DocumentSlice"
 import { GetCases, removeCasenotification } from "../../Redux/CaseSlice"
 
@@ -31,7 +31,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
     GetOrder, EditOrders, fillOrdernotification, removeOrdernotification, GetRecordtypes, removeRecordtypenotification,
-    GetCourthauses, removeCourthausenotification, GetCourts, removeCourtnotification,
+    GetCourthauses, removeCourthausenotification, GetCourts, removeCourtnotification, GetLanguageconfig,
     GetDefinedcostumers, removeDefinedcostumernotification, GetDefinedcompanies, removeDefinedcompanynotification,
     GetTranslators, removeTranslatornotification, GetKdvs, removeKdvnotification, GetPayments, removePaymentnotification,
     GetLanguages, removeLanguagenotification, GetDocuments, removeDocumentnotification, GetCases, removeCasenotification

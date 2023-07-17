@@ -12,6 +12,8 @@ import Pagewrapper from '../../Common/Wrappers/Pagewrapper'
 import Headerwrapper from '../../Common/Wrappers/Headerwrapper'
 import PaymentsDelete from '../../Containers/Payments/PaymentsDelete'
 import Pagedivider from '../../Common/Styled/Pagedivider'
+import ExcelImport from '../../Containers/Utils/ExcelImport'
+import ExcelExport from '../../Containers/Utils/ExcelExport'
 
 export default class Payments extends Component {
 
@@ -27,7 +29,7 @@ export default class Payments extends Component {
 
     render() {
 
-        const { Payments, Profile, handleSelectedPayment, handleDeletemodal } = this.props
+        const { Payments, Profile, handleSelectedPayment, handleDeletemodal,AddRecordPayments } = this.props
         const { isLoading, isDispatching } = Payments
 
         const Columns = [
@@ -84,6 +86,8 @@ export default class Payments extends Component {
                                         </Button>
                                     </Link>
                                     <ColumnChooser meta={Profile.tablemeta} columns={Columns} metaKey={metaKey} />
+                                    <ExcelImport columns={Columns} addData={AddRecordPayments} />
+                                    <ExcelExport data={list} name={metaKey} Config={initialConfig} />
                                 </GridColumn>
                             </Grid>
                         </Headerwrapper>

@@ -12,6 +12,8 @@ import Pagewrapper from '../../Common/Wrappers/Pagewrapper'
 import Headerwrapper from '../../Common/Wrappers/Headerwrapper'
 import DefinedcostumersDelete from '../../Containers/Definedcostumers/DefinedcostumersDelete'
 import Pagedivider from '../../Common/Styled/Pagedivider'
+import ExcelImport from '../../Containers/Utils/ExcelImport'
+import ExcelExport from '../../Containers/Utils/ExcelExport'
 
 export default class Definedcostumers extends Component {
 
@@ -27,7 +29,7 @@ export default class Definedcostumers extends Component {
 
     render() {
 
-        const { Definedcostumers, Profile, handleSelectedDefinedcostumer, handleDeletemodal } = this.props
+        const { Definedcostumers, Profile, handleSelectedDefinedcostumer, handleDeletemodal, AddRecordDefinedcostumers } = this.props
         const { isLoading, isDispatching } = Definedcostumers
 
         const Columns = [
@@ -90,6 +92,8 @@ export default class Definedcostumers extends Component {
                                         </Button>
                                     </Link>
                                     <ColumnChooser meta={Profile.tablemeta} columns={Columns} metaKey={metaKey} />
+                                    <ExcelImport columns={Columns} addData={AddRecordDefinedcostumers} />
+                                    <ExcelExport data={list} name={metaKey} Config={initialConfig} />
                                 </GridColumn>
                             </Grid>
                         </Headerwrapper>

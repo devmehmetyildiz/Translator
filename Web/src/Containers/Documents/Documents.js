@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import Documents from "../../Pages/Documents/Documents"
 import {
-  GetDocuments, DeleteDocuments, removeDocumentnotification,
+  GetDocuments, DeleteDocuments, removeDocumentnotification, AddRecordDocuments,
   fillDocumentnotification, handleDeletemodal, handleSelectedDocument
 } from "../../Redux/DocumentSlice"
 
@@ -11,7 +11,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = {
-  GetDocuments, DeleteDocuments, removeDocumentnotification,
+  GetDocuments, DeleteDocuments, removeDocumentnotification, AddRecordDocuments,
   fillDocumentnotification, handleDeletemodal, handleSelectedDocument
 }
 

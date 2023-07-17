@@ -87,6 +87,28 @@ export const AddKdvs = createAsyncThunk(
     }
 );
 
+export const AddRecordKdvs = createAsyncThunk(
+    'Kdvs/AddRecordKdvs',
+    async ({ data, history }, { dispatch, getState }) => {
+        try {
+            const state = getState()
+            const Language = state.Profile.Language || 'en'
+            const response = await instanse.post(config.services.Setting, ROUTES.KDV + '/AddRecord', data);
+            dispatch(fillKdvnotification({
+                type: 'Success',
+                code: Literals.addcode[Language],
+                description: Literals.adddescription[Language],
+            }));
+            history && history.push('/Kdvs');
+            return response.data;
+        } catch (error) {
+            const errorPayload = AxiosErrorHelper(error);
+            dispatch(fillKdvnotification(errorPayload));
+            throw errorPayload;
+        }
+    }
+);
+
 export const EditKdvs = createAsyncThunk(
     'Kdvs/EditKdvs',
     async ({ data, history }, { dispatch, getState }) => {
@@ -200,6 +222,17 @@ export const KdvsSlice = createSlice({
                 state.list = action.payload;
             })
             .addCase(AddKdvs.rejected, (state, action) => {
+                state.isDispatching = false;
+                state.errMsg = action.error.message;
+            })
+            .addCase(AddRecordKdvs.pending, (state) => {
+                state.isDispatching = true;
+            })
+            .addCase(AddRecordKdvs.fulfilled, (state, action) => {
+                state.isDispatching = false;
+                state.list = action.payload;
+            })
+            .addCase(AddRecordKdvs.rejected, (state, action) => {
                 state.isDispatching = false;
                 state.errMsg = action.error.message;
             })

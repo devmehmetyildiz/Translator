@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import Courts from "../../Pages/Courts/Courts"
 import {
   GetCourts, DeleteCourts, removeCourtnotification, fillCourtnotification,
-  handleDeletemodal, handleSelectedCourt
+  handleDeletemodal, handleSelectedCourt, AddRecordCourts
 } from "../../Redux/CourtSlice"
 
 const mapStateToProps = (state) => ({
@@ -12,7 +12,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   GetCourts, DeleteCourts, removeCourtnotification, fillCourtnotification,
-  handleDeletemodal, handleSelectedCourt
+  handleDeletemodal, handleSelectedCourt, AddRecordCourts
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Courts)

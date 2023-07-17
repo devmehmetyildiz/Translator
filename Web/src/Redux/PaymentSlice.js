@@ -86,6 +86,28 @@ export const AddPayments = createAsyncThunk(
     }
 );
 
+export const AddRecordPayments = createAsyncThunk(
+    'Payments/AddRecordPayments',
+    async ({ data, history }, { dispatch, getState }) => {
+        try {
+            const state = getState()
+            const Language = state.Profile.Language || 'en'
+            const response = await instanse.post(config.services.Setting, ROUTES.PAYMENT + '/AddRecord', data);
+            dispatch(fillPaymentnotification({
+                type: 'Success',
+                code: Literals.addcode[Language],
+                description: Literals.adddescription[Language],
+            }));
+            history && history.push('/Payments');
+            return response.data;
+        } catch (error) {
+            const errorPayload = AxiosErrorHelper(error);
+            dispatch(fillPaymentnotification(errorPayload));
+            throw errorPayload;
+        }
+    }
+);
+
 export const EditPayments = createAsyncThunk(
     'Payments/EditPayments',
     async ({ data, history }, { dispatch, getState }) => {
@@ -199,6 +221,17 @@ export const PaymentsSlice = createSlice({
                 state.list = action.payload;
             })
             .addCase(AddPayments.rejected, (state, action) => {
+                state.isDispatching = false;
+                state.errMsg = action.error.message;
+            })
+            .addCase(AddRecordPayments.pending, (state) => {
+                state.isDispatching = true;
+            })
+            .addCase(AddRecordPayments.fulfilled, (state, action) => {
+                state.isDispatching = false;
+                state.list = action.payload;
+            })
+            .addCase(AddRecordPayments.rejected, (state, action) => {
                 state.isDispatching = false;
                 state.errMsg = action.error.message;
             })

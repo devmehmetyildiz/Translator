@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Divider, Icon } from 'semantic-ui-react'
+import { Divider, Dropdown, Icon } from 'semantic-ui-react'
 import { Breadcrumb, Button, Grid, GridColumn } from 'semantic-ui-react'
 import ColumnChooser from '../../Containers/Utils/ColumnChooser'
 import ExcelImport from '../../Containers/Utils/ExcelImport'
+import ExcelExport from '../../Containers/Utils/ExcelExport'
 import DataTable from '../../Utils/DataTable'
 import LoadingPage from '../../Utils/LoadingPage'
 import NoDataScreen from '../../Utils/NoDataScreen'
@@ -29,7 +30,7 @@ export default class Courthauses extends Component {
   render() {
 
 
-    const { Courthauses, Profile, handleSelectedCourthause, handleDeletemodal } = this.props
+    const { Courthauses, Profile, handleSelectedCourthause, handleDeletemodal, AddRecordCourthauses } = this.props
     const { isLoading, isDispatching } = Courthauses
 
     const Columns = [
@@ -86,7 +87,8 @@ export default class Courthauses extends Component {
                     </Button>
                   </Link>
                   <ColumnChooser meta={Profile.tablemeta} columns={Columns} metaKey={metaKey} />
-                  <ExcelImport columns={Columns} />
+                  <ExcelImport columns={Columns} addData={AddRecordCourthauses} />
+                  <ExcelExport data={list} name={metaKey} Config={initialConfig} />
                 </GridColumn>
               </Grid>
             </Headerwrapper>

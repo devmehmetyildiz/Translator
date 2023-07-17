@@ -86,6 +86,28 @@ export const AddDocuments = createAsyncThunk(
     }
 );
 
+export const AddRecordDocuments = createAsyncThunk(
+    'Documents/AddRecordDocuments',
+    async ({ data, history }, { dispatch, getState }) => {
+        try {
+            const state = getState()
+            const Language = state.Profile.Language || 'en'
+            const response = await instanse.post(config.services.Setting, ROUTES.DOCUMENT + '/AddRecord', data);
+            dispatch(fillDocumentnotification({
+                type: 'Success',
+                code: Literals.addcode[Language],
+                description: Literals.adddescription[Language],
+            }));
+            history && history.push('/Documents');
+            return response.data;
+        } catch (error) {
+            const errorPayload = AxiosErrorHelper(error);
+            dispatch(fillDocumentnotification(errorPayload));
+            throw errorPayload;
+        }
+    }
+);
+
 export const EditDocuments = createAsyncThunk(
     'Documents/EditDocuments',
     async ({ data, history }, { dispatch, getState }) => {
@@ -199,6 +221,17 @@ export const DocumentsSlice = createSlice({
                 state.list = action.payload;
             })
             .addCase(AddDocuments.rejected, (state, action) => {
+                state.isDispatching = false;
+                state.errMsg = action.error.message;
+            })
+            .addCase(AddRecordDocuments.pending, (state) => {
+                state.isDispatching = true;
+            })
+            .addCase(AddRecordDocuments.fulfilled, (state, action) => {
+                state.isDispatching = false;
+                state.list = action.payload;
+            })
+            .addCase(AddRecordDocuments.rejected, (state, action) => {
                 state.isDispatching = false;
                 state.errMsg = action.error.message;
             })

@@ -76,7 +76,29 @@ export const AddRecordtypes = createAsyncThunk(
                 code: 'RecordtypesCreate',
                 description: '',
             }));
-history && history.push('/Recordtypes');
+            history && history.push('/Recordtypes');
+            return response.data;
+        } catch (error) {
+            const errorPayload = AxiosErrorHelper(error);
+            dispatch(fillRecordtypenotification(errorPayload));
+            throw errorPayload;
+        }
+    }
+);
+
+export const AddRecordRecordtypes = createAsyncThunk(
+    'Recordtypes/AddRecordRecordtypes',
+    async ({ data, history }, { dispatch, getState }) => {
+        try {
+            const state = getState()
+            const Language = state.Profile.Language || 'en'
+            const response = await instanse.post(config.services.Setting, ROUTES.RECORDTYPE + '/AddRecord', data);
+            dispatch(fillRecordtypenotification({
+                type: 'Success',
+                code: Literals.addcode[Language],
+                description: Literals.adddescription[Language],
+            }));
+            history && history.push('/Recordtypes');
             return response.data;
         } catch (error) {
             const errorPayload = AxiosErrorHelper(error);
@@ -103,7 +125,7 @@ export const EditRecordtypes = createAsyncThunk(
                 code: 'RecordtypesEdit',
                 description: '',
             }));
-history && history.push('/Recordtypes');
+            history && history.push('/Recordtypes');
             return response.data;
         } catch (error) {
             const errorPayload = AxiosErrorHelper(error);
@@ -199,6 +221,17 @@ export const RecordtypesSlice = createSlice({
                 state.list = action.payload;
             })
             .addCase(AddRecordtypes.rejected, (state, action) => {
+                state.isDispatching = false;
+                state.errMsg = action.error.message;
+            })
+            .addCase(AddRecordRecordtypes.pending, (state) => {
+                state.isDispatching = true;
+            })
+            .addCase(AddRecordRecordtypes.fulfilled, (state, action) => {
+                state.isDispatching = false;
+                state.list = action.payload;
+            })
+            .addCase(AddRecordRecordtypes.rejected, (state, action) => {
                 state.isDispatching = false;
                 state.errMsg = action.error.message;
             })

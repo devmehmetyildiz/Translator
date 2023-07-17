@@ -79,6 +79,44 @@ async function AddCourt(req, res, next) {
     GetCourts(req, res, next)
 }
 
+async function AddArrayCourt(req, res, next) {
+    let validationErrors = []
+    if (Array.isArray(req.body)) {
+        try {
+            const t = await db.sequelize.transaction();
+            for (const data of req.body) {
+                const {
+                    Name,
+                } = data
+
+                if (!validator.isString(Name)) {
+                    validationErrors.push(messages.VALIDATION_ERROR.NAME_REQUIRED)
+                }
+
+                if (validationErrors.length > 0) {
+                    return next(createValidationError(validationErrors, req.language))
+                }
+
+                let courtuuid = uuid()
+                await db.courtModel.create({
+                    ...data,
+                    Uuid: courtuuid,
+                    Createduser: "System",
+                    Createtime: new Date(),
+                    Isactive: true
+                }, { transaction: t })
+            }
+            await t.commit()
+        } catch (err) {
+            await t.rollback()
+            return next(sequelizeErrorCatcher(err))
+        }
+    } else {
+        return createValidationError([messages.ERROR.DATA_ISNOT_ARRAY])
+    }
+    GetCourts(req, res, next)
+}
+
 async function UpdateCourt(req, res, next) {
 
     let validationErrors = []
@@ -161,6 +199,7 @@ module.exports = {
     GetCourts,
     GetCourt,
     AddCourt,
+    AddArrayCourt,
     UpdateCourt,
     DeleteCourt,
 }

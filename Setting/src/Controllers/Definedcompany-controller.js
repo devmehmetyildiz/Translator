@@ -91,6 +91,56 @@ async function AddDefinedcompany(req, res, next) {
     GetDefinedcompanies(req, res, next)
 }
 
+async function AddArrayDefinedcompany(req, res, next) {
+    let validationErrors = []
+    if (Array.isArray(req.body)) {
+        try {
+            const t = await db.sequelize.transaction();
+            for (const data of req.body) {
+                const {
+                    Name,
+                    Address,
+                    Acccountcode,
+                    Accountname
+                } = data
+
+                if (!validator.isString(Name)) {
+                    validationErrors.push(messages.VALIDATION_ERROR.NAME_REQUIRED)
+                }
+                if (!validator.isString(Address)) {
+                    validationErrors.push(messages.VALIDATION_ERROR.ADDRESS_REQUIRED)
+                }
+                if (!validator.isString(Acccountcode)) {
+                    validationErrors.push(messages.VALIDATION_ERROR.ACCOUNTCODE_REQUIRED)
+                }
+                if (!validator.isString(Accountname)) {
+                    validationErrors.push(messages.VALIDATION_ERROR.ACCOUNTNAME_REQUIRED)
+                }
+
+                if (validationErrors.length > 0) {
+                    return next(createValidationError(validationErrors, req.language))
+                }
+
+                let definedcompanyuuid = uuid()
+                await db.definedcompanyModel.create({
+                    ...data,
+                    Uuid: definedcompanyuuid,
+                    Createduser: "System",
+                    Createtime: new Date(),
+                    Isactive: true
+                }, { transaction: t })
+            }
+            await t.commit()
+        } catch (err) {
+            await t.rollback()
+            return next(sequelizeErrorCatcher(err))
+        }
+    } else {
+        return createValidationError([messages.ERROR.DATA_ISNOT_ARRAY])
+    }
+    GetDefinedcompanies(req, res, next)
+}
+
 async function UpdateDefinedcompany(req, res, next) {
 
     let validationErrors = []
@@ -185,6 +235,7 @@ module.exports = {
     GetDefinedcompanies,
     GetDefinedcompany,
     AddDefinedcompany,
+    AddArrayDefinedcompany,
     UpdateDefinedcompany,
     DeleteDefinedcompany,
 }

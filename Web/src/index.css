@@ -308,13 +308,17 @@ input::-webkit-inner-spin-button {
   margin: 0;
 }
 
-.e1ditIcon{
+.e1ditIcon {
   visibility: hidden;
 }
 
 .e1ditIcon:hover {
   background-color: red;
   animation: effect 1s infinite 2s;
-  transition-delay:1s;
+  transition-delay: 1s;
   visibility: visible;
+}
+
+.ui.right.floated.button {
+  margin: 2px !important;
 }

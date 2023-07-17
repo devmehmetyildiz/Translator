@@ -12,6 +12,8 @@ import Pagewrapper from '../../Common/Wrappers/Pagewrapper'
 import Headerwrapper from '../../Common/Wrappers/Headerwrapper'
 import CourtsDelete from '../../Containers/Courts/CourtsDelete'
 import Pagedivider from '../../Common/Styled/Pagedivider'
+import ExcelImport from '../../Containers/Utils/ExcelImport'
+import ExcelExport from '../../Containers/Utils/ExcelExport'
 
 export default class Courts extends Component {
 
@@ -28,7 +30,7 @@ export default class Courts extends Component {
   render() {
 
 
-    const { Courts, Profile, handleSelectedCourt, handleDeletemodal } = this.props
+    const { Courts, Profile, handleSelectedCourt, handleDeletemodal, AddRecordCourts } = this.props
     const { isLoading, isDispatching } = Courts
 
     const Columns = [
@@ -59,7 +61,7 @@ export default class Courts extends Component {
         ...item,
         edit: <Link to={`/Courts/${item.Uuid}/edit`} ><Icon size='large' className='row-edit' name='edit' /></Link>,
         delete: <Icon link size='large' color='red' name='alternate trash' onClick={() => {
-            handleSelectedCourt(item)
+          handleSelectedCourt(item)
           handleDeletemodal(true)
         }} />,
       }
@@ -85,6 +87,8 @@ export default class Courts extends Component {
                     </Button>
                   </Link>
                   <ColumnChooser meta={Profile.tablemeta} columns={Columns} metaKey={metaKey} />
+                  <ExcelImport columns={Columns} addData={AddRecordCourts} />
+                  <ExcelExport data={list} name={metaKey} Config={initialConfig} />
                 </GridColumn>
               </Grid>
             </Headerwrapper>

@@ -76,7 +76,29 @@ export const AddTranslators = createAsyncThunk(
                 code: 'TranslatorsCreate',
                 description: '',
             }));
-history && history.push('/Translators');
+            history && history.push('/Translators');
+            return response.data;
+        } catch (error) {
+            const errorPayload = AxiosErrorHelper(error);
+            dispatch(fillTranslatornotification(errorPayload));
+            throw errorPayload;
+        }
+    }
+);
+
+export const AddRecordTranslators = createAsyncThunk(
+    'Translators/AddRecordTranslators',
+    async ({ data, history }, { dispatch, getState }) => {
+        try {
+            const state = getState()
+            const Language = state.Profile.Language || 'en'
+            const response = await instanse.post(config.services.Setting, ROUTES.TRANSLATOR + '/AddRecord', data);
+            dispatch(fillTranslatornotification({
+                type: 'Success',
+                code: Literals.addcode[Language],
+                description: Literals.adddescription[Language],
+            }));
+            history && history.push('/Translators');
             return response.data;
         } catch (error) {
             const errorPayload = AxiosErrorHelper(error);
@@ -103,7 +125,7 @@ export const EditTranslators = createAsyncThunk(
                 code: 'TranslatorsEdit',
                 description: '',
             }));
-history && history.push('/Translators');
+            history && history.push('/Translators');
             return response.data;
         } catch (error) {
             const errorPayload = AxiosErrorHelper(error);
@@ -199,6 +221,17 @@ export const TranslatorsSlice = createSlice({
                 state.list = action.payload;
             })
             .addCase(AddTranslators.rejected, (state, action) => {
+                state.isDispatching = false;
+                state.errMsg = action.error.message;
+            })
+            .addCase(AddRecordTranslators.pending, (state) => {
+                state.isDispatching = true;
+            })
+            .addCase(AddRecordTranslators.fulfilled, (state, action) => {
+                state.isDispatching = false;
+                state.list = action.payload;
+            })
+            .addCase(AddRecordTranslators.rejected, (state, action) => {
                 state.isDispatching = false;
                 state.errMsg = action.error.message;
             })

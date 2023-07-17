@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import Translators from "../../Pages/Translators/Translators"
 import {
-  GetTranslators, DeleteTranslators, removeTranslatornotification,
+  GetTranslators, DeleteTranslators, removeTranslatornotification, AddRecordTranslators,
   fillTranslatornotification, handleDeletemodal, handleSelectedTranslator
 } from "../../Redux/TranslatorSlice"
 
@@ -11,7 +11,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = {
-  GetTranslators, DeleteTranslators, removeTranslatornotification,
+  GetTranslators, DeleteTranslators, removeTranslatornotification, AddRecordTranslators,
   fillTranslatornotification, handleDeletemodal, handleSelectedTranslator
 }
 

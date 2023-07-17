@@ -401,14 +401,20 @@ export default class OrdersEdit extends Component {
       return
     }
     const { EditOrders, history, fillOrdernotification, Profile, Orders } = this.props
-    const jobs = this.state.selectedJobs
+    const jobs = this.state.selectedJobs.map(job => {
+      return {
+        ...job,
+        Amount: parseInt(job.Amount),
+        Price: parseFloat(job.Price)
+      }
+    })
     const formData = formToObject(e.target)
 
-    jobs.forEach(data => {
+   /*  jobs.forEach(data => {
       data.Amount = parseInt(data.Amount)
       data.Price = parseFloat(data.Price)
       delete data.key
-    });
+    }); */
 
     const responseData = {
       Info: Array.isArray(formData.Info) ? formData.Info[0] : formData.Info,

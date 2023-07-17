@@ -12,6 +12,8 @@ import Pagewrapper from '../../Common/Wrappers/Pagewrapper'
 import Headerwrapper from '../../Common/Wrappers/Headerwrapper'
 import DocumentsDelete from '../../Containers/Documents/DocumentsDelete'
 import Pagedivider from '../../Common/Styled/Pagedivider'
+import ExcelImport from '../../Containers/Utils/ExcelImport'
+import ExcelExport from '../../Containers/Utils/ExcelExport'
 
 export default class Documents extends Component {
 
@@ -27,8 +29,7 @@ export default class Documents extends Component {
 
     render() {
 
-        const { Documents, Profile, handleSelectedDocument, handleDeletemodal } = this.props
-        console.log('this.props: ', this.props);
+        const { Documents, Profile, handleSelectedDocument, handleDeletemodal, AddRecordDocuments } = this.props
         const { isLoading, isDispatching } = Documents
 
         const Columns = [
@@ -85,6 +86,8 @@ export default class Documents extends Component {
                                         </Button>
                                     </Link>
                                     <ColumnChooser meta={Profile.tablemeta} columns={Columns} metaKey={metaKey} />
+                                    <ExcelImport columns={Columns} addData={AddRecordDocuments} />
+                                    <ExcelExport data={list} name={metaKey} Config={initialConfig} />
                                 </GridColumn>
                             </Grid>
                         </Headerwrapper>

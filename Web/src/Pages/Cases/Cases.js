@@ -13,6 +13,8 @@ import Headerwrapper from '../../Common/Wrappers/Headerwrapper'
 import CasesDelete from '../../Containers/Cases/CasesDelete'
 import Pagedivider from '../../Common/Styled/Pagedivider'
 import { FormContext } from '../../Provider/FormProvider'
+import ExcelImport from '../../Containers/Utils/ExcelImport'
+import ExcelExport from '../../Containers/Utils/ExcelExport'
 
 export default class Cases extends Component {
 
@@ -30,7 +32,7 @@ export default class Cases extends Component {
   render() {
 
 
-    const { Cases, Profile, handleSelectedCase, handleDeletemodal } = this.props
+    const { Cases, Profile, handleSelectedCase, handleDeletemodal, AddRecordCases } = this.props
     const { isLoading, isDispatching } = Cases
     const casestatusOption = [
       {
@@ -107,6 +109,8 @@ export default class Cases extends Component {
                     </Button>
                   </Link>
                   <ColumnChooser meta={Profile.tablemeta} columns={Columns} metaKey={metaKey} />
+                  <ExcelImport columns={Columns} addData={AddRecordCases} />
+                  <ExcelExport data={list} name={metaKey} Config={initialConfig} />
                 </GridColumn>
               </Grid>
             </Headerwrapper>

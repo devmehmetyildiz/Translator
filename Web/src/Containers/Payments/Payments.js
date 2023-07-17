@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import Payments from "../../Pages/Payments/Payments"
 import {
-  GetPayments, DeletePayments, removePaymentnotification,
+  GetPayments, DeletePayments, removePaymentnotification,AddRecordPayments,
   fillPaymentnotification, handleDeletemodal, handleSelectedPayment
 } from "../../Redux/PaymentSlice"
 
@@ -11,7 +11,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = {
-  GetPayments, DeletePayments, removePaymentnotification,
+  GetPayments, DeletePayments, removePaymentnotification,AddRecordPayments,
   fillPaymentnotification, handleDeletemodal, handleSelectedPayment
 }
 

@@ -12,6 +12,8 @@ import Pagewrapper from '../../Common/Wrappers/Pagewrapper'
 import Headerwrapper from '../../Common/Wrappers/Headerwrapper'
 import DefinedcompaniesDelete from '../../Containers/Definedcompanies/DefinedcompaniesDelete'
 import Pagedivider from '../../Common/Styled/Pagedivider'
+import ExcelImport from '../../Containers/Utils/ExcelImport'
+import ExcelExport from '../../Containers/Utils/ExcelExport'
 
 export default class Definedcompanies extends Component {
 
@@ -28,7 +30,7 @@ export default class Definedcompanies extends Component {
     render() {
 
 
-        const { Definedcompanies, Profile, handleSelectedDefinedcompany, handleDeletemodal } = this.props
+        const { Definedcompanies, Profile, handleSelectedDefinedcompany, handleDeletemodal, AddRecordDefinedcompanies } = this.props
         const { isLoading, isDispatching } = Definedcompanies
 
         const Columns = [
@@ -88,6 +90,8 @@ export default class Definedcompanies extends Component {
                                         </Button>
                                     </Link>
                                     <ColumnChooser meta={Profile.tablemeta} columns={Columns} metaKey={metaKey} />
+                                    <ExcelImport columns={Columns} addData={AddRecordDefinedcompanies} />
+                                    <ExcelExport data={list} name={metaKey} Config={initialConfig} />
                                 </GridColumn>
                             </Grid>
                         </Headerwrapper>
