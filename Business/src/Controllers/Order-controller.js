@@ -247,7 +247,9 @@ async function UpdateOrders(req, res, next) {
             Updatetime: new Date(),
         }, { where: { Uuid: Uuid } }, { transaction: t })
 
-        let jobnumerator = Getcurrentnumerator(next)
+        let jobnumerator =await Getcurrentnumerator(next)
+        console.log('jobnumerator: ', jobnumerator);
+        let isnumeratorchanged = false
         for (const job of Jobs) {
             if (validator.isUUID(job.Uuid)) {
                 await db.jobModel.update({
@@ -256,6 +258,7 @@ async function UpdateOrders(req, res, next) {
                     Updatetime: new Date(),
                 }, { where: { Uuid: job.Uuid } }, { transaction: t })
             } else {
+                isnumeratorchanged = true
                 let jobuuid = uuid()
                 await db.jobModel.create({
                     ...job,
@@ -265,12 +268,14 @@ async function UpdateOrders(req, res, next) {
                     Createtime: new Date(),
                     Isactive: true
                 }, { transaction: t })
-                jobnumerator = Createnewnumerator(jobnumerator, next)
+                jobnumerator =await Createnewnumerator(jobnumerator, next)
             }
         }
-        await db.filenumeratorModel.update({
-            Current: jobnumerator
-        }, {}, { transaction: t })
+        if (isnumeratorchanged) {
+            await db.filenumeratorModel.update({
+                Current: jobnumerator
+            }, { where: {} }, { transaction: t })
+        }
         await t.commit()
     } catch (error) {
         return next(sequelizeErrorCatcher(error))

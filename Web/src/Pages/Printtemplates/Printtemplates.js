@@ -40,7 +40,6 @@ export default class Printtemplates extends Component {
       { Header: Literals.Columns.Uuid[Profile.Language], accessor: 'Uuid', sortable: true, canGroupBy: true, canFilter: true, },
       { Header: Literals.Columns.Name[Profile.Language], accessor: 'Name', sortable: true, canGroupBy: true, canFilter: true },
       { Header: Literals.Columns.Valuekey[Profile.Language], accessor: 'Valuekey', sortable: true, canGroupBy: true, canFilter: true },
-      { Header: Literals.Columns.Department[Profile.Language], accessor: 'Department.Name', sortable: true, canGroupBy: true, canFilter: true },
       { Header: Literals.Columns.Createduser[Profile.Language], accessor: 'Createduser', sortable: true, canGroupBy: true, canFilter: true, },
       { Header: Literals.Columns.Updateduser[Profile.Language], accessor: 'Updateduser', sortable: true, canGroupBy: true, canFilter: true, },
       { Header: Literals.Columns.Createtime[Profile.Language], accessor: 'Createtime', sortable: true, canGroupBy: true, canFilter: true, },
@@ -56,7 +55,10 @@ export default class Printtemplates extends Component {
       }) : ["Uuid", "Createduser", "Updateduser", "Createtime", "Updatetime"],
       columnOrder: tableMeta ? JSON.parse(tableMeta.Config).sort((a, b) => a.order - b.order).map(item => {
         return item.key
-      }) : []
+      }) : [],
+      groupBy: tableMeta ? JSON.parse(tableMeta.Config).filter(u => u.isGroup === true).map(item => {
+        return item.key
+      }) : [],
     };
 
     const list = (Printtemplates.list || []).map(item => {

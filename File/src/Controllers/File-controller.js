@@ -129,9 +129,7 @@ async function Downloadfile(req, res, next) {
 async function AddFile(req, res, next) {
 
     let data = req.fields
-    console.log('data: ', data);
     let files = req.files
-    console.log('files: ', files);
     let requestArray = []
     let objKeys = Object.keys(data).map(element => {
         return element.split('.')[0]

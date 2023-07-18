@@ -70,14 +70,17 @@ export default class Users extends Component {
       }) : ["Uuid", "Createduser", "Updateduser", "Createtime", "Updatetime"],
       columnOrder: tableMeta ? JSON.parse(tableMeta.Config).sort((a, b) => a.order - b.order).map(item => {
         return item.key
-      }) : []
+      }) : [],
+      groupBy: tableMeta ? JSON.parse(tableMeta.Config).filter(u => u.isGroup === true).map(item => {
+        return item.key
+      }) : [],
     };
 
     const list = (Users.list || []).map(item => {
       var rolestext = (item.Roles || []).map((role) => {
         return role.Name;
       }).join(", ")
-    
+
       return {
         ...item,
         Rolestxt: rolestext,
@@ -124,7 +127,7 @@ export default class Users extends Component {
     )
   }
 
-  
+
   expandRoles = (rowid) => {
     const prevData = this.state.rolesStatus
     prevData.push(rowid)
@@ -139,7 +142,7 @@ export default class Users extends Component {
       this.setState({ rolesStatus: [...prevData] })
     }
   }
-  
+
 
   rolesCellhandler = (col) => {
     if (col.value) {

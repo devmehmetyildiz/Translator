@@ -52,8 +52,11 @@ export default class Kdvs extends Component {
             }) : ["Uuid", "Createduser", "Updateduser", "Createtime", "Updatetime"],
             columnOrder: tableMeta ? JSON.parse(tableMeta.Config).sort((a, b) => a.order - b.order).map(item => {
                 return item.key
-            }) : []
-        };
+            }) : [],
+            groupBy: tableMeta ? JSON.parse(tableMeta.Config).filter(u => u.isGroup === true).map(item => {
+              return item.key
+            }) : [],
+          };
 
         const list = (Kdvs.list || []).map(item => {
 

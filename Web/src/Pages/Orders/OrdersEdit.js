@@ -124,7 +124,7 @@ export default class OrdersEdit extends Component {
     const { Orders, Recordtypes, Courthauses, Courts, Definedcompanies, history,
       Definedcostumers, Translators, Kdvs, Payments, Languages, Documents, Cases, Profile
     } = this.props
-    const { isLoading, isDispatching } = Orders
+    const { isLoading, isDispatching, selected_record } = Orders
 
     const addModal = (content) => {
       return <Modal
@@ -287,7 +287,7 @@ export default class OrdersEdit extends Component {
                               </Table.Row>
                             </Table.Header>
                             <Table.Body>
-                              {this.state.selectedJobs.sort((a, b) => a.Order - b.Order).map((job, index) => {
+                              {[...this.state.selectedJobs].sort((a, b) => a.Order - b.Order).map((job, index) => {
                                 return <Table.Row key={job.key}>
                                   <Table.Cell>
                                     <Button.Group basic size='small'>
@@ -297,7 +297,7 @@ export default class OrdersEdit extends Component {
                                     </Button.Group>
                                   </Table.Cell>
                                   <Table.Cell>
-                                    <Form.Input placeholder={Literals.Columns.Jobno[Profile.Language]} name="Jobno" fluid value={job.Jobno} onChange={(e) => { this.selectedJobChangeHandler(job.key, 'Jobno', e.target.value) }} />
+                                    <Form.Input  placeholder={Literals.Columns.Jobno[Profile.Language]} name="Jobno" fluid value={job.Jobno} onChange={(e) => { this.selectedJobChangeHandler(job.key, 'Jobno', e.target.value) }} />
                                   </Table.Cell>
                                   <Table.Cell>
                                     <Form.Field>
@@ -365,8 +365,8 @@ export default class OrdersEdit extends Component {
                     <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
                   </Link>}
                   <Button floated="right" type="button" color='grey' onClick={(e) => {
-                    this.setState({ selectedJobs: [] })
-                    this.context.clearForm(this.PAGE_NAME)
+                    this.setState({ selectedJobs: selected_record.Jobs })
+                    this.context.setForm(this.PAGE_NAME, selected_record)
                   }}>{Literals.Button.Clear[Profile.Language]}</Button>
                 </Form.Group>
                 <Button floated="right" type='submit' color='blue'>{Literals.Button.Update[Profile.Language]}</Button>
@@ -410,11 +410,11 @@ export default class OrdersEdit extends Component {
     })
     const formData = formToObject(e.target)
 
-   /*  jobs.forEach(data => {
-      data.Amount = parseInt(data.Amount)
-      data.Price = parseFloat(data.Price)
-      delete data.key
-    }); */
+    /*  jobs.forEach(data => {
+       data.Amount = parseInt(data.Amount)
+       data.Price = parseFloat(data.Price)
+       delete data.key
+     }); */
 
     const responseData = {
       Info: Array.isArray(formData.Info) ? formData.Info[0] : formData.Info,
@@ -494,10 +494,11 @@ export default class OrdersEdit extends Component {
   }
 
   AddNewJob = () => {
+    const { selected_record } = this.props.Orders
     this.setState({
       selectedJobs: [...this.state.selectedJobs,
       {
-        OrderID: '',
+        OrderID: selected_record.Uuid,
         Jobno: '',
         SourcelanguageID: '',
         TargetlanguageID: '',
@@ -515,32 +516,30 @@ export default class OrdersEdit extends Component {
         Calculatedprice: 0,
         Order: this.state.selectedJobs.length,
       }]
-    }, () => {
-      this.context.setFormstates({ ...this.context.formstates, [`${this.PAGE_NAME}/Jobs`]: this.state.selectedJobs })
     })
   }
 
   removeJobs = (key, order) => {
     let jobs = this.state.selectedJobs.filter(jobroute => jobroute.key !== key)
     jobs.filter(job => job.Order > order).forEach(job => job.Order--)
-    this.setState({ selectedJobs: jobs }, () => {
-      this.context.setFormstates({ ...this.context.formstates, [`${this.PAGE_NAME}/Jobs`]: this.state.selectedJobs })
-    })
+    this.setState({ selectedJobs: jobs })
   }
 
   selectedJobChangeHandler = (key, property, value) => {
-    let jobRoutes = this.state.selectedJobs
-    const index = jobRoutes.findIndex(jobroute => jobroute.key === key)
-    if (property === 'Order') {
-      jobRoutes.filter(jobroute => jobroute.Order === value)
-        .forEach((jobroute) => jobroute.Order = jobRoutes[index].Order > value ? jobroute.Order + 1 : jobroute.Order - 1)
-    }
-    jobRoutes[index][property] = value
-    this.setState({ selectedJobs: jobRoutes }, () => {
-      this.context.setFormstates({ ...this.context.formstates, [`${this.PAGE_NAME}/Jobs`]: this.state.selectedJobs })
+    this.setState(prevState => {
+      const jobRoutes = prevState.selectedJobs.map(jobRoute => ({ ...jobRoute }));
+      const index = jobRoutes.findIndex(jobRoute => jobRoute.key === key);
+      if (property === 'Order') {
+        jobRoutes
+          .filter(jobRoute => jobRoute.Order === value)
+          .forEach(jobRoute => {
+            jobRoute.Order = jobRoutes[index].Order > value ? jobRoute.Order + 1 : jobRoute.Order - 1;
+          });
+      }
+      jobRoutes[index][property] = value;
+      return { selectedJobs: jobRoutes };
     })
   }
-
 
 }
 OrdersEdit.contextType = FormContext

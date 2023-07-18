@@ -14,6 +14,10 @@ const Literals = {
             tr: 'Görünüm',
             en: 'Visible'
         },
+        Group: {
+            tr: 'Gruplama',
+            en: 'Group By'
+        },
         Excelimport: {
             tr: 'Excel Ekle',
             en: 'Excel İmport'

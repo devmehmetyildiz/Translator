@@ -24,31 +24,21 @@ export default class PrinttemplatesCreate extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      selectedDepartment: "",
       template: ''
     }
     this.templateEditorRef = React.createRef()
   }
-  componentDidMount() {
-    const { GetDepartments } = this.props
-    GetDepartments()
-  }
-
+  
   componentDidUpdate() {
-    const { Departments, Printtemplates, removeDepartmentnotification, removePrinttemplatenotification } = this.props
+    const { Printtemplates,  removePrinttemplatenotification } = this.props
     Notification(Printtemplates.notifications, removePrinttemplatenotification, this.context.clearForm)
-    Notification(Departments.notifications, removeDepartmentnotification, this.context.clearForm)
   }
 
 
   render() {
 
-    const { Printtemplates, Departments, Profile,history } = this.props
+    const { Printtemplates,  Profile,history } = this.props
     const { isLoading, isDispatching } = Printtemplates
-
-    const Departmentoptions = Departments.list.map(department => {
-      return { key: department.Uuid, text: department.Name, value: department.Uuid }
-    })
 
     return (
       isLoading || isDispatching ? <LoadingPage /> :
@@ -76,7 +66,6 @@ export default class PrinttemplatesCreate extends Component {
                           <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
                           <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Valuekey[Profile.Language]} name="Valuekey" />
                         </Form.Group>
-                        <FormInput required placeholder={Literals.Columns.Department[Profile.Language]} value={this.state.selectedDepartment} clearable search options={Departmentoptions} onChange={(e, { value }) => { this.setState({ selectedDepartment: value }) }} formtype="dropdown" />
                       </React.Fragment>
                     }
                   },
@@ -132,7 +121,6 @@ export default class PrinttemplatesCreate extends Component {
     const { AddPrinttemplates, history, fillPrinttemplatenotification, Profile } = this.props
 
     const data = formToObject(e.target)
-    data.DepartmentID = this.state.selectedDepartment
     data.Printtemplate = this.state.template
 
     let errors = []
@@ -141,9 +129,6 @@ export default class PrinttemplatesCreate extends Component {
     }
     if (!validator.isString(data.Valuekey)) {
       errors.push({ type: 'Error', code: Literals.Page.Pageheader[Profile.Language], description: Literals.Messages.Valuekeyrequired[Profile.Language] })
-    }
-    if (!validator.isUUID(data.DepartmentID)) {
-      errors.push({ type: 'Error', code: Literals.Page.Pageheader[Profile.Language], description: Literals.Messages.Departmentrequired[Profile.Language] })
     }
     if (!validator.isString(data.Printtemplate)) {
       errors.push({ type: 'Error', code: Literals.Page.Pageheader[Profile.Language], description: Literals.Messages.Printtemplaterequired[Profile.Language] })

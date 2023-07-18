@@ -319,6 +319,6 @@ input::-webkit-inner-spin-button {
   visibility: visible;
 }
 
-.ui.right.floated.button {
+.ui.button {
   margin: 2px !important;
 }

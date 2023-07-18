@@ -171,6 +171,10 @@ const Literals = {
             tr: 'İş Detayları',
             en: 'Jobs Detail'
         },
+        files: {
+            tr: 'Dosyalar',
+            en: 'Files'
+        },
         Wordcount: {
             tr: 'Kelime Sayısı',
             en: 'Word Count'
@@ -194,6 +198,38 @@ const Literals = {
         Preferredprice: {
             tr: 'Tavsiye Edilen Ücret',
             en: 'Preferred Price'
+        },
+        ParentID: {
+            tr: 'Üst ID',
+            en: 'Parent ID'
+        },
+        Filename: {
+            tr: 'Orjinal Adı',
+            en: 'Original Name'
+        },
+        Filefolder: {
+            tr: 'Dosya Klasör',
+            en: 'File Folder'
+        },
+        Filepath: {
+            tr: 'Dosya Dizini',
+            en: 'File path'
+        },
+        File: {
+            tr: 'Dosya',
+            en: 'File'
+        },
+        Filetype: {
+            tr: 'Dosya Türü',
+            en: 'File Type'
+        },
+        Usagetype: {
+            tr: 'Kullanım Türü',
+            en: 'Usage Type'
+        },
+        Filestatus: {
+            tr: 'Yüklenme Durumu',
+            en: 'Upload Status'
         },
     },
     Page: {
@@ -246,7 +282,11 @@ const Literals = {
         Clear: {
             tr: "Temizle",
             en: "Clear"
-        }
+        },
+        AddFile: {
+            tr: "Dosya Ekle",
+            en: "Add File"
+        },
     },
     Messages: {
         Nodatafind: {
