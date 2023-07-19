@@ -35,6 +35,30 @@ class ColumnChooser extends Component {
     }
   }
 
+  componentDidUpdate(prev) {
+    const { metaKey, meta, columns } = this.props
+    if (prev.metaKey !== metaKey) {
+      let tableMeta = (meta || []).find(u => u.Meta === metaKey)
+      if (tableMeta) {
+        const metaColumns = JSON.parse(tableMeta.Config)
+        const decoratedColumns = metaColumns.length === columns.length ?
+          metaColumns.map((item, index) => {
+            return { order: index, isVisible: item.isVisible, name: columns.find(u => u.accessor === item.key)?.Header, key: item.key, isGroup: item.isGroup }
+          }) :
+          columns.map((item, index) => {
+            return { order: index, isVisible: true, name: item.Header, key: item.accessor, isGroup: false }
+          })
+        this.setState({ decoratedColumns: decoratedColumns })
+      } else {
+        const defaultHiddens = ["Uuid", "Createduser", "Updateduser", "Createtime", "Updatetime"]
+        const decoratedColumns = columns.map((item, index) => {
+          return { order: index, isVisible: defaultHiddens.includes(item.accessor) ? false : true, name: item.Header, key: item.accessor, isGroup: false }
+        })
+        this.setState({ decoratedColumns: decoratedColumns })
+      }
+    }
+  }
+
   render() {
 
     const { Profile } = this.props

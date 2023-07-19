@@ -85,6 +85,11 @@ const Jobs = lazy(() => import('./Containers/Jobs/Jobs'));
 const JobsCreate = lazy(() => import('./Containers/Jobs/JobsCreate'));
 const JobsEdit = lazy(() => import('./Containers/Jobs/JobsEdit'));
 
+const Appreports = lazy(() => import('./Containers/Appreports/Appreports'));
+const Demandreports = lazy(() => import('./Containers/Demandreports/Demandreports'));
+const Flowreports = lazy(() => import('./Containers/Flowreports/Flowreports'));
+
+
 const ProfileEdit = lazy(() => import('./Containers/Auth/ProfileEdit'));
 const PasswordChange = lazy(() => import('./Containers/Auth/PasswordChange'));
 const Passwordforget = lazy(() => import('./Containers/Auth/Passwordforget'));
@@ -179,6 +184,10 @@ class AppRoutes extends Component {
       { exact: true, path: "/Rules", auth: true, component: Rules },
       { exact: true, path: "/Rules/Create", auth: true, component: RulesCreate },
       { exact: true, path: "/Rules/:RuleID/Edit", auth: true, component: RulesEdit },
+
+      { exact: true, path: "/Demandreports", auth: true, component: Demandreports },
+      { exact: true, path: "/Appreports", auth: true, component: Appreports },
+      { exact: true, path: "/Flowreports", auth: true, component: Flowreports },
 
       { exact: true, path: "/Profile/Edit", auth: true, component: ProfileEdit },
       { exact: true, path: "/Profile/Change-Password", auth: true, component: PasswordChange },

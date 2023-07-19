@@ -231,6 +231,10 @@ const Literals = {
             tr: 'Yüklenme Durumu',
             en: 'Upload Status'
         },
+        Fileuuid: {
+            tr: 'Dosya Unik No',
+            en: 'File Unique No'
+        }
     },
     Page: {
         Pageheader: {

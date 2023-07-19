@@ -38,6 +38,28 @@ async function GetbyparentID(req, res, next) {
         return next(sequelizeErrorCatcher(error))
     }
 }
+
+async function GetbyorderfileID(req, res, next) {
+
+    let validationErrors = []
+    if (!req.params.orderfileId) {
+        validationErrors.push(messages.VALIDATION_ERROR.PARENTID_REQUIRED)
+    }
+    if (!validator.isUUID(req.params.orderfileId)) {
+        validationErrors.push(messages.VALIDATION_ERROR.UNSUPPORTED_PARENTID)
+    }
+    if (validationErrors.length > 0) {
+        return next(createValidationError(validationErrors, req.language))
+    }
+
+    try {
+        const files = await db.fileModel.findAll({ where: { ParentID: req.params.orderfileId } });
+        res.status(200).json(files)
+    } catch (error) {
+        return next(sequelizeErrorCatcher(error))
+    }
+}
+
 async function GetFile(req, res, next) {
 
     let validationErrors = []
@@ -402,5 +424,6 @@ module.exports = {
     UpdateFile,
     DeleteFile,
     Downloadfile,
-    GetbyparentID
+    GetbyparentID,
+    GetbyorderfileID
 }

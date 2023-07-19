@@ -28,20 +28,32 @@ export function Sidebar(props) {
         },
     }
 
+    const Jobitems = [
+        ...[
+            { id: 1, subtitle: Literals.Orders.Page.Pageheader[Profile.Language], url: "/Orders" },
+            { id: 2, subtitle: Literals.Jobs.Page.Pageheader[Profile.Language], url: "/Jobs" },
+        ],
+        ...(Profile.recordtypes.map((type, index) => {
+            return { id: index + 3, subtitle: `${type.Name} ${Literals.Orders.Page.Pageheader[Profile.Language]}`, url: `/Orders?recordType=${type.Uuid}` }
+        }))
+    ]
+
     const defaultpages = [
         {
             id: 1,
             title: Sidebarliterals.Jobs[Profile.Language],
             icon: <TbGauge className=' text-blue-700' />,
-            items: [
-                { id: 1, subtitle: Literals.Orders.Page.Pageheader[Profile.Language], url: "/Orders" },
-                { id: 2, subtitle: Literals.Jobs.Page.Pageheader[Profile.Language], url: "/Jobs" },
-            ]
+            items: Jobitems
         },
         {
             id: 2,
             title: Sidebarliterals.Reports[Profile.Language],
-            icon: <TbActivity className=' text-yellow-700' />
+            icon: <TbActivity className=' text-yellow-700' />,
+            items: [
+                { id: 1, subtitle: Literals.Appreports.Page.Pageheader[Profile.Language], url: "/Appreports" },
+                { id: 2, subtitle: Literals.Flowreports.Page.Pageheader[Profile.Language], url: "/Flowreports" },
+                { id: 3, subtitle: Literals.Demandreports.Page.Pageheader[Profile.Language], url: "/Demandreports" },
+            ]
         },
         {
             id: 3,

@@ -18,6 +18,9 @@ import Recordtypes from "../Pages/Recordtypes/Literals"
 import Translators from "../Pages/Translators/Literals"
 import Orders from "../Pages/Orders/Literals"
 import Jobs from "../Pages/Jobs/Literals"
+import Appreports from "../Pages/Appreports/Literals"
+import Demandreports from "../Pages/Demandreports/Literals"
+import Flowreports from "../Pages/Flowreports/Literals"
 
 const Literals = {
     Cases,
@@ -39,7 +42,10 @@ const Literals = {
     Recordtypes,
     Translators,
     Orders,
-    Jobs
+    Jobs,
+    Appreports,
+    Demandreports,
+    Flowreports
 }
 
 export default Literals

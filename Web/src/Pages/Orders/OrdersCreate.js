@@ -40,6 +40,7 @@ import RecordtypesEdit from '../../Containers/Recordtypes/RecordtypesEdit'
 import LanguageCalculate from './LanguageCalculate'
 import config from '../../Config'
 import { ROUTES } from '../../Utils/Constants'
+import { v4 as uuid } from 'uuid'
 export default class OrdersCreate extends Component {
 
   PAGE_NAME = 'OrdersCreate'
@@ -47,6 +48,7 @@ export default class OrdersCreate extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      fileorderUuid: uuid(),
       selectedJobs: [],
       selectedFiles: [],
       modelOpened: false,
@@ -72,7 +74,10 @@ export default class OrdersCreate extends Component {
     GetCases()
     GetLanguageconfig()
     if (this.context.formstates[`${this.PAGE_NAME}/Jobs`]) {
-      this.setState({ selectedJobs: this.context.formstates[`${this.PAGE_NAME}/Jobs`] })
+      this.setState({
+        selectedJobs: this.context.formstates[`${this.PAGE_NAME}/Jobs`],
+        fileorderUuid: this.context.formstates[`${this.PAGE_NAME}/Fileuuid`]
+      })
     }
   }
 
@@ -185,7 +190,6 @@ export default class OrdersCreate extends Component {
       Documents.isLoading || Documents.isDispatching ||
       Cases.isLoading || Cases.isDispatching ||
       Kdvs.isLoading || Kdvs.isDispatching
-      console.log('this.state.selectedFiles: ', this.state.selectedFiles);
 
     return (
       isLoading || isDispatching
@@ -236,10 +240,10 @@ export default class OrdersCreate extends Component {
                             <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Deliverydate[Profile.Language]} name="Deliverydate" type='date' />
                           </Form.Group>
                           <Form.Group widths={'equal'}>
-                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Prepayment[Profile.Language]} name="Prepayment" type='number' step='0.01' />
-                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Notaryexpense[Profile.Language]} name="Notaryexpense" type='number' step='0.01' />
-                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Netprice[Profile.Language]} name="Netprice" type='number' step='0.01' />
-                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Calculatedprice[Profile.Language]} name="Calculatedprice" type='number' step='0.01' />
+                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Prepayment[Profile.Language]} name="Prepayment" type='number' step='0.01' display='try' />
+                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Notaryexpense[Profile.Language]} name="Notaryexpense" type='number' step='0.01' display='try' />
+                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Netprice[Profile.Language]} name="Netprice" type='number' step='0.01' display='try' />
+                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Calculatedprice[Profile.Language]} name="Calculatedprice" type='number' step='0.01' display='try' />
                           </Form.Group>
                           <Form.Group widths={'equal'}>
                             <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Translator[Profile.Language]} name="TranslatorID" options={Translatoroption} formtype='dropdown' modal={addModal(<TranslatorsCreate />)} />
@@ -411,7 +415,7 @@ export default class OrdersCreate extends Component {
                     <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
                   </Link>}
                   <Button floated="right" type="button" color='grey' onClick={(e) => {
-                    this.setState({ selectedJobs: [] })
+                    this.setState({ selectedJobs: [], selectedFiles: [] })
                     this.context.clearForm(this.PAGE_NAME)
                   }}>{Literals.Button.Clear[Profile.Language]}</Button>
                 </Form.Group>
@@ -447,6 +451,7 @@ export default class OrdersCreate extends Component {
     }
     const { AddOrders, history, fillOrdernotification, Profile } = this.props
     const jobs = this.state.selectedJobs
+    const files = this.state.selectedFiles
     const formData = formToObject(e.target)
 
     jobs.forEach(data => {
@@ -479,7 +484,9 @@ export default class OrdersCreate extends Component {
       KdvID: this.context.formstates[`${this.PAGE_NAME}/KdvID`],
       PaymentID: this.context.formstates[`${this.PAGE_NAME}/PaymentID`],
       CaseID: this.context.formstates[`${this.PAGE_NAME}/CaseID`],
-      Jobs: jobs
+      Jobs: jobs,
+      Files: files,
+      Fileuuid: this.state.fileorderUuid
     }
 
     let errors = []
@@ -553,9 +560,13 @@ export default class OrdersCreate extends Component {
         Preferredprice: 0,
         Calculatedprice: 0,
         Order: this.state.selectedJobs.length,
+        Fileuuid: this.state.fileorderUuid
       }]
     }, () => {
-      this.context.setFormstates({ ...this.context.formstates, [`${this.PAGE_NAME}/Jobs`]: this.state.selectedJobs })
+      this.context.setFormstates({
+        ...this.context.formstates, [`${this.PAGE_NAME}/Jobs`]: this.state.selectedJobs,
+        [`${this.PAGE_NAME}/Fileuuid`]: this.state.fileorderUuid
+      })
     })
   }
 
@@ -563,7 +574,10 @@ export default class OrdersCreate extends Component {
     let jobs = this.state.selectedJobs.filter(jobroute => jobroute.key !== key)
     jobs.filter(job => job.Order > order).forEach(job => job.Order--)
     this.setState({ selectedJobs: jobs }, () => {
-      this.context.setFormstates({ ...this.context.formstates, [`${this.PAGE_NAME}/Jobs`]: this.state.selectedJobs })
+      this.context.setFormstates({
+        ...this.context.formstates, [`${this.PAGE_NAME}/Jobs`]: this.state.selectedJobs,
+        [`${this.PAGE_NAME}/Fileuuid`]: this.state.fileorderUuid
+      })
     })
   }
 
@@ -576,17 +590,19 @@ export default class OrdersCreate extends Component {
     }
     jobRoutes[index][property] = value
     this.setState({ selectedJobs: jobRoutes }, () => {
-      this.context.setFormstates({ ...this.context.formstates, [`${this.PAGE_NAME}/Jobs`]: this.state.selectedJobs })
+      this.context.setFormstates({
+        ...this.context.formstates, [`${this.PAGE_NAME}/Jobs`]: this.state.selectedJobs,
+        [`${this.PAGE_NAME}/Fileuuid`]: this.state.fileorderUuid
+      })
     })
   }
 
   AddNewFile = () => {
-    const { Orders } = this.props
     this.setState({
       selectedFiles: [...this.state.selectedFiles,
       {
         Name: '',
-        ParentID: Orders.selected_record.Uuid,
+        ParentID: this.state.fileorderUuid,
         Filename: '',
         Filefolder: '',
         Filepath: '',
@@ -675,17 +691,5 @@ export default class OrdersCreate extends Component {
     return data
   }
 
-  selectedFilesChangeHandler = (key, property, value) => {
-    let selectedFiles = this.state.selectedFiles
-    const index = selectedFiles.findIndex(file => file.key === key)
-    if (property === 'File') {
-      if (value.target.files && value.target.files.length > 0) {
-        selectedFiles[index][property] = value.target.files[0]
-      }
-    } else {
-      selectedFiles[index][property] = value
-    }
-    this.setState({ selectedFiles: selectedFiles })
-  }
 }
 OrdersCreate.contextType = FormContext

@@ -102,6 +102,21 @@ export const GetTableMeta = createAsyncThunk(
         }
     }
 );
+
+export const GetRecordtypes = createAsyncThunk(
+    'Profile/GetRecordtypes',
+    async (_, { dispatch }) => {
+        try {
+            const response = await instanse.get(config.services.Setting, ROUTES.RECORDTYPE);
+            return response.data;
+        } catch (error) {
+            const errorPayload = AxiosErrorHelper(error);
+            dispatch(fillnotification(errorPayload));
+            throw errorPayload;
+        }
+    }
+);
+
 export const ResetTableMeta = createAsyncThunk(
     'Profile/ResetTableMeta',
     async (metaKey, { dispatch }) => {
@@ -136,22 +151,44 @@ export const SaveTableMeta = createAsyncThunk(
     }
 );
 
+export const Createpasswordforget = createAsyncThunk(
+    'Profile/Createpasswordforget',
+    async ({ email }, { dispatch }) => {
+        try {
+            const response = await instanse.get(config.services.Auth, 'Password/Createrequest/' + email);
+            dispatch(fillnotification({
+                type: 'Success',
+                code: 'Star Note',
+                description: 'Parola Sıfırlama Talebiniz alınmıştır. Lütfen mail adresinizi kontrol ediniz',
+            }));
+            return response.data;
+        } catch (error) {
+            const errorPayload = AxiosErrorHelper(error);
+            dispatch(fillnotification(errorPayload));
+            throw errorPayload;
+        }
+    }
+);
+
 export const ProfileSlice = createSlice({
     name: 'Profile',
     initialState: {
         changePassword: false,
         isLogging: false,
+        isFetching: false,
         user: null,
         errMsg: null,
         isDispatching: false,
         notifications: [],
         meta: {},
         username: "",
+        recordtypes: [],
         roles: [],
         auth: false,
         tablemeta: [],
         Language: "tr",
-        resetpasswordStatus: false
+        resetpasswordStatus: false,
+        passwordrequestsended: false
     },
     reducers: {
         fillnotification: (state, action) => {
@@ -228,6 +265,18 @@ export const ProfileSlice = createSlice({
                 state.isLogging = false;
                 state.errMsg = action.error.message;
             })
+            .addCase(GetRecordtypes.pending, (state) => {
+                state.isFetching = true;
+                state.errMsg = null;
+            })
+            .addCase(GetRecordtypes.fulfilled, (state, action) => {
+                state.isFetching = false;
+                state.recordtypes = action.payload
+            })
+            .addCase(GetRecordtypes.rejected, (state, action) => {
+                state.isFetching = false;
+                state.errMsg = action.error.message;
+            })
             .addCase(ResetTableMeta.pending, (state) => {
                 state.isLogging = true;
                 state.errMsg = null;
@@ -268,6 +317,20 @@ export const ProfileSlice = createSlice({
             })
             .addCase(GetUserMeta.rejected, (state, action) => {
                 state.isLogging = false;
+                state.errMsg = action.error.message;
+            })
+            .addCase(Createpasswordforget.pending, (state) => {
+                state.isLogging = true;
+                state.passwordrequestsended = false;
+                state.errMsg = null;
+            })
+            .addCase(Createpasswordforget.fulfilled, (state, action) => {
+                state.isLogging = false;
+                state.passwordrequestsended = true;
+            })
+            .addCase(Createpasswordforget.rejected, (state, action) => {
+                state.isLogging = false;
+                state.passwordrequestsended = false;
                 state.errMsg = action.error.message;
             })
     },

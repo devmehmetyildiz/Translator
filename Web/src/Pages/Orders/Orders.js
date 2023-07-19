@@ -57,8 +57,11 @@ export default class Orders extends Component {
 
   render() {
 
-    const { Orders, Profile, handleSelectedOrder, handleDeletemodal, Jobs, Documents, Languages, Cases } = this.props
+    const { Orders, Profile, handleSelectedOrder, handleDeletemodal, Jobs, Documents, Languages, Cases, location, Recordtypes } = this.props
     const { isLoading, isDispatching } = Orders
+
+    const search = new URLSearchParams(location.search)
+    const recordType = search.get('recordType') ? search.get('recordType') : ''
 
     const Columns = [
       {
@@ -95,6 +98,7 @@ export default class Orders extends Component {
       { Header: Literals.Columns.Payment[Profile.Language], accessor: 'PaymentID', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.paymentCellhandler(col) },
       { Header: Literals.Columns.Case[Profile.Language], accessor: 'CaseID', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.caseCellhandler(col) },
       { Header: Literals.Columns.Info[Profile.Language], accessor: 'Info', sortable: true, canGroupBy: true, canFilter: true },
+      { Header: Literals.Columns.Fileuuid[Profile.Language], accessor: 'Fileuuid', sortable: true, canGroupBy: true, canFilter: true },
       { Header: Literals.Columns.Createduser[Profile.Language], accessor: 'Createduser', sortable: true, canGroupBy: true, canFilter: true, },
       { Header: Literals.Columns.Updateduser[Profile.Language], accessor: 'Updateduser', sortable: true, canGroupBy: true, canFilter: true, },
       { Header: Literals.Columns.Createtime[Profile.Language], accessor: 'Createtime', sortable: true, canGroupBy: true, canFilter: true, },
@@ -102,7 +106,7 @@ export default class Orders extends Component {
       { Header: Literals.Columns.edit[Profile.Language], accessor: 'edit', canGroupBy: false, canFilter: false, disableFilters: true, sortable: false, className: 'text-center action-column' },
       { Header: Literals.Columns.delete[Profile.Language], accessor: 'delete', canGroupBy: false, canFilter: false, disableFilters: true, sortable: false, className: 'text-center action-column' }]
 
-    const metaKey = "Orders"
+    const metaKey = `Orders${recordType}`
     let tableMeta = (Profile.tablemeta || []).find(u => u.Meta === metaKey)
     const initialConfig = {
       hiddenColumns: tableMeta ? JSON.parse(tableMeta.Config).filter(u => u.isVisible === false).map(item => {
@@ -115,8 +119,8 @@ export default class Orders extends Component {
         return item.key
       }) : [],
     };
-    
-    const list = (Orders.list || []).map(item => {
+
+    const list = ((recordType ? Orders.list.filter(u => u.RecordtypeID === recordType) : Orders.list) || []).map(item => {
       return {
         ...item,
         edit: <Link to={`/Orders/${item.Uuid}/edit`} ><Icon size='large' className='row-edit' name='edit' /></Link>,
@@ -127,6 +131,8 @@ export default class Orders extends Component {
       }
     })
 
+    const recordTypename = Recordtypes.list.find(u => u.Uuid === recordType)?.Name ? Recordtypes.list.find(u => u.Uuid === recordType)?.Name : ''
+
     return (
       isLoading || isDispatching || Jobs.isLoading || Jobs.isDispatching ? <LoadingPage /> :
         <React.Fragment>
@@ -136,7 +142,7 @@ export default class Orders extends Component {
                 <GridColumn width={8}>
                   <Breadcrumb size='big'>
                     <Link to={"/Orders"}>
-                      <Breadcrumb.Section>{Literals.Page.Pageheader[Profile.Language]}</Breadcrumb.Section>
+                      <Breadcrumb.Section>{`${recordTypename} ${Literals.Page.Pageheader[Profile.Language]}`}</Breadcrumb.Section>
                     </Link>
                   </Breadcrumb>
                 </GridColumn>
@@ -152,7 +158,7 @@ export default class Orders extends Component {
             </Headerwrapper>
             <Pagedivider />
             {list.length > 0 ?
-              <div className='w-full mx-auto '>
+              <div className='w-full mx-auto'>
                 <OrdersList
                   Data={list}
                   Columns={Columns}

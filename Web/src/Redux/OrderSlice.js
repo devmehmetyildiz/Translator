@@ -3,6 +3,8 @@ import { ROUTES } from "../Utils/Constants";
 import AxiosErrorHelper from "../Utils/AxiosErrorHelper"
 import instanse from "./axios";
 import config from "../Config";
+import Cookies from 'universal-cookie';
+import axios from 'axios';
 
 const Literals = {
     addcode: {
@@ -66,6 +68,24 @@ export const AddOrders = createAsyncThunk(
             const state = getState()
             const Language = state.Profile.Language || 'en'
             const response = await instanse.post(config.services.Business, ROUTES.ORDER, data);
+            dispatch(fillOrdernotification({
+                type: 'Success',
+                code: Literals.addcode[Language],
+                description: Literals.adddescription[Language],
+            }));
+            const formData = new FormData();
+            data.Files.forEach((data, index) => {
+                Object.keys(data).forEach(element => {
+                    formData.append(`list[${index}].${element}`, data[element])
+                });
+            })
+            const localcookies = new Cookies();
+            await axios({
+                method: `post`,
+                url: config.services.File + `${ROUTES.FILE}`,
+                headers: { Authorization: "Bearer  " + localcookies.get('patientcare'), contentType: 'mime/form-data' },
+                data: formData
+            })
             dispatch(fillOrdernotification({
                 type: 'Success',
                 code: Literals.addcode[Language],

@@ -62,7 +62,6 @@ async function Createrequest(req, res, next) {
       Isactive: true
     }
 
-
     const transporter = nodemailer.createTransport({
       host: emailsetting.Smtphost,
       port: emailsetting.Smtpport,
@@ -77,7 +76,7 @@ async function Createrequest(req, res, next) {
     await transporter.sendMail({
       from: emailsetting.Mailaddress, // sender address
       to: user.Email, // list of receivers
-      subject: "Patient Care Parola Sıfırlama Talebiniz Alınmıştır", // Subject line
+      subject: "Star Note Parola Sıfırlama Talebiniz Alınmıştır", // Subject line
       text: "Bu mesaj uygulama tarafından gönderilmiştir", // plain text body
       html: Createresettemplate(user.Username, passwordresetrequest.Reseturl),
     })
@@ -86,6 +85,7 @@ async function Createrequest(req, res, next) {
 
     res.status(200).json({ message: "success" })
   } catch (error) {
+    console.log('error: ', error);
     return next(sequelizeErrorCatcher(error))
   }
 }

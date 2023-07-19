@@ -9,7 +9,7 @@ import LoadingPage from '../../Utils/LoadingPage'
 export default class Layout extends Component {
 
   componentDidMount() {
-    const { GetActiveUser, GetUserRoles, GetTableMeta, GetUserMeta } = this.props
+    const { GetActiveUser, GetUserRoles, GetTableMeta, GetUserMeta, GetRecordtypes } = this.props
     const routes = [
       "/Login",
       "/login",
@@ -24,6 +24,7 @@ export default class Layout extends Component {
       GetUserRoles()
       GetTableMeta()
       GetUserMeta()
+      GetRecordtypes()
     }
   }
 
@@ -38,7 +39,7 @@ export default class Layout extends Component {
   render() {
     const { Profile, iconOnly, seticonOnly, history, logOut, isMobile } = this.props
     return (
-      Profile.isLogging ?
+      (Profile.isLogging || Profile.isFetching) ?
         <LoadingPage />
         :
         <div className='bg-white dark:bg-Contentbg overflow-hidden' >

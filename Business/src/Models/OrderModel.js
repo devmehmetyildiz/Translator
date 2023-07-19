@@ -76,6 +76,9 @@ module.exports = sequelize.define('orderModel', {
     Info: {
         type: Sequelize.STRING,
     },
+    Fileuuid: {
+        type: Sequelize.STRING,
+    },
     Createduser: {
         type: Sequelize.STRING
     },

@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import Layout from "../../Pages/Layout/Layout"
-import { GetActiveUser, GetUserRoles, logOut, GetTableMeta, GetUserMeta, removenotification } from "../../Redux/ProfileSlice"
+import { GetActiveUser, GetUserRoles, logOut, GetTableMeta, GetUserMeta, removenotification ,GetRecordtypes} from "../../Redux/ProfileSlice"
 import { removeUsernotification } from "../../Redux/UserSlice"
 
 const mapStateToProps = (state) => ({
@@ -9,7 +9,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = {
-    GetActiveUser, GetUserRoles, logOut, GetTableMeta, GetUserMeta, removenotification, removeUsernotification
+    GetActiveUser, GetUserRoles, logOut, GetTableMeta, GetUserMeta, removenotification, removeUsernotification,GetRecordtypes
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Layout)

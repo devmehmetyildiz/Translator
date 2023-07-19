@@ -40,6 +40,18 @@ async function GetOrder(req, res, next) {
         }
         const jobs = await db.jobModel.findAll({ where: { OrderID: order.Uuid } })
         order.Jobs = jobs
+        try {
+            const filesresponse = await axios({
+                method: 'GET',
+                url: config.services.File + 'Files/GetbyorderfileID/' + order.Fileuuid,
+                headers: {
+                    session_key: config.session.secret
+                }
+            })
+            order.Files = filesresponse.data
+        } catch (error) {
+            return next(requestErrorCatcher(error, 'File'))
+        }
         res.status(200).json(order)
     } catch (error) {
         return next(sequelizeErrorCatcher(error))
@@ -247,7 +259,7 @@ async function UpdateOrders(req, res, next) {
             Updatetime: new Date(),
         }, { where: { Uuid: Uuid } }, { transaction: t })
 
-        let jobnumerator =await Getcurrentnumerator(next)
+        let jobnumerator = await Getcurrentnumerator(next)
         console.log('jobnumerator: ', jobnumerator);
         let isnumeratorchanged = false
         for (const job of Jobs) {
@@ -268,7 +280,7 @@ async function UpdateOrders(req, res, next) {
                     Createtime: new Date(),
                     Isactive: true
                 }, { transaction: t })
-                jobnumerator =await Createnewnumerator(jobnumerator, next)
+                jobnumerator = await Createnewnumerator(jobnumerator, next)
             }
         }
         if (isnumeratorchanged) {
