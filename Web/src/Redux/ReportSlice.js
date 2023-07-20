@@ -36,10 +36,22 @@ const Literals = {
 export const ReportsSlice = createSlice({
     name: 'Reports',
     initialState: {
-
+        list: [],
+        selected_record: {},
+        errMsg: null,
+        notifications: [],
+        isLoading: false,
+        isDispatching: false,
     },
     reducers: {
-
+        fillRecordtypenotification: (state, action) => {
+            const payload = action.payload;
+            const messages = Array.isArray(payload) ? payload : [payload];
+            state.notifications = messages.concat(state.notifications || []);
+        },
+        removeRecordtypenotification: (state) => {
+            state.notifications.splice(0, 1);
+        },
     },
 });
 
