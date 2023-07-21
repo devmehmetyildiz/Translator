@@ -31,7 +31,19 @@ const Literals = {
     },
 }
 
-
+export const GetActiveuser = createAsyncThunk(
+    'Recordtypes/GetActiveuser',
+    async (_, { dispatch }) => {
+        try {
+            const response = await instanse.get(config.services.Userrole, ROUTES.RECORDTYPE);
+            return response.data;
+        } catch (error) {
+            const errorPayload = AxiosErrorHelper(error);
+            dispatch(fillRecordtypenotification(errorPayload));
+            throw errorPayload;
+        }
+    }
+);
 
 export const ReportsSlice = createSlice({
     name: 'Reports',
@@ -56,6 +68,8 @@ export const ReportsSlice = createSlice({
 });
 
 export const {
+    fillRecordtypenotification,
+    removeRecordtypenotification
 } = ReportsSlice.actions;
 
 export default ReportsSlice.reducer;

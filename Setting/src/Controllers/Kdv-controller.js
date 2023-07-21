@@ -15,6 +15,15 @@ async function GetKdvs(req, res, next) {
     }
 }
 
+async function GetKdvscount(req, res, next) {
+    try {
+        const kdvs = await db.kdvModel.count()
+        res.status(200).json(kdvs)
+    } catch (error) {
+        return next(sequelizeErrorCatcher(error))
+    }
+}
+
 async function GetKdv(req, res, next) {
 
     let validationErrors = []
@@ -31,10 +40,10 @@ async function GetKdv(req, res, next) {
     try {
         const kdv = await db.kdvModel.findOne({ where: { Uuid: req.params.kdvId } });
         if (!kdv) {
-            return createNotfounderror([messages.ERROR.KDV_NOT_FOUND])
+            return next(createNotfounderror([messages.ERROR.KDV_NOT_FOUND]))
         }
         if (!kdv.Isactive) {
-            return createNotfounderror([messages.ERROR.KDV_NOT_ACTIVE])
+            return next(createNotfounderror([messages.ERROR.KDV_NOT_ACTIVE]))
         }
         res.status(200).json(kdv)
     } catch (error) {
@@ -120,7 +129,7 @@ async function AddArrayKdv(req, res, next) {
             return next(sequelizeErrorCatcher(err))
         }
     } else {
-        return createValidationError([messages.ERROR.DATA_ISNOT_ARRAY])
+        return next(createValidationError([messages.ERROR.DATA_ISNOT_ARRAY]))
     }
     GetKdvs(req, res, next)
 }
@@ -214,4 +223,5 @@ module.exports = {
     AddArrayKdv,
     UpdateKdv,
     DeleteKdv,
+    GetKdvscount
 }

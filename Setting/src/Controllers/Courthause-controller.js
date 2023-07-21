@@ -15,6 +15,15 @@ async function GetCourthauses(req, res, next) {
     }
 }
 
+async function GetCourthausescount(req, res, next) {
+    try {
+        const courhausies = await db.courthauseModel.count()
+        res.status(200).json(courhausies)
+    } catch (error) {
+        return next(sequelizeErrorCatcher(error))
+    }
+}
+
 async function GetCourthause(req, res, next) {
 
     let validationErrors = []
@@ -31,10 +40,10 @@ async function GetCourthause(req, res, next) {
     try {
         const courthause = await db.courthauseModel.findOne({ where: { Uuid: req.params.courthauseId } });
         if (!courthause) {
-            return createNotfounderror([messages.ERROR.COURTHAUSE_NOT_FOUND])
+            return next(createNotfounderror([messages.ERROR.COURTHAUSE_NOT_FOUND]))
         }
         if (!courthause.Isactive) {
-            return createNotfounderror([messages.ERROR.COURTHAUSE_NOT_ACTIVE])
+            return next(createNotfounderror([messages.ERROR.COURTHAUSE_NOT_ACTIVE]))
         }
         res.status(200).json(courthause)
     } catch (error) {
@@ -112,7 +121,7 @@ async function AddArrayCourthause(req, res, next) {
             return next(sequelizeErrorCatcher(err))
         }
     } else {
-        return createValidationError([messages.ERROR.DATA_ISNOT_ARRAY])
+        return next(createValidationError([messages.ERROR.DATA_ISNOT_ARRAY]))
     }
     GetCourthauses(req, res, next)
 }
@@ -202,4 +211,5 @@ module.exports = {
     AddArrayCourthause,
     UpdateCourthause,
     DeleteCourthause,
+    GetCourthausescount
 }

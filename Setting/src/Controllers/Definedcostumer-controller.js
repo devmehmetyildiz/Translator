@@ -15,6 +15,15 @@ async function GetDefinedcostumers(req, res, next) {
     }
 }
 
+async function GetDefinedcostumerscount(req, res, next) {
+    try {
+        const definedcostumers = await db.definedcostumerModel.count()
+        res.status(200).json(definedcostumers)
+    } catch (error) {
+        return next(sequelizeErrorCatcher(error))
+    }
+}
+
 async function GetDefinedcostumer(req, res, next) {
 
     let validationErrors = []
@@ -31,10 +40,10 @@ async function GetDefinedcostumer(req, res, next) {
     try {
         const definedcostumer = await db.definedcostumerModel.findOne({ where: { Uuid: req.params.definedcostumerId } });
         if (!definedcostumer) {
-            return createNotfounderror([messages.ERROR.DEFINEDCOSTUMER_NOT_FOUND])
+            return next(createNotfounderror([messages.ERROR.DEFINEDCOSTUMER_NOT_FOUND]))
         }
         if (!definedcostumer.Isactive) {
-            return createNotfounderror([messages.ERROR.DEFINEDCOSTUMER_NOT_ACTIVE])
+            return next(createNotfounderror([messages.ERROR.DEFINEDCOSTUMER_NOT_ACTIVE]))
         }
         res.status(200).json(definedcostumer)
     } catch (error) {
@@ -160,7 +169,7 @@ async function AddArrayDefinedcostumer(req, res, next) {
             return next(sequelizeErrorCatcher(err))
         }
     } else {
-        return createValidationError([messages.ERROR.DATA_ISNOT_ARRAY])
+        return next(createValidationError([messages.ERROR.DATA_ISNOT_ARRAY]))
     }
     GetDefinedcostumers(req, res, next)
 }
@@ -274,4 +283,5 @@ module.exports = {
     AddArrayDefinedcostumer,
     UpdateDefinedcostumer,
     DeleteDefinedcostumer,
+    GetDefinedcostumerscount
 }

@@ -16,6 +16,15 @@ async function GetRules(req, res, next) {
     }
 }
 
+async function GetRulescount(req, res, next) {
+    try {
+        const rules = await db.ruleModel.count()
+        res.status(200).json(rules)
+    } catch (error) {
+        return next(sequelizeErrorCatcher(error))
+    }
+}
+
 async function GetRulelogs(req, res, next) {
 
     let validationErrors = []
@@ -272,5 +281,6 @@ module.exports = {
     DeleteRule,
     GetRulelogs,
     ClearRulelogs,
-    StopRule
+    StopRule,
+    GetRulescount
 }

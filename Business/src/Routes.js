@@ -1,4 +1,5 @@
 const Routes = [
+    { method: 'get', path: '/Jobs/GetCount', controller: 'Job', action: 'GetJobscount' },
     { method: 'get', path: '/Jobs/GetbyorderID/:orderId', controller: 'Job', action: 'GetbyorderID' },
     { method: 'get', path: '/Jobs/:jobId', controller: 'Job', action: 'GetJob' },
     { method: 'get', path: '/Jobs', controller: 'Job', action: 'GetJobs' },
@@ -6,6 +7,7 @@ const Routes = [
     { method: 'put', path: '/Jobs', controller: 'Job', action: 'UpdateJobs' },
     { method: 'delete', path: '/Jobs/:jobId', controller: 'Job', action: 'DeleteJobs' },
 
+    { method: 'get', path: '/Orders/GetCount', controller: 'Order', action: 'GetOrderscount' },
     { method: 'get', path: '/Orders/:orderId', controller: 'Order', action: 'GetOrder' },
     { method: 'get', path: '/Orders', controller: 'Order', action: 'GetOrders' },
     { method: 'post', path: '/Orders', controller: 'Order', action: 'AddOrders' },

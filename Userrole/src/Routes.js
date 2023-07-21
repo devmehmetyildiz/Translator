@@ -1,4 +1,5 @@
 const Routes = [
+  { method: 'get', path: '/Users/GetCount', controller: 'User', action: 'GetUserscount' },
   { method: 'get', path: '/Users', controller: 'User', action: 'GetUsers' },
   { method: 'get', path: '/Users/GetActiveUsername', controller: 'User', action: 'GetActiveUsername' },
   { method: 'get', path: '/Users/GetActiveUserMeta', controller: 'User', action: 'GetActiveUserMeta' },
@@ -14,6 +15,7 @@ const Routes = [
   { method: 'delete', path: '/Users/Resettablemeta/:metaKey', controller: 'User', action: 'Resettablemeta' },
   { method: 'delete', path: '/Users/:userId', controller: 'User', action: 'DeleteUser' },
 
+  { method: 'get', path: '/Roles/GetCount', controller: 'Role', action: 'GetRolescount' },
   { method: 'get', path: '/Roles', controller: 'Role', action: 'GetRoles' },
   { method: 'get', path: '/Roles/GetActiveuserprivileges', controller: 'Role', action: 'GetActiveuserprivileges' },
   { method: 'get', path: '/Roles/Getprivileges', controller: 'Role', action: 'Getprivileges' },

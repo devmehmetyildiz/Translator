@@ -15,6 +15,15 @@ async function GetRecordtypes(req, res, next) {
     }
 }
 
+async function GetRecordtypescount(req, res, next) {
+    try {
+        const recordtypes = await db.recordtypeModel.count()
+        res.status(200).json(recordtypes)
+    } catch (error) {
+        return next(sequelizeErrorCatcher(error))
+    }
+}
+
 async function GetRecordtype(req, res, next) {
 
     let validationErrors = []
@@ -31,10 +40,10 @@ async function GetRecordtype(req, res, next) {
     try {
         const recordtype = await db.recordtypeModel.findOne({ where: { Uuid: req.params.recordtypeId } });
         if (!recordtype) {
-            return createNotfounderror([messages.ERROR.RECORDTYPE_NOT_FOUND])
+            return next(createNotfounderror([messages.ERROR.RECORDTYPE_NOT_FOUND]))
         }
         if (!recordtype.Isactive) {
-            return createNotfounderror([messages.ERROR.RECORDTYPE_NOT_ACTIVE])
+            return next(createNotfounderror([messages.ERROR.RECORDTYPE_NOT_ACTIVE]))
         }
         res.status(200).json(recordtype)
     } catch (error) {
@@ -202,4 +211,5 @@ module.exports = {
     AddArrayRecordtype,
     UpdateRecordtype,
     DeleteRecordtype,
+    GetRecordtypescount
 }

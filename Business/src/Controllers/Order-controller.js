@@ -17,6 +17,15 @@ async function GetOrders(req, res, next) {
     }
 }
 
+async function GetOrderscount(req, res, next) {
+    try {
+        const orders = await db.orderModel.count()
+        res.status(200).json(orders)
+    } catch (error) {
+        return next(sequelizeErrorCatcher(error))
+    }
+}
+
 async function GetOrder(req, res, next) {
 
     let validationErrors = []
@@ -260,7 +269,6 @@ async function UpdateOrders(req, res, next) {
         }, { where: { Uuid: Uuid } }, { transaction: t })
 
         let jobnumerator = await Getcurrentnumerator(next)
-        console.log('jobnumerator: ', jobnumerator);
         let isnumeratorchanged = false
         for (const job of Jobs) {
             if (validator.isUUID(job.Uuid)) {
@@ -336,4 +344,5 @@ module.exports = {
     AddOrders,
     UpdateOrders,
     DeleteOrders,
+    GetOrderscount
 }

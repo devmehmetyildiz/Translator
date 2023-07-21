@@ -15,6 +15,15 @@ async function GetPayments(req, res, next) {
     }
 }
 
+async function GetPaymentscount(req, res, next) {
+    try {
+        const payments = await db.paymentModel.count()
+        res.status(200).json(payments)
+    } catch (error) {
+        return next(sequelizeErrorCatcher(error))
+    }
+}
+
 async function GetPayment(req, res, next) {
 
     let validationErrors = []
@@ -31,10 +40,10 @@ async function GetPayment(req, res, next) {
     try {
         const payment = await db.paymentModel.findOne({ where: { Uuid: req.params.paymentId } });
         if (!payment) {
-            return createNotfounderror([messages.ERROR.PAYMENT_NOT_FOUND])
+            return next(createNotfounderror([messages.ERROR.PAYMENT_NOT_FOUND]))
         }
         if (!payment.Isactive) {
-            return createNotfounderror([messages.ERROR.PAYMENT_NOT_ACTIVE])
+            return next(createNotfounderror([messages.ERROR.PAYMENT_NOT_ACTIVE]))
         }
         res.status(200).json(payment)
     } catch (error) {
@@ -112,7 +121,7 @@ async function AddArrayPayment(req, res, next) {
             return next(sequelizeErrorCatcher(err))
         }
     } else {
-        return createValidationError([messages.ERROR.DATA_ISNOT_ARRAY])
+        return next(createValidationError([messages.ERROR.DATA_ISNOT_ARRAY]))
     }
     GetPayments(req, res, next)
 }
@@ -202,4 +211,5 @@ module.exports = {
     AddArrayPayment,
     UpdatePayment,
     DeletePayment,
+    GetPaymentscount
 }

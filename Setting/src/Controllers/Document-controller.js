@@ -15,6 +15,15 @@ async function GetDocuments(req, res, next) {
     }
 }
 
+async function GetDocumentscount(req, res, next) {
+    try {
+        const documents = await db.documentModel.count()
+        res.status(200).json(documents)
+    } catch (error) {
+        return next(sequelizeErrorCatcher(error))
+    }
+}
+
 async function GetDocument(req, res, next) {
 
     let validationErrors = []
@@ -31,10 +40,10 @@ async function GetDocument(req, res, next) {
     try {
         const document = await db.documentModel.findOne({ where: { Uuid: req.params.documentId } });
         if (!document) {
-            return createNotfounderror([messages.ERROR.DOCUMENT_NOT_FOUND])
+            return next(createNotfounderror([messages.ERROR.DOCUMENT_NOT_FOUND]))
         }
         if (!document.Isactive) {
-            return createNotfounderror([messages.ERROR.DOCUMENT_NOT_ACTIVE])
+            return next(createNotfounderror([messages.ERROR.DOCUMENT_NOT_ACTIVE]))
         }
         res.status(200).json(document)
     } catch (error) {
@@ -112,7 +121,7 @@ async function AddArrayDocument(req, res, next) {
             return next(sequelizeErrorCatcher(err))
         }
     } else {
-        return createValidationError([messages.ERROR.DATA_ISNOT_ARRAY])
+        return next(createValidationError([messages.ERROR.DATA_ISNOT_ARRAY]))
     }
     GetDocuments(req, res, next)
 }
@@ -202,4 +211,5 @@ module.exports = {
     AddArrayDocument,
     UpdateDocument,
     DeleteDocument,
+    GetDocumentscount
 }

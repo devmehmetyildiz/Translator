@@ -1,4 +1,5 @@
 const Routes = [
+  { method: 'get', path: '/Cases/GetCount', controller: 'Case', action: 'GetCasescount' },
   { method: 'get', path: '/Cases/GetCompleteCase', controller: 'Case', action: 'GetCompleteCase' },
   { method: 'get', path: '/Cases/GetDeactivateCase', controller: 'Case', action: 'GetDeactivateCase' },
   { method: 'get', path: '/Cases/:caseId', controller: 'Case', action: 'GetCase' },
@@ -8,6 +9,7 @@ const Routes = [
   { method: 'put', path: '/Cases', controller: 'Case', action: 'UpdateCase' },
   { method: 'delete', path: '/Cases/:caseId', controller: 'Case', action: 'DeleteCase' },
 
+  { method: 'get', path: '/Courts/GetCount', controller: 'Court', action: 'GetCourtscount' },
   { method: 'get', path: '/Courts/:courtId', controller: 'Court', action: 'GetCourt' },
   { method: 'get', path: '/Courts', controller: 'Court', action: 'GetCourts' },
   { method: 'post', path: '/Courts/AddRecord', controller: 'Court', action: 'AddArrayCourt' },
@@ -15,6 +17,7 @@ const Routes = [
   { method: 'put', path: '/Courts', controller: 'Court', action: 'UpdateCourt' },
   { method: 'delete', path: '/Courts/:courtId', controller: 'Court', action: 'DeleteCourt' },
 
+  { method: 'get', path: '/Courthauses/GetCount', controller: 'Courthause', action: 'GetCourthausescount' },
   { method: 'get', path: '/Courthauses/:courthauseId', controller: 'Courthause', action: 'GetCourthause' },
   { method: 'get', path: '/Courthauses', controller: 'Courthause', action: 'GetCourthauses' },
   { method: 'post', path: '/Courthauses/AddRecord', controller: 'Courthause', action: 'AddArrayCourthause' },
@@ -22,6 +25,7 @@ const Routes = [
   { method: 'put', path: '/Courthauses', controller: 'Courthause', action: 'UpdateCourthause' },
   { method: 'delete', path: '/Courthauses/:courthauseId', controller: 'Courthause', action: 'DeleteCourthause' },
 
+  { method: 'get', path: '/Definedcompanies/GetCount', controller: 'Definedcompany', action: 'GetDefinedcompaniescount' },
   { method: 'get', path: '/Definedcompanies/:definedcompanyId', controller: 'Definedcompany', action: 'GetDefinedcompany' },
   { method: 'get', path: '/Definedcompanies', controller: 'Definedcompany', action: 'GetDefinedcompanies' },
   { method: 'post', path: '/Definedcompanies/AddRecord', controller: 'Definedcompany', action: 'AddArrayDefinedcompany' },
@@ -29,6 +33,7 @@ const Routes = [
   { method: 'put', path: '/Definedcompanies', controller: 'Definedcompany', action: 'UpdateDefinedcompany' },
   { method: 'delete', path: '/Definedcompanies/:definedcompanyId', controller: 'Definedcompany', action: 'DeleteDefinedcompany' },
 
+  { method: 'get', path: '/Definedcostumers/GetCount', controller: 'Definedcostumer', action: 'GetDefinedcostumerscount' },
   { method: 'get', path: '/Definedcostumers/:definedcostumerId', controller: 'Definedcostumer', action: 'GetDefinedcostumer' },
   { method: 'get', path: '/Definedcostumers', controller: 'Definedcostumer', action: 'GetDefinedcostumers' },
   { method: 'post', path: '/Definedcostumers/AddRecord', controller: 'Definedcostumer', action: 'AddArrayDefinedcostumer' },
@@ -36,6 +41,7 @@ const Routes = [
   { method: 'put', path: '/Definedcostumers', controller: 'Definedcostumer', action: 'UpdateDefinedcostumer' },
   { method: 'delete', path: '/Definedcostumers/:definedcostumerId', controller: 'Definedcostumer', action: 'DeleteDefinedcostumer' },
 
+  { method: 'get', path: '/Documents/GetCount', controller: 'Document', action: 'GetDocumentscount' },
   { method: 'get', path: '/Documents/:documentId', controller: 'Document', action: 'GetDocument' },
   { method: 'get', path: '/Documents', controller: 'Document', action: 'GetDocuments' },
   { method: 'post', path: '/Documents/AddRecord', controller: 'Document', action: 'AddArrayDocument' },
@@ -43,6 +49,7 @@ const Routes = [
   { method: 'put', path: '/Documents', controller: 'Document', action: 'UpdateDocument' },
   { method: 'delete', path: '/Documents/:documentId', controller: 'Document', action: 'DeleteDocument' },
 
+  { method: 'get', path: '/Goals/GetCount', controller: 'Goal', action: 'GetGoalscount' },
   { method: 'get', path: '/Goals/:goalId', controller: 'Goal', action: 'GetGoal' },
   { method: 'get', path: '/Goals', controller: 'Goal', action: 'GetGoals' },
   { method: 'post', path: '/Goals/AddRecord', controller: 'Goal', action: 'AddArrayGoal' },
@@ -50,6 +57,7 @@ const Routes = [
   { method: 'put', path: '/Goals', controller: 'Goal', action: 'UpdateGoal' },
   { method: 'delete', path: '/Goals/:goalId', controller: 'Goal', action: 'DeleteGoal' },
 
+  { method: 'get', path: '/Kdvs/GetCount', controller: 'Kdv', action: 'GetKdvscount' },
   { method: 'get', path: '/Kdvs/:kdvId', controller: 'Kdv', action: 'GetKdv' },
   { method: 'get', path: '/Kdvs', controller: 'Kdv', action: 'GetKdvs' },
   { method: 'post', path: '/Kdvs/AddRecord', controller: 'Kdv', action: 'AddArrayKdv' },
@@ -57,6 +65,7 @@ const Routes = [
   { method: 'put', path: '/Kdvs', controller: 'Kdv', action: 'UpdateKdv' },
   { method: 'delete', path: '/Kdvs/:kdvId', controller: 'Kdv', action: 'DeleteKdv' },
 
+  { method: 'get', path: '/Languages/GetCount', controller: 'Language', action: 'GetLanguagescount' },
   { method: 'get', path: '/Languages/Getconfig', controller: 'Language', action: 'GetLanguageconfig' },
   { method: 'post', path: '/Languages/Saveconfig', controller: 'Language', action: 'UpdateLanguageconfig' },
   { method: 'get', path: '/Languages/:languageId', controller: 'Language', action: 'GetLanguage' },
@@ -66,6 +75,7 @@ const Routes = [
   { method: 'put', path: '/Languages', controller: 'Language', action: 'UpdateLanguage' },
   { method: 'delete', path: '/Languages/:languageId', controller: 'Language', action: 'DeleteLanguage' },
 
+  { method: 'get', path: '/Recordtypes/GetCount', controller: 'Recordtype', action: 'GetRecordtypescount' },
   { method: 'get', path: '/Recordtypes/:recordtypeId', controller: 'Recordtype', action: 'GetRecordtype' },
   { method: 'get', path: '/Recordtypes', controller: 'Recordtype', action: 'GetRecordtypes' },
   { method: 'post', path: '/Recordtypes/AddRecord', controller: 'Recordtype', action: 'AddArrayRecordtype' },
@@ -73,6 +83,7 @@ const Routes = [
   { method: 'put', path: '/Recordtypes', controller: 'Recordtype', action: 'UpdateRecordtype' },
   { method: 'delete', path: '/Recordtypes/:recordtypeId', controller: 'Recordtype', action: 'DeleteRecordtype' },
 
+  { method: 'get', path: '/Translators/GetCount', controller: 'Translator', action: 'GetTranslatorscount' },
   { method: 'get', path: '/Translators/:translatorId', controller: 'Translator', action: 'GetTranslator' },
   { method: 'get', path: '/Translators', controller: 'Translator', action: 'GetTranslators' },
   { method: 'post', path: '/Translators/AddRecord', controller: 'Translator', action: 'AddArrayTranslator' },
@@ -80,6 +91,7 @@ const Routes = [
   { method: 'put', path: '/Translators', controller: 'Translator', action: 'UpdateTranslator' },
   { method: 'delete', path: '/Translators/:translatorId', controller: 'Translator', action: 'DeleteTranslator' },
 
+  { method: 'get', path: '/Payments/GetCount', controller: 'Payment', action: 'GetPaymentscount' },
   { method: 'get', path: '/Payments/:paymentId', controller: 'Payment', action: 'GetPayment' },
   { method: 'get', path: '/Payments', controller: 'Payment', action: 'GetPayments' },
   { method: 'post', path: '/Payments/AddRecord', controller: 'Payment', action: 'AddArrayPayment' },

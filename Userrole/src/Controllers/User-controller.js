@@ -147,6 +147,15 @@ async function GetUsers(req, res, next) {
     }
 }
 
+async function GetUserscount(req, res, next) {
+    try {
+        const users = await db.userModel.count()
+        res.status(200).json(users)
+    } catch (error) {
+        return next(sequelizeErrorCatcher(error))
+    }
+}
+
 async function GetUser(req, res, next) {
 
     let validationErrors = []
@@ -177,7 +186,7 @@ async function GetUser(req, res, next) {
             })
             user.Files = fileresponse.data
         } catch (error) {
-            next(requestErrorCatcher(error, 'File'))
+            return next(requestErrorCatcher(error, 'File'))
         }
         let rolesuuids = await db.userroleModel.findAll({
             where: {
@@ -192,7 +201,7 @@ async function GetUser(req, res, next) {
         user.PasswordHash && delete user.PasswordHash
         res.status(200).json(user)
     } catch (error) {
-        next(sequelizeErrorCatcher(error))
+        return next(sequelizeErrorCatcher(error))
     }
 }
 
@@ -215,7 +224,7 @@ async function Getbyusername(req, res, next) {
         }
         res.status(200).json(user)
     } catch (error) {
-        next(sequelizeErrorCatcher(error))
+        return next(sequelizeErrorCatcher(error))
     }
 }
 
@@ -238,7 +247,7 @@ async function Getbyemail(req, res, next) {
         }
         res.status(200).json(user)
     } catch (error) {
-        next(sequelizeErrorCatcher(error))
+        return next(sequelizeErrorCatcher(error))
     }
 }
 
@@ -261,7 +270,7 @@ async function Getusersalt(req, res, next) {
         }
         res.status(200).json(usersalt)
     } catch (error) {
-        next(sequelizeErrorCatcher(error))
+        return next(sequelizeErrorCatcher(error))
     }
 }
 
@@ -277,7 +286,7 @@ async function Getusertablemetaconfig(req, res, next) {
         }
         res.status(200).json(tablemetaconfigs)
     } catch (error) {
-        next(sequelizeErrorCatcher(error))
+        return next(sequelizeErrorCatcher(error))
     }
 }
 
@@ -313,7 +322,7 @@ async function Saveusertablemetaconfig(req, res, next) {
         }
         res.status(200).json(tablemetaconfigs)
     } catch (error) {
-        next(sequelizeErrorCatcher(error))
+        return next(sequelizeErrorCatcher(error))
     }
 }
 
@@ -423,7 +432,7 @@ async function AddUser(req, res, next) {
         await t.commit()
     } catch (error) {
         await t.rollback()
-        next(sequelizeErrorCatcher(error))
+        return next(sequelizeErrorCatcher(error))
     }
     GetUsers(req, res, next)
 }
@@ -510,7 +519,7 @@ async function UpdateUser(req, res, next) {
         await t.commit()
     } catch (error) {
         await t.rollback()
-        next(sequelizeErrorCatcher(error))
+        return next(sequelizeErrorCatcher(error))
     }
     GetUsers(req, res, next)
 }
@@ -546,7 +555,7 @@ async function DeleteUser(req, res, next) {
         await t.commit();
     } catch (error) {
         await t.rollback();
-        next(sequelizeErrorCatcher(error))
+        return next(sequelizeErrorCatcher(error))
     }
     GetUsers(req, res, next)
 }
@@ -617,5 +626,6 @@ module.exports = {
     Getusertablemetaconfig,
     Saveusertablemetaconfig,
     Getbyemail,
-    Resettablemeta
+    Resettablemeta,
+    GetUserscount
 }

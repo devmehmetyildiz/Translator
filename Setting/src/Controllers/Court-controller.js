@@ -15,6 +15,15 @@ async function GetCourts(req, res, next) {
     }
 }
 
+async function GetCourtscount(req, res, next) {
+    try {
+        const courts = await db.courtModel.count()
+        res.status(200).json(courts)
+    } catch (error) {
+        return next(sequelizeErrorCatcher(error))
+    }
+}
+
 async function GetCourt(req, res, next) {
 
     let validationErrors = []
@@ -31,10 +40,10 @@ async function GetCourt(req, res, next) {
     try {
         const court = await db.courtModel.findOne({ where: { Uuid: req.params.courtId } });
         if (!court) {
-            return createNotfounderror([messages.ERROR.COURT_NOT_FOUND])
+            return next(createNotfounderror([messages.ERROR.COURT_NOT_FOUND]))
         }
         if (!court.Isactive) {
-            return createNotfounderror([messages.ERROR.COURT_NOT_ACTIVE])
+            return next(createNotfounderror([messages.ERROR.COURT_NOT_ACTIVE]))
         }
         res.status(200).json(court)
     } catch (error) {
@@ -112,7 +121,7 @@ async function AddArrayCourt(req, res, next) {
             return next(sequelizeErrorCatcher(err))
         }
     } else {
-        return createValidationError([messages.ERROR.DATA_ISNOT_ARRAY])
+        return next(createValidationError([messages.ERROR.DATA_ISNOT_ARRAY]))
     }
     GetCourts(req, res, next)
 }
@@ -202,4 +211,5 @@ module.exports = {
     AddArrayCourt,
     UpdateCourt,
     DeleteCourt,
+    GetCourtscount
 }

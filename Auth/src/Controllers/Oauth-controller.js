@@ -2,7 +2,7 @@ const messages = require('../Constants/Messages')
 const createValidationError = require('../Utilities/Error').createValidation
 const crypto = require('crypto')
 const uuid = require('uuid').v4
-const { sequelizeErrorCatcher, createAccessDenied, createAutherror, requestErrorCatcher,createNotfounderror } = require("../Utilities/Error")
+const { sequelizeErrorCatcher, createAccessDenied, createAutherror, requestErrorCatcher, createNotfounderror } = require("../Utilities/Error")
 const priveleges = require('../Constants/Privileges')
 const axios = require('axios')
 const config = require('../Config')
@@ -57,11 +57,11 @@ async function responseToGetTokenByGrantPassword(req, res, next) {
     let validationErrors = []
 
     if (!req.body.Username) {
-        validationErrors.push(messages.VALIDATION_ERROR.USERNAME_IS_REQUIRED)
+        validationErrors.push(messages.VALIDATION_ERROR.USERNAME_REQUIRED)
     }
 
     if (!req.body.Password) {
-        validationErrors.push(messages.VALIDATION_ERROR.PASSWORD_IS_REQUIRED)
+        validationErrors.push(messages.VALIDATION_ERROR.PASSWORD_REQUIRED)
     }
 
     if (validationErrors.length > 0) {
@@ -95,7 +95,7 @@ async function responseToGetTokenByGrantPassword(req, res, next) {
     }
 
     if (!await ValidatePassword(req.body.Password, user.PasswordHash, usersalt.Salt)) {
-        return next(createAutherror([messages.ERROR.PASSWORD_DIDNT_MATCH], req.language))
+        return next(createAutherror([messages.ERROR.PASSWORD_DIDNTMATCH], req.language))
     }
 
     let accessToken = {
@@ -122,8 +122,7 @@ async function responseToGetTokenByGrantPassword(req, res, next) {
             Isactive: true
         })
     } catch (err) {
-        sequelizeErrorCatcher(err)
-        next()
+        return next(sequelizeErrorCatcher(err))
     }
 
     res.cookie("patientcare", accessToken.accessToken, {
@@ -161,7 +160,7 @@ async function responseToGetTokenByRefreshToken(req, res, next) {
             }
         })
     } catch (error) {
-        return requestErrorCatcher(error, "USERROLE")
+        return next(requestErrorCatcher(error, "USERROLE"))
     }
 
     let accessToken = {
@@ -188,8 +187,7 @@ async function responseToGetTokenByRefreshToken(req, res, next) {
             Isactive: true
         })
     } catch (err) {
-        sequelizeErrorCatcher(err)
-        next()
+        return next(sequelizeErrorCatcher(err))
     }
 
     res.status(200).json(accessToken)
@@ -204,7 +202,6 @@ async function ValidatePassword(UserPassword, DbPassword, salt) {
             return false
         }
     } catch (error) {
-        sequelizeErrorCatcher(error)
         return false
     }
 }

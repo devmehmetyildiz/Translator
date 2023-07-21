@@ -15,6 +15,15 @@ async function GetCases(req, res, next) {
     }
 }
 
+async function GetCasescount(req, res, next) {
+    try {
+        const cases = await db.caseModel.count()
+        res.status(200).json(cases)
+    } catch (error) {
+        return next(sequelizeErrorCatcher(error))
+    }
+}
+
 async function GetCompleteCase(req, res, next) {
 
     try {
@@ -39,7 +48,7 @@ async function GetDeactivateCase(req, res, next) {
             return next(createNotfounderror([messages.ERROR.CASE_NOT_FOUND], req.language))
         }
         if (!casedata.Isactive) {
-            return createNotfounderror([messages.ERROR.CASE_NOT_ACTIVE])
+            return next(createNotfounderror([messages.ERROR.CASE_NOT_ACTIVE]))
         }
         res.status(200).json(casedata)
     } catch (error) {
@@ -63,10 +72,10 @@ async function GetCase(req, res, next) {
     try {
         const casedata = await db.caseModel.findOne({ where: { Uuid: req.params.caseId } });
         if (!casedata) {
-            return createNotfounderror([messages.ERROR.CASE_NOT_FOUND])
+            return next(createNotfounderror([messages.ERROR.CASE_NOT_FOUND]))
         }
         if (!casedata.Isactive) {
-            return createNotfounderror([messages.ERROR.CASE_NOT_ACTIVE])
+            return next(createNotfounderror([messages.ERROR.CASE_NOT_ACTIVE]))
         }
         res.status(200).json(casedata)
     } catch (error) {
@@ -167,7 +176,7 @@ async function AddArrayCase(req, res, next) {
             return next(sequelizeErrorCatcher(err))
         }
     } else {
-        return createValidationError([messages.ERROR.DATA_ISNOT_ARRAY])
+        return next(createValidationError([messages.ERROR.DATA_ISNOT_ARRAY]))
     }
     GetCases(req, res, next)
 }
@@ -270,5 +279,6 @@ module.exports = {
     UpdateCase,
     DeleteCase,
     GetCompleteCase,
-    GetDeactivateCase
+    GetDeactivateCase,
+    GetCasescount
 }

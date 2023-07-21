@@ -15,6 +15,15 @@ async function GetDefinedcompanies(req, res, next) {
     }
 }
 
+async function GetDefinedcompaniescount(req, res, next) {
+    try {
+        const definedcompanies = await db.definedcompanyModel.count()
+        res.status(200).json(definedcompanies)
+    } catch (error) {
+        return next(sequelizeErrorCatcher(error))
+    }
+}
+
 async function GetDefinedcompany(req, res, next) {
 
     let validationErrors = []
@@ -31,10 +40,10 @@ async function GetDefinedcompany(req, res, next) {
     try {
         const definedcompany = await db.definedcompanyModel.findOne({ where: { Uuid: req.params.definedcompanyId } });
         if (!definedcompany) {
-            return createNotfounderror([messages.ERROR.CASE_NOT_FOUND])
+            return next(createNotfounderror([messages.ERROR.CASE_NOT_FOUND]))
         }
         if (!definedcompany.Isactive) {
-            return createNotfounderror([messages.ERROR.CASE_NOT_ACTIVE])
+            return next(createNotfounderror([messages.ERROR.CASE_NOT_ACTIVE]))
         }
         res.status(200).json(definedcompany)
     } catch (error) {
@@ -136,7 +145,7 @@ async function AddArrayDefinedcompany(req, res, next) {
             return next(sequelizeErrorCatcher(err))
         }
     } else {
-        return createValidationError([messages.ERROR.DATA_ISNOT_ARRAY])
+        return next(createValidationError([messages.ERROR.DATA_ISNOT_ARRAY]))
     }
     GetDefinedcompanies(req, res, next)
 }
@@ -238,4 +247,5 @@ module.exports = {
     AddArrayDefinedcompany,
     UpdateDefinedcompany,
     DeleteDefinedcompany,
+    GetDefinedcompaniescount
 }

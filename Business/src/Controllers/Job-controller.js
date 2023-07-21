@@ -29,12 +29,22 @@ async function GetbyorderID(req, res, next) {
         return next(sequelizeErrorCatcher(error))
     }
 }
+
 async function GetJobs(req, res, next) {
     try {
         const jobs = await db.jobModel.findAll({ where: { Isactive: true } })
         for (const job of jobs) {
             job.Order = await db.orderModel.findOne({ where: { Uuid: job.OrderID } })
         }
+        res.status(200).json(jobs)
+    } catch (error) {
+        return next(sequelizeErrorCatcher(error))
+    }
+}
+
+async function GetJobscount(req, res, next) {
+    try {
+        const jobs = await db.jobModel.count()
         res.status(200).json(jobs)
     } catch (error) {
         return next(sequelizeErrorCatcher(error))
@@ -57,10 +67,10 @@ async function GetJob(req, res, next) {
     try {
         const job = await db.jobModel.findOne({ where: { Uuid: req.params.jobId } });
         if (!job) {
-            return createNotfounderror([messages.ERROR.JOB_NOT_FOUND])
+            return next(createNotfounderror([messages.ERROR.JOB_NOT_FOUND]))
         }
         if (!job.Isactive) {
-            return createNotfounderror([messages.ERROR.JOB_NOT_ACTIVE])
+            return next(createNotfounderror([messages.ERROR.JOB_NOT_ACTIVE]))
         }
         job.Order = await db.orderModel.findOne({ where: { Uuid: job.OrderID } })
         res.status(200).json(job)
@@ -237,5 +247,6 @@ module.exports = {
     AddJobs,
     UpdateJobs,
     DeleteJobs,
-    GetbyorderID
+    GetbyorderID,
+    GetJobscount
 }

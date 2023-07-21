@@ -26,6 +26,15 @@ async function GetTranslators(req, res, next) {
     }
 }
 
+async function GetTranslatorscount(req, res, next) {
+    try {
+        const translators = await db.translatorModel.count()
+        res.status(200).json(translators)
+    } catch (error) {
+        return next(sequelizeErrorCatcher(error))
+    }
+}
+
 async function GetTranslator(req, res, next) {
 
     let validationErrors = []
@@ -42,10 +51,10 @@ async function GetTranslator(req, res, next) {
     try {
         const translator = await db.translatorModel.findOne({ where: { Uuid: req.params.translatorId } });
         if (!translator) {
-            return createNotfounderror([messages.ERROR.TRANSLATOR_NOT_FOUND])
+            return next(createNotfounderror([messages.ERROR.TRANSLATOR_NOT_FOUND]))
         }
         if (!translator.Isactive) {
-            return createNotfounderror([messages.ERROR.TRANSLATOR_NOT_ACTIVE])
+            return next(createNotfounderror([messages.ERROR.TRANSLATOR_NOT_ACTIVE]))
         }
         const userresponse = await axios({
             method: 'GET',
@@ -131,7 +140,7 @@ async function AddArrayTranslator(req, res, next) {
             return next(sequelizeErrorCatcher(err))
         }
     } else {
-        return createValidationError([messages.ERROR.DATA_ISNOT_ARRAY])
+        return next(createValidationError([messages.ERROR.DATA_ISNOT_ARRAY]))
     }
     GetTranslators(req, res, next)
 }
@@ -221,4 +230,5 @@ module.exports = {
     AddArrayTranslator,
     UpdateTranslator,
     DeleteTranslator,
+    GetTranslatorscount
 }

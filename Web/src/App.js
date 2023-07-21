@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import AppRoutes from './AppRoutes';
+import Routes from './Routes';
 import Layout from './Containers/Layout/Layout';
 import { withRouter } from 'react-router-dom';
 import { FormContext } from './Provider/FormProvider';
@@ -37,7 +37,7 @@ class App extends Component {
   componentDidUpdate(prevProps) {
     if (this.props.location !== prevProps.location) {
       this.onRouteChanged();
-     // this.context.setFormstates({})
+      // this.context.setFormstates({})
     }
   }
 
@@ -64,7 +64,6 @@ class App extends Component {
     }
   }
 
-
   componentWillUnmount() {
     document.body.removeChild(this.state.script);
     document.body.removeChild(this.state.script1);
@@ -75,7 +74,7 @@ class App extends Component {
       <React.Fragment>
         {this.state.isFullPageLayout ?
           <div className='w-full' >
-            <AppRoutes />
+            <Routes />
           </div>
           :
           <Layout {...this.props} isMobile={this.state.isMobile} iconOnly={this.state.iconstate} seticonOnly={this.setIconmode} />

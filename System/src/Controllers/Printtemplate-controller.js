@@ -16,6 +16,15 @@ async function GetPrinttemplates(req, res, next) {
     }
 }
 
+async function GetPrinttemplatescount(req, res, next) {
+    try {
+        const printtemplates = await db.printtemplateModel.count()
+        res.status(200).json(printtemplates)
+    } catch (error) {
+        return next(sequelizeErrorCatcher(error))
+    }
+}
+
 async function GetPrinttemplate(req, res, next) {
 
     let validationErrors = []
@@ -181,4 +190,5 @@ module.exports = {
     AddPrinttemplate,
     UpdatePrinttemplate,
     DeletePrinttemplate,
+    GetPrinttemplatescount
 }

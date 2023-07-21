@@ -15,6 +15,15 @@ async function GetGoals(req, res, next) {
     }
 }
 
+async function GetGoalscount(req, res, next) {
+    try {
+        const goals = await db.goalModel.count()
+        res.status(200).json(goals)
+    } catch (error) {
+        return next(sequelizeErrorCatcher(error))
+    }
+}
+
 async function GetGoal(req, res, next) {
 
     let validationErrors = []
@@ -120,7 +129,7 @@ async function AddArrayGoal(req, res, next) {
             return next(sequelizeErrorCatcher(err))
         }
     } else {
-        return createValidationError([messages.ERROR.DATA_ISNOT_ARRAY])
+        return next(createValidationError([messages.ERROR.DATA_ISNOT_ARRAY]))
     }
     GetGoals(req, res, next)
 }
@@ -214,4 +223,5 @@ module.exports = {
     AddArrayGoal,
     UpdateGoal,
     DeleteGoal,
+    GetGoalscount
 }

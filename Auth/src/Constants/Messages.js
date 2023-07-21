@@ -73,6 +73,12 @@ const messages = {
         tr: 'Parola Sıfırlama talebi bulunamadı',
       }
     },
+    PASSWORD_DIDNTMATCH: {
+      code: 'PASSWORD_DIDNTMATCH', description: {
+        en: 'Password wrong',
+        tr: 'Parola hatalı',
+      }
+    },
   },
   VALIDATION_ERROR: {
     NAME_REQUIRED: {

@@ -58,6 +58,9 @@ export default class Appreports extends Component {
                         { name: 'A', y: 30 },
                         { name: 'B', y: 25 },
                         { name: 'C', y: 45 },
+                        { name: 'D', y: 20 },
+                        { name: 'E', y: 20 },
+                        { name: 'F', y: 20 },
                     ],
                 },
             ],
@@ -65,30 +68,30 @@ export default class Appreports extends Component {
 
         const lineoptions = {
             chart: {
-              type: 'line',
+                type: 'line',
             },
             title: {
-              text: 'Example Line Chart',
+                text: 'Example Line Chart',
             },
             xAxis: {
-              categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
             },
             yAxis: {
-              title: {
-                text: 'Values',
-              },
+                title: {
+                    text: 'Values',
+                },
             },
             series: [
-              {
-                name: 'Series 1',
-                data: [10, 25, 18, 30, 15, 20, 35, 40, 28, 22, 17, 12],
-              },
-              {
-                name: 'Series 2',
-                data: [5, 12, 8, 18, 10, 15, 25, 30, 20, 16, 10, 8],
-              },
+                {
+                    name: 'Series 1',
+                    data: [10, 25, 18, 30, 15, 20, 35, 40, 28, 22, 17, 12],
+                },
+                {
+                    name: 'Series 2',
+                    data: [5, 12, 8, 18, 10, 15, 25, 30, 20, 16, 10, 8],
+                },
             ],
-          };
+        };
 
 
         return (
@@ -114,13 +117,13 @@ export default class Appreports extends Component {
                         <div className='w-full mt-8'>
                             <Grid columns='2' divided stackable>
                                 <GridColumn width={8}>
-                                    <Grid>
-                                        <GridRow>
+                                    <Grid columns={'2'} divided stackable>
+                                        <GridColumn width={8}>
                                             <HighchartsReact highcharts={Highcharts} options={options} />
-                                        </GridRow>
-                                        <GridRow>
+                                        </GridColumn>
+                                        <GridColumn width={8}>
                                             <HighchartsReact highcharts={Highcharts} options={options} />
-                                        </GridRow>
+                                        </GridColumn>
                                     </Grid>
                                 </GridColumn>
                                 <GridColumn width={8}>
@@ -128,7 +131,7 @@ export default class Appreports extends Component {
                                 </GridColumn>
                             </Grid>
                         </div>
-                    </Pagewrapper>
+                    </Pagewrapper >
                 </React.Fragment >
         )
     }

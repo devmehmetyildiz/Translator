@@ -18,6 +18,18 @@ async function GetLanguages(req, res, next) {
     }
 }
 
+async function GetLanguagescount(req, res, next) {
+    try {
+        const languages = await db.languageModel.count()
+        for (const language of languages) {
+            language.Kdv = await db.kdvModel.findOne({ where: { Uuid: language.KdvID } })
+        }
+        res.status(200).json(languages)
+    } catch (error) {
+        return next(sequelizeErrorCatcher(error))
+    }
+}
+
 async function GetLanguage(req, res, next) {
 
     let validationErrors = []
@@ -34,10 +46,10 @@ async function GetLanguage(req, res, next) {
     try {
         const language = await db.languageModel.findOne({ where: { Uuid: req.params.languageId } });
         if (!language) {
-            return createNotfounderror([messages.ERROR.LANGUAGE_NOT_FOUND])
+            return next(createNotfounderror([messages.ERROR.LANGUAGE_NOT_FOUND]))
         }
         if (!language.Isactive) {
-            return createNotfounderror([messages.ERROR.LANGUAGE_NOT_ACTIVE])
+            return next(createNotfounderror([messages.ERROR.LANGUAGE_NOT_ACTIVE]))
         }
         language.Kdv = await db.kdvModel.findOne({ where: { Uuid: language.KdvID } })
         res.status(200).json(language)
@@ -223,7 +235,7 @@ async function AddArrayLanguage(req, res, next) {
             return next(sequelizeErrorCatcher(err))
         }
     } else {
-        return createValidationError([messages.ERROR.DATA_ISNOT_ARRAY])
+        return next(createValidationError([messages.ERROR.DATA_ISNOT_ARRAY]))
     }
     GetLanguages(req, res, next)
 }
@@ -327,4 +339,5 @@ module.exports = {
     DeleteLanguage,
     GetLanguageconfig,
     UpdateLanguageconfig,
+    GetLanguagescount
 }

@@ -15,6 +15,15 @@ async function GetMailsettings(req, res, next) {
     }
 }
 
+async function GetMailsettingscount(req, res, next) {
+    try {
+        const mailsettings = await db.mailsettingModel.count()
+        res.status(200).json(mailsettings)
+    } catch (error) {
+        return next(sequelizeErrorCatcher(error))
+    }
+}
+
 async function GetMailsetting(req, res, next) {
 
     let validationErrors = []
@@ -235,5 +244,6 @@ module.exports = {
     AddMailsetting,
     UpdateMailsetting,
     DeleteMailsetting,
-    GetActiveMailsetting
+    GetActiveMailsetting,
+    GetMailsettingscount
 }
