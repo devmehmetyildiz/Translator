@@ -21,7 +21,9 @@ const config = {
     System: process.env.SYSTEM_URL,
     Userrole: process.env.USERROLE_URL,
     Warehouse: process.env.WAREHOUSE_URL,
-    File: process.env.FILE_URL
+    File: process.env.FILE_URL,
+    Log: process.env.LOG_URL,
+    Web : process.env.WEB_URL
   },
   ftp: {
     host: process.env.FTP_HOST,

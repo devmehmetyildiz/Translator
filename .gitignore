@@ -31,4 +31,7 @@ File/.env
 Web/node_modules/
 Web/build/
 Web/.env
+Log/node_modules/
+Log/build/
+Log/.env
 Ftp

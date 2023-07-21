@@ -6,6 +6,7 @@ const { sequelizeErrorCatcher, createAccessDenied, createAutherror, requestError
 const priveleges = require('../Constants/Privileges')
 const axios = require('axios')
 const config = require('../Config')
+const Createlog = require('../Utilities/Createlog')
 
 function Testserver(req, res, next) {
     res.status(200).json({ message: "success" })
@@ -107,7 +108,8 @@ async function responseToGetTokenByGrantPassword(req, res, next) {
 
     try {
         await db.accesstokenModel.destroy({ where: { Userid: user.Uuid } })
-
+        req.identity = {}
+        req.identity.user = user.Uuid
         await db.accesstokenModel.create({
             Userid: user.Uuid,
             Accesstoken: accessToken.accessToken,
@@ -121,6 +123,7 @@ async function responseToGetTokenByGrantPassword(req, res, next) {
             Deletetime: null,
             Isactive: true
         })
+        Createlog(req)
     } catch (err) {
         return next(sequelizeErrorCatcher(err))
     }

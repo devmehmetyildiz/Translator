@@ -20,9 +20,17 @@ const config = {
     Setting: process.env.SETTING_URL,
     System: process.env.SYSTEM_URL,
     Userrole: process.env.USERROLE_URL,
+    Warehouse: process.env.WAREHOUSE_URL,
     File: process.env.FILE_URL,
+    Log: process.env.LOG_URL,
+    Web : process.env.WEB_URL
   }
 }
+
+function parseBoolean(str) {
+  return str === 'true' ? true : false
+}
+
 function parseDomain(urls) {
   let urlarray = urls.split(',').map(url => {
     return url

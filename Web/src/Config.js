@@ -11,6 +11,7 @@ const config = {
     System: process.env.REACT_APP_SYSTEM_URL,
     Userrole: process.env.REACT_APP_USERROLE_URL,
     File: process.env.REACT_APP_FILE_URL,
+    Log: process.env.REACT_APP_LOG_URL,
   }
 
 }

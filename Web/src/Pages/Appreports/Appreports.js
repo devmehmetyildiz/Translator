@@ -19,28 +19,104 @@ import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
 export default class Appreports extends Component {
 
+    componentDidMount() {
+        const { GetCasescount, GetCompanycount, GetCostumercount, GetCourtcount,
+            GetCourthausecount, GetDocumentcount, GetGoalcount, GetJobcount, GetKdvcount,
+            GetLanguagecount, GetOrdercount, GetPaymentcount, GetRecordtypecount, GetRolescount,
+            GetTranslatorcount, GetUserscount } = this.props
+        GetCasescount()
+        GetCompanycount()
+        GetCostumercount()
+        GetCourtcount()
+        GetCourthausecount()
+        GetDocumentcount()
+        GetGoalcount()
+        GetJobcount()
+        GetKdvcount()
+        GetLanguagecount()
+        GetOrdercount()
+        GetPaymentcount()
+        GetRecordtypecount()
+        GetRolescount()
+        GetTranslatorcount()
+        GetUserscount()
+    }
 
-
+    componentDidUpdate() {
+        const { Reports, removeReportnotification } = this.props
+        Notification(Reports.notification, removeReportnotification)
+    }
 
     render() {
 
-        const { Profile } = this.props
+        const { Profile, Reports } = this.props
+
+        const {
+            usercount, casecount, recordtypecount, languagecount, documentcount, goalcount, courtcount,
+            courthausecount, companycount, costumercount, filecount, jobcount, kdvcount, mailsettingcount, ordercount,
+            paymentcount, printtemplatecount, rolecount, rulecount, translatorcount
+        } = Reports
 
         const items = [
             {
-                header: 'Aktif Kullanıcı Sayısı:2',
+                header: `${Literals.Columns.Usercount[Profile.Language]} : ${usercount}`,
             },
             {
-                header: 'Tamamlanan Toplam Sipariş Sayısı:2',
+                header: `${Literals.Columns.Casecount[Profile.Language]} : ${casecount}`,
             },
             {
-                header: 'Tamamlanmayan Sipariş Sayısı:2',
+                header: `${Literals.Columns.Recordtypecount[Profile.Language]} : ${recordtypecount}`,
             },
             {
-                header: 'Toplam Sipariş Sayısı:2',
+                header: `${Literals.Columns.Languagecount[Profile.Language]} : ${languagecount}`,
             },
             {
-                header: 'Bu Ayki Tamamlanan Sipariş Sayısı:2',
+                header: `${Literals.Columns.Documentcount[Profile.Language]} : ${documentcount}`,
+            },
+            {
+                header: `${Literals.Columns.Goalcount[Profile.Language]} : ${goalcount}`,
+            },
+            {
+                header: `${Literals.Columns.Courtcount[Profile.Language]} : ${courtcount}`,
+            },
+            {
+                header: `${Literals.Columns.Courthausecount[Profile.Language]} : ${courthausecount}`,
+            },
+            {
+                header: `${Literals.Columns.Costumercount[Profile.Language]} : ${costumercount}`,
+            },
+            {
+                header: `${Literals.Columns.Companycount[Profile.Language]} : ${companycount}`,
+            },
+            {
+                header: `${Literals.Columns.Filecount[Profile.Language]} : ${filecount}`,
+            },
+            {
+                header: `${Literals.Columns.Jobcount[Profile.Language]} : ${jobcount}`,
+            },
+            {
+                header: `${Literals.Columns.Kdvcount[Profile.Language]} : ${kdvcount}`,
+            },
+            {
+                header: `${Literals.Columns.Mailsettingcount[Profile.Language]} : ${mailsettingcount}`,
+            },
+            {
+                header: `${Literals.Columns.Ordercount[Profile.Language]} : ${ordercount}`,
+            },
+            {
+                header: `${Literals.Columns.Paymentcount[Profile.Language]} : ${paymentcount}`,
+            },
+            {
+                header: `${Literals.Columns.Printtemplatecount[Profile.Language]} : ${printtemplatecount}`,
+            },
+            {
+                header: `${Literals.Columns.Rolecount[Profile.Language]} : ${rolecount}`,
+            },
+            {
+                header: `${Literals.Columns.Rulecount[Profile.Language]} : ${rulecount}`,
+            },
+            {
+                header: `${Literals.Columns.Translatorcount[Profile.Language]} : ${translatorcount}`,
             },
         ]
 
