@@ -7,6 +7,8 @@ export const ROUTES = {
     ROLE: 'Roles',
     USER: 'Users',
 
+    LOG: 'Logs',
+
     FILE: 'Files',
 
     MAILSETTING: 'Mailsettings',

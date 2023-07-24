@@ -123,6 +123,7 @@ async function responseToGetTokenByGrantPassword(req, res, next) {
             Deletetime: null,
             Isactive: true
         })
+        req.body.Password = ''
         Createlog(req)
     } catch (err) {
         return next(sequelizeErrorCatcher(err))

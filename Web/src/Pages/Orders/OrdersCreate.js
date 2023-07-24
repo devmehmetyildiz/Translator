@@ -60,7 +60,7 @@ export default class OrdersCreate extends Component {
   componentDidMount() {
     const { GetRecordtypes, GetCourthauses, GetCourts, GetDefinedcostumers,
       GetDefinedcompanies, GetTranslators, GetKdvs, GetPayments, GetLanguages,
-      GetDocuments, GetCases, GetLanguageconfig } = this.props
+      GetDocuments, GetCases, GetLanguageconfig, Recordtypes } = this.props
     GetRecordtypes()
     GetCourthauses()
     GetCourts()
@@ -108,11 +108,14 @@ export default class OrdersCreate extends Component {
 
   render() {
 
-    const { Orders, Recordtypes, Courthauses, Courts, Definedcompanies, history,
+    const { Orders, Recordtypes, Courthauses, Courts, Definedcompanies, history, location,
       Definedcostumers, Translators, Kdvs, Payments, Languages, Documents, Cases, Profile
     } = this.props
     const { isLoading, isDispatching } = Orders
 
+    const search = new URLSearchParams(location.search)
+    const recordType = search.get('recordType') ? search.get('recordType') : ''
+    const recordTypename = Recordtypes.list.find(u => u.Uuid === recordType)?.Name ? Recordtypes.list.find(u => u.Uuid === recordType)?.Name : ''
     const addModal = (content) => {
       return <Modal
         onClose={() => { this.setState({ modelOpened: false }) }}
@@ -191,14 +194,16 @@ export default class OrdersCreate extends Component {
       Cases.isLoading || Cases.isDispatching ||
       Kdvs.isLoading || Kdvs.isDispatching
 
+
+
     return (
       isLoading || isDispatching
         ? <LoadingPage /> :
         <Pagewrapper>
           <Headerwrapper>
             <Headerbredcrump>
-              <Link to={"/Orders"}>
-                <Breadcrumb.Section>{Literals.Page.Pageheader[Profile.Language]}</Breadcrumb.Section>
+              <Link to={validator.isString(recordTypename) ? `/Orders?recordType=${recordType}` : "/Orders"}>
+                <Breadcrumb.Section>{`${recordTypename} ${Literals.Page.Pageheader[Profile.Language]}`}</Breadcrumb.Section>
               </Link>
               <Breadcrumb.Divider icon='right chevron' />
               <Breadcrumb.Section>{Literals.Page.Pagecreateheader[Profile.Language]}</Breadcrumb.Section>
@@ -217,7 +222,7 @@ export default class OrdersCreate extends Component {
                         <div className='h-[calc(60vh)] overflow-y-auto overflow-x-hidden p-2'>
                           <Form.Group widths={'equal'}>
                             <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Orderno[Profile.Language]} name="Orderno" />
-                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Recordtype[Profile.Language]} name="RecordtypeID" options={Recordtypeoption} formtype='dropdown' modal={addModal(<RecordtypesCreate />)} />
+                            {!validator.isString(recordTypename) && <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Recordtype[Profile.Language]} name="RecordtypeID" options={Recordtypeoption} formtype='dropdown' modal={addModal(<RecordtypesCreate />)} />}
                           </Form.Group>
                           <Form.Group widths={'equal'}>
                             <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Princiblecourthause[Profile.Language]} name="PrinciblecourthauseID" options={Courthauseoption} formtype='dropdown' modal={addModal(<CourthausesCreate />)} />
@@ -288,7 +293,7 @@ export default class OrdersCreate extends Component {
                                     </Button.Group>
                                   </Table.Cell>
                                   <Table.Cell>
-                                    <Form.Input placeholder={Literals.Columns.Jobno[Profile.Language]} name="Jobno" fluid value={job.Jobno} onChange={(e) => { this.selectedJobChangeHandler(job.key, 'Jobno', e.target.value) }} />
+                                    <Form.Input placeholder={Literals.Columns.Jobno[Profile.Language]} name="Jobno" fluid value={job.Jobno} />
                                   </Table.Cell>
                                   <Table.Cell>
                                     <Form.Field>
@@ -411,7 +416,7 @@ export default class OrdersCreate extends Component {
                 renderActiveOnly={false} />
               <Footerwrapper>
                 <Form.Group widths={'equal'}>
-                  {history && <Link to="/Orders">
+                  {history && <Link to={validator.isString(recordType) ? `/Orders?recordType=${recordType}` : "/Orders"}>
                     <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
                   </Link>}
                   <Button floated="right" type="button" color='grey' onClick={(e) => {
@@ -449,7 +454,12 @@ export default class OrdersCreate extends Component {
     if (modelOpened || editModalopen) {
       return
     }
-    const { AddOrders, history, fillOrdernotification, Profile } = this.props
+    const { AddOrders, history, fillOrdernotification, Profile, location, Recordtypes } = this.props
+
+    const search = new URLSearchParams(location.search)
+    const recordType = search.get('recordType') ? search.get('recordType') : ''
+    const recordTypename = Recordtypes.list.find(u => u.Uuid === recordType)?.Name ? Recordtypes.list.find(u => u.Uuid === recordType)?.Name : ''
+
     const jobs = this.state.selectedJobs
     const files = this.state.selectedFiles
     const formData = formToObject(e.target)
@@ -473,7 +483,7 @@ export default class OrdersCreate extends Component {
       Notaryexpense: parseFloat(formData.Notaryexpense),
       Netprice: parseFloat(formData.Netprice),
       Calculatedprice: parseFloat(formData.Calculatedprice),
-      RecordtypeID: this.context.formstates[`${this.PAGE_NAME}/RecordtypeID`],
+      RecordtypeID: validator.isString(recordTypename) ? recordType : this.context.formstates[`${this.PAGE_NAME}/RecordtypeID`],
       PrinciblecourthauseID: this.context.formstates[`${this.PAGE_NAME}/PrinciblecourthauseID`],
       PrinciblecourtID: this.context.formstates[`${this.PAGE_NAME}/PrinciblecourtID`],
       DirectivecourthauseID: this.context.formstates[`${this.PAGE_NAME}/DirectivecourthauseID`],
@@ -535,7 +545,7 @@ export default class OrdersCreate extends Component {
         fillOrdernotification(error)
       })
     } else {
-      AddOrders({ data: responseData, history })
+      AddOrders({ data: responseData, history, redirectUrl: validator.isString(recordTypename) ? `/Orders?recordType=${recordType}` : "/Orders" })
     }
   }
 

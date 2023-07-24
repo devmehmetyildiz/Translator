@@ -255,6 +255,62 @@ export const GetOrdercount = createAsyncThunk(
     }
 );
 
+export const GetRulecount = createAsyncThunk(
+    'Recordtypes/GetRulecount',
+    async (_, { dispatch }) => {
+        try {
+            const response = await instanse.get(config.services.System, `${ROUTES.RULE}/GetCount`);
+            return response.data;
+        } catch (error) {
+            const errorPayload = AxiosErrorHelper(error);
+            dispatch(fillReportnotification(errorPayload));
+            throw errorPayload;
+        }
+    }
+);
+
+export const GetMailsettingcount = createAsyncThunk(
+    'Recordtypes/GetMailsettingcount',
+    async (_, { dispatch }) => {
+        try {
+            const response = await instanse.get(config.services.System, `${ROUTES.MAILSETTING}/GetCount`);
+            return response.data;
+        } catch (error) {
+            const errorPayload = AxiosErrorHelper(error);
+            dispatch(fillReportnotification(errorPayload));
+            throw errorPayload;
+        }
+    }
+);
+
+export const GetPrinttemplatecount = createAsyncThunk(
+    'Recordtypes/GetPrinttemplatecount',
+    async (_, { dispatch }) => {
+        try {
+            const response = await instanse.get(config.services.System, `${ROUTES.PRINTTEMPLATE}/GetCount`);
+            return response.data;
+        } catch (error) {
+            const errorPayload = AxiosErrorHelper(error);
+            dispatch(fillReportnotification(errorPayload));
+            throw errorPayload;
+        }
+    }
+);
+
+export const GetLogs = createAsyncThunk(
+    'Recordtypes/GetLogs',
+    async (_, { dispatch }) => {
+        try {
+            const response = await instanse.get(config.services.Log, `${ROUTES.LOG}`);
+            return response.data;
+        } catch (error) {
+            const errorPayload = AxiosErrorHelper(error);
+            dispatch(fillReportnotification(errorPayload));
+            throw errorPayload;
+        }
+    }
+);
+
 
 export const ReportsSlice = createSlice({
     name: 'Reports',
@@ -281,6 +337,7 @@ export const ReportsSlice = createSlice({
         translatorcount: 0,
         errMsg: null,
         notifications: [],
+        logs: [],
         isLoading: false,
         isDispatching: false,
     },
@@ -501,6 +558,58 @@ export const ReportsSlice = createSlice({
                 state.jobcount = action.payload;
             })
             .addCase(GetJobcount.rejected, (state, action) => {
+                state.isLoading = false;
+                state.errMsg = action.error.message;
+            })
+            .addCase(GetRulecount.pending, (state) => {
+                state.isLoading = true;
+                state.errMsg = null;
+                state.rulecount = 0;
+            })
+            .addCase(GetRulecount.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.rulecount = action.payload;
+            })
+            .addCase(GetRulecount.rejected, (state, action) => {
+                state.isLoading = false;
+                state.errMsg = action.error.message;
+            })
+            .addCase(GetMailsettingcount.pending, (state) => {
+                state.isLoading = true;
+                state.errMsg = null;
+                state.mailsettingcount = 0;
+            })
+            .addCase(GetMailsettingcount.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.mailsettingcount = action.payload;
+            })
+            .addCase(GetMailsettingcount.rejected, (state, action) => {
+                state.isLoading = false;
+                state.errMsg = action.error.message;
+            })
+            .addCase(GetPrinttemplatecount.pending, (state) => {
+                state.isLoading = true;
+                state.errMsg = null;
+                state.printtemplatecount = 0;
+            })
+            .addCase(GetPrinttemplatecount.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.printtemplatecount = action.payload;
+            })
+            .addCase(GetPrinttemplatecount.rejected, (state, action) => {
+                state.isLoading = false;
+                state.errMsg = action.error.message;
+            })
+            .addCase(GetLogs.pending, (state) => {
+                state.isLoading = true;
+                state.errMsg = null;
+                state.logs = [];
+            })
+            .addCase(GetLogs.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.logs = action.payload;
+            })
+            .addCase(GetLogs.rejected, (state, action) => {
                 state.isLoading = false;
                 state.errMsg = action.error.message;
             })

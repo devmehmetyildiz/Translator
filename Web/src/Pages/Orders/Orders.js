@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Divider, Icon, Loader } from 'semantic-ui-react'
+import { Divider, Dropdown, Icon, Loader, Modal } from 'semantic-ui-react'
 import { Breadcrumb, Button, Grid, GridColumn } from 'semantic-ui-react'
 import ColumnChooser from '../../Containers/Utils/ColumnChooser'
 import LoadingPage from '../../Utils/LoadingPage'
@@ -12,12 +12,27 @@ import Headerwrapper from '../../Common/Wrappers/Headerwrapper'
 import OrdersDelete from '../../Containers/Orders/OrdersDelete'
 import Pagedivider from '../../Common/Styled/Pagedivider'
 import OrdersList from './OrdersList'
+import validator from '../../Utils/Validator'
+import jsPDF from 'jspdf';
+import InnerHTML from '../../Utils/DangerouslySetHtmlContent'
+import PrintBodyReplacer from "../../Utils/PrintBodyReplacer"
+import myTurkishFont from '../../Assets/fonts/AbhayaLibre-Medium.ttf';
 
 export default class Orders extends Component {
 
+  constructor(props) {
+    super(props)
+    this.state = {
+      openPrintpreview: false,
+      selectedPrintdesign: {},
+      decoratedBody: null,
+      isPreviewloading: false,
+    }
+  }
+
   componentDidMount() {
     const { GetOrders, GetJobs, GetDefinedcompanies,
-      GetCourthauses, GetCourts, GetDefinedcostumers,
+      GetCourthauses, GetCourts, GetDefinedcostumers, GetPrinttemplates,
       GetPayments, GetKdvs, GetTranslators, GetCases, GetRecordtypes, GetLanguages, GetDocuments } = this.props
     GetOrders()
     GetJobs()
@@ -32,10 +47,11 @@ export default class Orders extends Component {
     GetRecordtypes()
     GetLanguages()
     GetDocuments()
+    GetPrinttemplates()
   }
 
   componentDidUpdate() {
-    const { removeOrdernotification, removeDefinedcompanynotification,
+    const { removeOrdernotification, removeDefinedcompanynotification, Printtemplates, removePrinttemplatenotification,
       removeJobnotification, removeCourthausenotification, removeCourtnotification, removeDefinedcostumernotification,
       removePaymentnotification, removeKdvnotification, removeTranslatornotification, Orders, Jobs, Documents, removeDocumentNotification, Languages, removeLanguagenotification
       , Courthauses, Courts, Definedcompanies, Definedcostumers, Kdvs, Translators, Payments, Cases, removeCasenotification, Recordtypes, removeRecordtypenotification
@@ -53,15 +69,23 @@ export default class Orders extends Component {
     Notification(Recordtypes.notifications, removeRecordtypenotification)
     Notification(Documents.notifications, removeDocumentNotification)
     Notification(Languages.notifications, removeLanguagenotification)
+    Notification(Printtemplates.notifications, removePrinttemplatenotification)
   }
 
   render() {
 
-    const { Orders, Profile, handleSelectedOrder, handleDeletemodal, Jobs, Documents, Languages, Cases, location, Recordtypes } = this.props
+    const { Orders, Profile, handleSelectedOrder, handleDeletemodal, Jobs, Documents, Languages, Cases, location, Recordtypes, Printtemplates } = this.props
     const { isLoading, isDispatching } = Orders
 
     const search = new URLSearchParams(location.search)
     const recordType = search.get('recordType') ? search.get('recordType') : ''
+    const recordTypename = Recordtypes.list.find(u => u.Uuid === recordType)?.Name ? Recordtypes.list.find(u => u.Uuid === recordType)?.Name : ''
+
+    const triggerPrint = (
+      <div className='flex flex-row justify-center items-center select-none'>
+        <Icon name='print' />
+      </div>
+    )
 
     const Columns = [
       {
@@ -103,8 +127,22 @@ export default class Orders extends Component {
       { Header: Literals.Columns.Updateduser[Profile.Language], accessor: 'Updateduser', sortable: true, canGroupBy: true, canFilter: true, },
       { Header: Literals.Columns.Createtime[Profile.Language], accessor: 'Createtime', sortable: true, canGroupBy: true, canFilter: true, },
       { Header: Literals.Columns.Updatetime[Profile.Language], accessor: 'Updatetime', sortable: true, canGroupBy: true, canFilter: true, },
+      { Header: Literals.Columns.print[Profile.Language], accessor: 'print', canGroupBy: false, canFilter: false, disableFilters: true, sortable: false, className: 'text-center action-column' },
       { Header: Literals.Columns.edit[Profile.Language], accessor: 'edit', canGroupBy: false, canFilter: false, disableFilters: true, sortable: false, className: 'text-center action-column' },
       { Header: Literals.Columns.delete[Profile.Language], accessor: 'delete', canGroupBy: false, canFilter: false, disableFilters: true, sortable: false, className: 'text-center action-column' }]
+
+
+    const jobColumns = [
+      { Header: Literals.Columns.Id[Profile.Language], accessor: 'Id', sortable: true, canGroupBy: true, canFilter: true, },
+      { Header: Literals.Columns.Jobno[Profile.Language], accessor: 'Jobno', sortable: true, canGroupBy: true, canFilter: true },
+      { Header: Literals.Columns.Sourcelanguage[Profile.Language], accessor: 'SourcelanguageID', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.languageCellhandler(col) },
+      { Header: Literals.Columns.Targetlanguage[Profile.Language], accessor: 'TargetlanguageID', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.languageCellhandler(col) },
+      { Header: Literals.Columns.Document[Profile.Language], accessor: 'DocumentID', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.documentCellhandler(col) },
+      { Header: Literals.Columns.Amount[Profile.Language], accessor: 'Amount', sortable: true, canGroupBy: true, canFilter: true },
+      { Header: Literals.Columns.Price[Profile.Language], accessor: 'Price', sortable: true, canGroupBy: true, canFilter: true },
+      { Header: Literals.Columns.Case[Profile.Language], accessor: 'CaseID', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.caseCellhandler(col) },
+      { Header: Literals.Columns.Info[Profile.Language], accessor: 'Info', sortable: true, canGroupBy: true, canFilter: true },
+    ]
 
     const metaKey = `Orders${recordType}`
     let tableMeta = (Profile.tablemeta || []).find(u => u.Meta === metaKey)
@@ -120,10 +158,32 @@ export default class Orders extends Component {
       }) : [],
     };
 
-    const list = ((recordType ? Orders.list.filter(u => u.RecordtypeID === recordType) : Orders.list) || []).map(item => {
+    const list = ((recordType ? Orders.list.filter(u => u.RecordtypeID === recordType) : Orders.list) || []).map(order => {
+      const item = {
+        ...order,
+        Jobs: Jobs.list.filter(u => u.OrderID === order.Uuid)
+      }
       return {
         ...item,
-        edit: <Link to={`/Orders/${item.Uuid}/edit`} ><Icon size='large' className='row-edit' name='edit' /></Link>,
+        print: <Dropdown icon={null} trigger={triggerPrint} basic className="h-full block ">
+          <Dropdown.Menu style={{ zIndex: 0, position: 'relative' }} className=''>
+            <Dropdown.Header icon='tags' content='Raporlar' />
+            <Dropdown.Divider />
+            {(Printtemplates.list || []).length > 0 ?
+              Printtemplates.list.map(printdesign => {
+                return <Dropdown.Item key={Math.random()}>
+                  <div
+                    onClick={() => {
+                      handleSelectedOrder(item)
+                      this.setState({ openPrintpreview: true, selectedPrintdesign: printdesign, isPreviewloading: true, decoratedBody: PrintBodyReplacer(printdesign.Printtemplate, item, Columns, jobColumns) }
+                      )
+                    }} className='text-[#3d3d3d] hover:text-[#3d3d3d]'><Icon className='id card ' />{printdesign.Name}</div>
+                </Dropdown.Item>
+              })
+              : <React.Fragment />}
+          </Dropdown.Menu>
+        </Dropdown>,
+        edit: <Link to={validator.isString(recordTypename) ? `/Orders/${item.Uuid}/edit?recordType=${recordType}` : `/Orders/${item.Uuid}/edit`} ><Icon size='large' className='row-edit' name='edit' /></Link>,
         delete: <Icon link size='large' color='red' name='alternate trash' onClick={() => {
           handleSelectedOrder(item)
           handleDeletemodal(true)
@@ -131,23 +191,22 @@ export default class Orders extends Component {
       }
     })
 
-    const recordTypename = Recordtypes.list.find(u => u.Uuid === recordType)?.Name ? Recordtypes.list.find(u => u.Uuid === recordType)?.Name : ''
 
     return (
-      isLoading || isDispatching || Jobs.isLoading || Jobs.isDispatching ? <LoadingPage /> :
+      isLoading || isDispatching || Jobs.isLoading || Jobs.isDispatching || Recordtypes.isLoading || Recordtypes.isDispatching ? <LoadingPage /> :
         <React.Fragment>
           <Pagewrapper>
             <Headerwrapper>
               <Grid columns='2' >
                 <GridColumn width={8}>
                   <Breadcrumb size='big'>
-                    <Link to={"/Orders"}>
+                    <Link to={validator.isString(recordTypename) ? `/Orders?recordType=${recordType}` : "/Orders"}>
                       <Breadcrumb.Section>{`${recordTypename} ${Literals.Page.Pageheader[Profile.Language]}`}</Breadcrumb.Section>
                     </Link>
                   </Breadcrumb>
                 </GridColumn>
                 <GridColumn width={8} >
-                  <Link to={"/Orders/Create"}>
+                  <Link to={validator.isString(recordTypename) ? `/Orders/Create?recordType=${recordType}` : "/Orders/Create"}>
                     <Button color='blue' floated='right' className='list-right-green-button'>
                       {Literals.Page.Pagecreateheader[Profile.Language]}
                     </Button>
@@ -165,6 +224,7 @@ export default class Orders extends Component {
                   initialConfig={initialConfig}
                   Profile={Profile}
                   Jobs={Jobs}
+                  subColumns={jobColumns}
                   setselectedRow={this.setselectedRow}
                   Documents={Documents}
                   Languages={Languages}
@@ -174,6 +234,33 @@ export default class Orders extends Component {
             }
           </Pagewrapper>
           <OrdersDelete />
+          <Modal
+            onClose={() => this.setState({ openPrintpreview: false })}
+            onOpen={() => this.setState({ openPrintpreview: true })}
+            open={this.state.openPrintpreview}
+          >
+            <Modal.Header as={'h1'}>Sipariş Raporu</Modal.Header>
+            <Modal.Header as={'h2'}>{`${this.state.selectedPrintdesign?.Name}`}</Modal.Header>
+            <Modal.Content image>
+              <Modal.Description>
+                <div className='p-2 shadow-lg shadow-gray-300 w-full flex justify-center items-center'>
+                  <InnerHTML html={
+                    this.state.selectedPrintdesign?.Printtemplate ? this.state.decoratedBody
+                      : '<div class="print-design-preview-message">No code to show.</div>'
+                  } />
+                </div>
+              </Modal.Description>
+            </Modal.Content>
+            <Modal.Actions>
+              <Button color='black' onClick={() => this.setState({ openPrintpreview: false })}>
+                Kapat
+              </Button>
+              <Button color='black' onClick={() => this.generatePDF(this.state.decoratedBody)}>
+                Yazdır
+              </Button>
+
+            </Modal.Actions>
+          </Modal>
         </React.Fragment >
     )
   }
@@ -249,5 +336,40 @@ export default class Orders extends Component {
     } else {
       return (Recordtypes.list || []).find(u => u.Uuid === col.value)?.Name
     }
+  }
+  languageCellhandler = (col) => {
+    const { Languages } = this.props
+    if (Languages.isLoading) {
+      return <Loader size='small' active inline='centered' ></Loader>
+    } else {
+      return (Languages.list || []).find(u => u.Uuid === col.value)?.Name
+    }
+  }
+  documentCellhandler = (col) => {
+    const { Documents } = this.props
+    if (Documents.isLoading) {
+      return <Loader size='small' active inline='centered' ></Loader>
+    } else {
+      return (Documents.list || []).find(u => u.Uuid === col.value)?.Name
+    }
+  }
+
+
+  generatePDF = (html) => {
+    const pdf = new jsPDF({
+      orientation: 'p',
+      unit: 'px',
+      format: 'a4',
+      putOnlyUsedFonts: true,
+      floatPrecision: 16
+    });
+    pdf.addFont(myTurkishFont, 'AbhayaLibre-Medium', 'normal');
+    pdf.setFont('AbhayaLibre-Medium');
+    const options = {
+      callback: () => {
+        pdf.save(" .pdf");
+      }
+    };
+    pdf.html(html, options);
   }
 }

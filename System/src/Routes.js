@@ -1,4 +1,5 @@
 const Routes = [
+    { method: 'get', path: '/Mailsettings/GetCount', controller: 'Mailsetting', action: 'GetMailsettingscount' },
     { method: 'get', path: '/Mailsettings/GetActiveMailsetting', controller: 'Mailsetting', action: 'GetActiveMailsetting' },
     { method: 'get', path: '/Mailsettings/:mailsettingId', controller: 'Mailsetting', action: 'GetMailsetting' },
     { method: 'get', path: '/Mailsettings', controller: 'Mailsetting', action: 'GetMailsettings' },
@@ -6,12 +7,14 @@ const Routes = [
     { method: 'put', path: '/Mailsettings', controller: 'Mailsetting', action: 'UpdateMailsetting' },
     { method: 'delete', path: '/Mailsettings/:mailsettingId', controller: 'Mailsetting', action: 'DeleteMailsetting' },
 
+    { method: 'get', path: '/Printtemplates/GetCount', controller: 'Printtemplate', action: 'GetPrinttemplatescount' },
     { method: 'get', path: '/Printtemplates/:printtemplateId', controller: 'Printtemplate', action: 'GetPrinttemplate' },
     { method: 'get', path: '/Printtemplates', controller: 'Printtemplate', action: 'GetPrinttemplates' },
     { method: 'post', path: '/Printtemplates', controller: 'Printtemplate', action: 'AddPrinttemplate' },
     { method: 'put', path: '/Printtemplates', controller: 'Printtemplate', action: 'UpdatePrinttemplate' },
     { method: 'delete', path: '/Printtemplates/:printtemplateId', controller: 'Printtemplate', action: 'DeletePrinttemplate' },
 
+    { method: 'get', path: '/Rules/GetCount', controller: 'Rule', action: 'GetRulescount' },
     { method: 'get', path: '/Rules/Getrulelogs/:ruleId', controller: 'Rule', action: 'GetRulelogs' },
     { method: 'get', path: '/Rules/:ruleId', controller: 'Rule', action: 'GetRule' },
     { method: 'get', path: '/Rules', controller: 'Rule', action: 'GetRules' },

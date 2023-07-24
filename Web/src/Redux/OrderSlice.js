@@ -63,7 +63,7 @@ export const GetOrder = createAsyncThunk(
 
 export const AddOrders = createAsyncThunk(
     'Orders/AddOrders',
-    async ({ data, history }, { dispatch, getState }) => {
+    async ({ data, history, redirectUrl }, { dispatch, getState }) => {
         try {
             const state = getState()
             const Language = state.Profile.Language || 'en'
@@ -96,7 +96,7 @@ export const AddOrders = createAsyncThunk(
                 code: 'OrdersCreate',
                 description: '',
             }));
-            history && history.push('/Orders');
+            history && history.push(redirectUrl ? redirectUrl : '/Orders');
             return response.data;
         } catch (error) {
             const errorPayload = AxiosErrorHelper(error);
@@ -108,7 +108,7 @@ export const AddOrders = createAsyncThunk(
 
 export const EditOrders = createAsyncThunk(
     'Orders/EditOrders',
-    async ({ data, history }, { dispatch, getState }) => {
+    async ({ data, history, redirectUrl }, { dispatch, getState }) => {
         try {
             const state = getState()
             const Language = state.Profile.Language || 'en'
@@ -123,7 +123,7 @@ export const EditOrders = createAsyncThunk(
                 code: 'OrdersEdit',
                 description: '',
             }));
-            history && history.push('/Orders');
+            history && history.push(redirectUrl ? redirectUrl : '/Orders');
             return response.data;
         } catch (error) {
             const errorPayload = AxiosErrorHelper(error);

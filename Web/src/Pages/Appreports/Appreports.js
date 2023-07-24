@@ -17,13 +17,14 @@ import ExcelImport from '../../Containers/Utils/ExcelImport'
 import ExcelExport from '../../Containers/Utils/ExcelExport'
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
+import config from '../../Config'
 export default class Appreports extends Component {
 
     componentDidMount() {
-        const { GetCasescount, GetCompanycount, GetCostumercount, GetCourtcount,
+        const { GetCasescount, GetCompanycount, GetCostumercount, GetCourtcount, GetLogs,
             GetCourthausecount, GetDocumentcount, GetGoalcount, GetJobcount, GetKdvcount,
-            GetLanguagecount, GetOrdercount, GetPaymentcount, GetRecordtypecount, GetRolescount,
-            GetTranslatorcount, GetUserscount } = this.props
+            GetLanguagecount, GetOrdercount, GetPaymentcount, GetRecordtypecount, GetRolescount, GetUsers,
+            GetTranslatorcount, GetUserscount, GetMailsettingcount, GetPrinttemplatecount, GetRulecount } = this.props
         GetCasescount()
         GetCompanycount()
         GetCostumercount()
@@ -40,21 +41,27 @@ export default class Appreports extends Component {
         GetRolescount()
         GetTranslatorcount()
         GetUserscount()
+        GetMailsettingcount()
+        GetPrinttemplatecount()
+        GetRulecount()
+        GetLogs()
+        GetUsers()
     }
 
     componentDidUpdate() {
-        const { Reports, removeReportnotification } = this.props
+        const { Reports, removeReportnotification, Users, removeUsernotification } = this.props
         Notification(Reports.notification, removeReportnotification)
+        Notification(Users.notification, removeUsernotification)
     }
 
     render() {
 
-        const { Profile, Reports } = this.props
+        const { Profile, Reports, Users } = this.props
 
         const {
             usercount, casecount, recordtypecount, languagecount, documentcount, goalcount, courtcount,
             courthausecount, companycount, costumercount, filecount, jobcount, kdvcount, mailsettingcount, ordercount,
-            paymentcount, printtemplatecount, rolecount, rulecount, translatorcount
+            paymentcount, printtemplatecount, rolecount, rulecount, translatorcount, logs
         } = Reports
 
         const items = [
@@ -120,53 +127,61 @@ export default class Appreports extends Component {
             },
         ]
 
-        const options = {
+        const services = Object.keys(config.services)
+        const servicesUsage = (services.map(service => {
+            const usage = (logs.filter(u => new Date(u.Createtime).getMonth() === new Date().getMonth() &&
+                new Date(u.Createtime).getFullYear() === new Date().getFullYear() && u.Servername === service) || []).length
+            if (usage > 0)
+                return {
+                    name: service,
+                    y: usage
+                }
+            else {
+                return null
+            }
+        })).filter(u => u !== null)
+
+        const pieoptions = {
             chart: {
                 type: 'pie',
             },
             title: {
-                text: 'Örnek Pie Chart',
+                text: 'Aylık Servis Kullanımı',
             },
-            series: [
-                {
-                    name: 'Veri',
-                    data: [
-                        { name: 'A', y: 30 },
-                        { name: 'B', y: 25 },
-                        { name: 'C', y: 45 },
-                        { name: 'D', y: 20 },
-                        { name: 'E', y: 20 },
-                        { name: 'F', y: 20 },
-                    ],
-                },
-            ],
+            series: {
+                name: 'Servisler',
+                data: servicesUsage
+            }
         };
 
+        const userLog = [...new Set(logs.map(u => { return u.RequestuserID }) || [])]
+        const months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
         const lineoptions = {
             chart: {
                 type: 'line',
             },
             title: {
-                text: 'Example Line Chart',
+                text: 'Uygulama Girişleri',
             },
             xAxis: {
                 categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
             },
             yAxis: {
                 title: {
-                    text: 'Values',
+                    text: 'Giriş Sayısı',
                 },
             },
-            series: [
-                {
-                    name: 'Series 1',
-                    data: [10, 25, 18, 30, 15, 20, 35, 40, 28, 22, 17, 12],
-                },
-                {
-                    name: 'Series 2',
-                    data: [5, 12, 8, 18, 10, 15, 25, 30, 20, 16, 10, 8],
-                },
-            ],
+            series: (userLog || []).map(user => {
+                return {
+                    name: Users.list.find(u => u.Uuid === user)?.Username,
+                    data: months.map(month => {
+                        return ((logs.filter(u => u.RequestuserID === user &&
+                            new Date(u.Createtime).getMonth() === month &&
+                            new Date(u.Createtime).getFullYear() === new Date().getFullYear() &&
+                            u.Targeturl === "/Oauth/Login")) || []).length
+                    })
+                }
+            })
         };
 
 
@@ -193,14 +208,7 @@ export default class Appreports extends Component {
                         <div className='w-full mt-8'>
                             <Grid columns='2' divided stackable>
                                 <GridColumn width={8}>
-                                    <Grid columns={'2'} divided stackable>
-                                        <GridColumn width={8}>
-                                            <HighchartsReact highcharts={Highcharts} options={options} />
-                                        </GridColumn>
-                                        <GridColumn width={8}>
-                                            <HighchartsReact highcharts={Highcharts} options={options} />
-                                        </GridColumn>
-                                    </Grid>
+                                    <HighchartsReact highcharts={Highcharts} options={pieoptions} />
                                 </GridColumn>
                                 <GridColumn width={8}>
                                     <HighchartsReact highcharts={Highcharts} options={lineoptions} />

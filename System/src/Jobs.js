@@ -2,7 +2,7 @@ const { spawn } = require('child_process');
 const uuid = require('uuid').v4
 
 async function CroneJobs() {
-    const rules = await db.ruleModel.findAll({ where: { Isactive: true } })
+    const rules = await db.ruleModel.findAll({ where: { Isactive: true, Status: 1 } })
     rules.forEach((rule, index) => {
 
         if (!childProcesses[rule.Uuid]) {

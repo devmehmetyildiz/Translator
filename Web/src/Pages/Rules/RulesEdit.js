@@ -75,9 +75,10 @@ export default class RulesEdit extends Component {
                                         menuItem: Literals.Columns.Savescreen[Profile.Language],
                                         pane: {
                                             key: 'save',
-                                            content: <React.Fragment>
+                                            content: <div className='max-h-[calc(66vh-10px)] overflow-y-auto overflow-x-hidden'>
                                                 <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
-                                            </React.Fragment>
+                                                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Status[Profile.Language]} name="Status" formtype={'checkbox'} />
+                                            </div>
                                         }
                                     },
                                     {
@@ -119,6 +120,7 @@ export default class RulesEdit extends Component {
         const { EditRules, history, fillRulenotification, Rules, Profile } = this.props
         const data = formToObject(e.target)
         data.Rule = this.state.template
+        data.Status = this.context.formstates[`${this.PAGE_NAME}/Status`]
         let errors = []
         if (!validator.isString(data.Name)) {
             errors.push({ type: 'Error', code: Literals.Page.Pageheader[Profile.Language], description: Literals.Messages.NameRequired[Profile.Language] })

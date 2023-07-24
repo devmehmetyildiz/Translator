@@ -21,9 +21,6 @@ async function GetLanguages(req, res, next) {
 async function GetLanguagescount(req, res, next) {
     try {
         const languages = await db.languageModel.count()
-        for (const language of languages) {
-            language.Kdv = await db.kdvModel.findOne({ where: { Uuid: language.KdvID } })
-        }
         res.status(200).json(languages)
     } catch (error) {
         return next(sequelizeErrorCatcher(error))

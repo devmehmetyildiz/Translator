@@ -151,6 +151,10 @@ const Literals = {
             tr: 'Güncelleme Tarihi',
             en: 'Update Time'
         },
+        print: {
+            tr: 'Yazdır',
+            en: 'Print'
+        },
         edit: {
             tr: 'Güncelle',
             en: 'Edit'

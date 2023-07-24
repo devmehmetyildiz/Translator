@@ -13,6 +13,7 @@ import { GetCases, removeCasenotification } from "../../Redux/CaseSlice"
 import { GetRecordtypes, removeRecordtypenotification } from "../../Redux/RecordtypeSlice"
 import { GetDocuments, removeDocumentnotification } from "../../Redux/DocumentSlice"
 import { GetLanguages, removeLanguagenotification } from "../../Redux/LanguageSlice"
+import { GetPrinttemplates, removePrinttemplatenotification } from "../../Redux/PrinttemplateSlice"
 
 const mapStateToProps = (state) => ({
     Orders: state.Orders,
@@ -28,14 +29,15 @@ const mapStateToProps = (state) => ({
     Cases: state.Cases,
     Recordtypes: state.Recordtypes,
     Documents: state.Documents,
-    Languages: state.Languages
+    Languages: state.Languages,
+    Printtemplates: state.Printtemplates
 })
 
 const mapDispatchToProps = {
     GetOrders, removeOrdernotification, handleDeletemodal, handleSelectedOrder, GetJobs, GetDefinedcompanies, removeDefinedcompanynotification,
     removeJobnotification, GetCourthauses, removeCourthausenotification, GetCourts, removeCourtnotification, GetDefinedcostumers, removeDefinedcostumernotification,
     GetPayments, removePaymentnotification, GetKdvs, removeKdvnotification, GetTranslators, removeTranslatornotification, GetCases, removeCasenotification,
-    GetRecordtypes, removeRecordtypenotification, GetDocuments, removeDocumentnotification, GetLanguages, removeLanguagenotification
+    GetRecordtypes, removeRecordtypenotification, GetDocuments, removeDocumentnotification, GetLanguages, removeLanguagenotification, GetPrinttemplates, removePrinttemplatenotification
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Orders)

@@ -60,8 +60,12 @@ export default class OrdersEdit extends Component {
 
   componentDidMount() {
     const { GetRecordtypes, GetCourthauses, GetCourts, GetDefinedcostumers,
-      GetDefinedcompanies, GetTranslators, GetKdvs, GetPayments, GetLanguages,
-      GetDocuments, GetCases, GetLanguageconfig, GetOrder, match, history, OrderID } = this.props
+      GetDefinedcompanies, GetTranslators, GetKdvs, GetPayments, GetLanguages, location,
+      GetDocuments, GetCases, GetLanguageconfig, GetOrder, match, history, OrderID, Recordtypes } = this.props
+
+    const search = new URLSearchParams(location.search)
+    const recordType = search.get('recordType') ? search.get('recordType') : ''
+
     let Id = OrderID || match.params.OrderID
     if (validator.isUUID(Id)) {
       GetOrder(Id)
@@ -78,7 +82,7 @@ export default class OrdersEdit extends Component {
       GetCases()
       GetLanguageconfig()
     } else {
-      history.push("/Orders")
+      history.push(validator.isString(recordType) ? `/Orders?recordType=${recordType}` : "/Orders")
     }
   }
 
@@ -125,10 +129,14 @@ export default class OrdersEdit extends Component {
 
 
   render() {
-    const { Orders, Recordtypes, Courthauses, Courts, Definedcompanies, history,
+    const { Orders, Recordtypes, Courthauses, Courts, Definedcompanies, history, location,
       Definedcostumers, Translators, Kdvs, Payments, Languages, Documents, Cases, Profile
     } = this.props
     const { isLoading, isDispatching, selected_record } = Orders
+
+    const search = new URLSearchParams(location.search)
+    const recordType = search.get('recordType') ? search.get('recordType') : ''
+    const recordTypename = Recordtypes.list.find(u => u.Uuid === recordType)?.Name ? Recordtypes.list.find(u => u.Uuid === recordType)?.Name : ''
 
     const addModal = (content) => {
       return <Modal
@@ -214,8 +222,8 @@ export default class OrdersEdit extends Component {
         <Pagewrapper>
           <Headerwrapper>
             <Headerbredcrump>
-              <Link to={"/Orders"}>
-                <Breadcrumb.Section>{Literals.Page.Pageheader[Profile.Language]}</Breadcrumb.Section>
+              <Link to={validator.isString(recordType) ? `/Orders?recordType=${recordType}` : "/Orders"}>
+                <Breadcrumb.Section>{`${recordTypename} ${Literals.Page.Pageheader[Profile.Language]}`}</Breadcrumb.Section>
               </Link>
               <Breadcrumb.Divider icon='right chevron' />
               <Breadcrumb.Section>{Literals.Page.Pageeditheader[Profile.Language]}</Breadcrumb.Section>
@@ -305,7 +313,7 @@ export default class OrdersEdit extends Component {
                                     </Button.Group>
                                   </Table.Cell>
                                   <Table.Cell>
-                                    <Form.Input placeholder={Literals.Columns.Jobno[Profile.Language]} name="Jobno" fluid value={job.Jobno} onChange={(e) => { this.selectedJobChangeHandler(job.key, 'Jobno', e.target.value) }} />
+                                    <Form.Input  placeholder={Literals.Columns.Jobno[Profile.Language]} name="Jobno" fluid value={job.Jobno}  />
                                   </Table.Cell>
                                   <Table.Cell>
                                     <Form.Field>
@@ -428,7 +436,7 @@ export default class OrdersEdit extends Component {
                 renderActiveOnly={false} />
               <Footerwrapper>
                 <Form.Group widths={'equal'}>
-                  {history && <Link to="/Orders">
+                  {history && <Link to={validator.isString(recordTypename) ? `/Orders?recordType=${recordType}` : "/Orders"}>
                     <Button floated="left" color='grey'>{Literals.Button.Goback[Profile.Language]}</Button>
                   </Link>}
                   <Button floated="right" type="button" color='grey' onClick={(e) => {
@@ -467,7 +475,12 @@ export default class OrdersEdit extends Component {
     if (modelOpened || editModalopen) {
       return
     }
-    const { EditOrders, history, fillOrdernotification, Profile, Orders } = this.props
+    const { EditOrders, history, fillOrdernotification, Profile, Orders, location, Recordtypes } = this.props
+
+    const search = new URLSearchParams(location.search)
+    const recordType = search.get('recordType') ? search.get('recordType') : ''
+    const recordTypename = Recordtypes.list.find(u => u.Uuid === recordType)?.Name ? Recordtypes.list.find(u => u.Uuid === recordType)?.Name : ''
+
     const jobs = this.state.selectedJobs.map(job => {
       return {
         ...job,
@@ -553,7 +566,7 @@ export default class OrdersEdit extends Component {
         fillOrdernotification(error)
       })
     } else {
-      EditOrders({ data: { ...Orders.selected_record, ...responseData }, history })
+      EditOrders({ data: { ...Orders.selected_record, ...responseData }, history, redirectUrl: validator.isString(recordTypename) ? `/Orders?recordType=${recordType}` : "/Orders" })
     }
   }
 
