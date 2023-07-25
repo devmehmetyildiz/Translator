@@ -32,7 +32,7 @@ function DefaultColumnFilter({
 }
 
 
-export const DataTable = ({ Columns, Data, Config, renderRowSubComponent }) => {
+export const DataTable = ({ Columns, Data, Config, renderRowSubComponent, thColor }) => {
     const columns = useMemo(() => Columns, [Columns])
     const data = useMemo(() => Data, [Data])
 
@@ -127,7 +127,7 @@ export const DataTable = ({ Columns, Data, Config, renderRowSubComponent }) => {
             <div className='react-table-box'>
                 {
                     filters.length > 0 ?
-                        <div className='react-table-filter'>
+                        <div className='react-table-filter' >
                             <span className='header'><Icon name='filter' /> Filters</span>
                             <React.Fragment>
                                 {filters.filter(filter => ((Array.isArray(filter.value) && filter.value.length > 0) || filter.value)).map(filter => (
@@ -166,7 +166,7 @@ export const DataTable = ({ Columns, Data, Config, renderRowSubComponent }) => {
                             {headerGroups.map(headerGroup => (
                                 <tr {...headerGroup.getHeaderGroupProps()}>
                                     {headerGroup.headers.map(column => {
-                                        return <th {...column.getHeaderProps()} style={column.newWidht && { width: column.newWidht }}>
+                                        return <th {...column.getHeaderProps()} style={{ width: (column.newWidht && column.newWidht), backgroundColor: thColor && thColor }} >
                                             <div className='react-table-header-column'>
                                                 {
                                                     column.sortable ?

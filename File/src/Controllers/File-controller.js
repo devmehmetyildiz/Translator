@@ -217,12 +217,12 @@ async function UpdateFile(req, res, next) {
         requestArray.push(object)
     }
 
-    const t = await db.sequelize.transaction();
+    //  const t = await db.sequelize.transaction();
     try {
 
         for (const filedata of requestArray) {
 
-            if (!filedata.Uuid) {
+            if (!validator.isUUID(filedata.Uuid)) {
                 let fileuuid = uuid()
                 filedata.Filefolder = fileuuid
                 filedata.Uuid = fileuuid
@@ -238,7 +238,8 @@ async function UpdateFile(req, res, next) {
                     Createduser: "System",
                     Createtime: new Date(),
                     Isactive: true
-                }, { transaction: t })
+                    //  }, { transaction: t })
+                })
             } else {
 
                 const file = await db.fileModel.findOne({ where: { Uuid: filedata.Uuid } })
@@ -253,9 +254,10 @@ async function UpdateFile(req, res, next) {
                     if (!isFileremoved) {
                         return next(createValidationError(messages.ERROR.FILE_UPLOAD_ERROR))
                     }
-                    await db.fileModel.destroy({ where: { Uuid: file.Uuid }, transaction: t });
+                    // await db.fileModel.destroy({ where: { Uuid: file.Uuid }, transaction: t });
+                    await db.fileModel.destroy({ where: { Uuid: file.Uuid } });
                 } else {
-                    if (filedata.File) {
+                    if (filedata.fileChanged) {
                         const isFileremoved = await Removefileandfolderfromftp(file)
                         if (!isFileremoved) {
                             return next(createValidationError(messages.ERROR.FILE_UPLOAD_ERROR))
@@ -264,15 +266,17 @@ async function UpdateFile(req, res, next) {
                         filedata.Filetype = filedata.File.type
                         filedata.Filename = filedata.File.name
                     }
+                    delete filedata.Id
                     await db.fileModel.update({
                         ...filedata,
                         Updateduser: "System",
                         Updatetime: new Date(),
-                    }, { where: { Uuid: filedata.Uuid } }, { transaction: t })
+                        //  }, { where: { Uuid: filedata.Uuid } }, { transaction: t })
+                    }, { where: { Uuid: filedata.Uuid } })
                 }
             }
         }
-        await t.commit()
+        // await t.commit()
     } catch (error) {
         return next(sequelizeErrorCatcher(error))
     }

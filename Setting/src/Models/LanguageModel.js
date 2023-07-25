@@ -19,6 +19,12 @@ module.exports = sequelize.define('languageModel', {
     Discount: {
         type: Sequelize.FLOAT
     },
+    Isdefaultsource: {
+        type: Sequelize.BOOLEAN
+    },
+    Isdefaulttarget: {
+        type: Sequelize.BOOLEAN
+    },
     Createduser: {
         type: Sequelize.STRING
     },

@@ -27,6 +27,14 @@ const Literals = {
             tr: 'İskonto',
             en: 'Discount'
         },
+        Isdefaultsource: {
+            tr: 'Varsalıyan Kaynak Dil mi?',
+            en: 'Is Default Source Language?'
+        },
+        Isdefaulttarget: {
+            tr: 'Varsalıyan Hedef Dil mi?',
+            en: 'Is Default Target Language?'
+        },
         Wordcount: {
             tr: 'Kelime Sayısı',
             en: 'Word Count'
@@ -153,6 +161,14 @@ const Literals = {
             tr: "Karakter Sayısı Gerekli",
             en: "Char count Required"
         },
+        Yes: {
+            tr: "EVET",
+            en: "YES"
+        },
+        No: {
+            tr: "HAYIR",
+            en: "NO"
+        }
     }
 }
 

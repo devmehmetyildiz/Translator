@@ -15,6 +15,10 @@ const Literals = {
         en: 'Order added successfully',
         tr: 'Sipariş Başarı ile eklendi'
     },
+    addfiledescription: {
+        en: 'Files added successfully',
+        tr: 'Dosyalar Başarı ile eklendi'
+    },
     updatecode: {
         en: 'Data Update',
         tr: 'Veri Güncelleme'
@@ -22,6 +26,10 @@ const Literals = {
     updatedescription: {
         en: 'Order updated successfully',
         tr: 'Sipariş Başarı ile güncellendi'
+    },
+    updatedescription: {
+        en: 'Files updated successfully',
+        tr: 'Dosyalar Başarı ile güncellendi'
     },
     deletecode: {
         en: 'Data Delete',
@@ -117,6 +125,24 @@ export const EditOrders = createAsyncThunk(
                 type: 'Success',
                 code: Literals.updatecode[Language],
                 description: Literals.updatedescription[Language],
+            }));
+            const formData = new FormData();
+            data.Files.forEach((data, index) => {
+                Object.keys(data).forEach(element => {
+                    formData.append(`list[${index}].${element}`, data[element])
+                });
+            })
+            const localcookies = new Cookies();
+            await axios({
+                method: `put`,
+                url: config.services.File + `${ROUTES.FILE}`,
+                headers: { Authorization: "Bearer  " + localcookies.get('patientcare'), contentType: 'mime/form-data' },
+                data: formData
+            })
+            dispatch(fillOrdernotification({
+                type: 'Success',
+                code: Literals.addcode[Language],
+                description: Literals.adddescription[Language],
             }));
             dispatch(fillOrdernotification({
                 type: 'Clear',

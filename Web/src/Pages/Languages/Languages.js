@@ -37,8 +37,8 @@ export default class Languages extends Component {
 
     render() {
 
-        const { Languages, Profile, handleSelectedLanguage, handleDeletemodal, fillLanguagenotification, 
-            GetLanguageconfig, EditLanguageconfig,AddRecordLanguages } = this.props
+        const { Languages, Profile, handleSelectedLanguage, handleDeletemodal, fillLanguagenotification,
+            GetLanguageconfig, EditLanguageconfig, AddRecordLanguages } = this.props
         const { isLoading, isDispatching } = Languages
 
         const Columns = [
@@ -48,6 +48,8 @@ export default class Languages extends Component {
             { Header: Literals.Columns.Price[Profile.Language], accessor: 'Price', sortable: true, canGroupBy: true, canFilter: true, Cell: col => { return col.value + ' ₺' } },
             { Header: Literals.Columns.KdvPercent[Profile.Language], accessor: 'Kdv.Name', sortable: true, canGroupBy: true, canFilter: true },
             { Header: Literals.Columns.Discount[Profile.Language], accessor: 'Discount', sortable: true, canGroupBy: true, canFilter: true, Cell: col => { return col.value + ' ₺' } },
+            { Header: Literals.Columns.Isdefaultsource[Profile.Language], accessor: 'Isdefaultsource', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.boolCellhandler(col) },
+            { Header: Literals.Columns.Isdefaulttarget[Profile.Language], accessor: 'Isdefaulttarget', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.boolCellhandler(col) },
             { Header: Literals.Columns.Createduser[Profile.Language], accessor: 'Createduser', sortable: true, canGroupBy: true, canFilter: true, },
             { Header: Literals.Columns.Updateduser[Profile.Language], accessor: 'Updateduser', sortable: true, canGroupBy: true, canFilter: true, },
             { Header: Literals.Columns.Createtime[Profile.Language], accessor: 'Createtime', sortable: true, canGroupBy: true, canFilter: true, },
@@ -65,9 +67,9 @@ export default class Languages extends Component {
                 return item.key
             }) : [],
             groupBy: tableMeta ? JSON.parse(tableMeta.Config).filter(u => u.isGroup === true).map(item => {
-              return item.key
+                return item.key
             }) : [],
-          };
+        };
 
         const list = (Languages.list || []).map(item => {
 
@@ -130,5 +132,8 @@ export default class Languages extends Component {
                 </React.Fragment >
         )
     }
-
+    boolCellhandler = (col) => {
+        const { Profile } = this.props
+        return col.value !== null && (col.value ? Literals.Messages.Yes[Profile.Language] : Literals.Messages.No[Profile.Language])
+    }
 }

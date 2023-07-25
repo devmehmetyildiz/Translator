@@ -31,7 +31,7 @@ export default class Orders extends Component {
   }
 
   componentDidMount() {
-    const { GetOrders, GetJobs, GetDefinedcompanies,
+    const { GetOrders, GetJobs, GetDefinedcompanies,GetFiles,
       GetCourthauses, GetCourts, GetDefinedcostumers, GetPrinttemplates,
       GetPayments, GetKdvs, GetTranslators, GetCases, GetRecordtypes, GetLanguages, GetDocuments } = this.props
     GetOrders()
@@ -48,11 +48,12 @@ export default class Orders extends Component {
     GetLanguages()
     GetDocuments()
     GetPrinttemplates()
+    GetFiles()
   }
 
   componentDidUpdate() {
-    const { removeOrdernotification, removeDefinedcompanynotification, Printtemplates, removePrinttemplatenotification,
-      removeJobnotification, removeCourthausenotification, removeCourtnotification, removeDefinedcostumernotification,
+    const { removeOrdernotification, removeDefinedcompanynotification, Printtemplates, removePrinttemplatenotification, Files,
+      removeJobnotification, removeCourthausenotification, removeCourtnotification, removeDefinedcostumernotification, removeFilenotification,
       removePaymentnotification, removeKdvnotification, removeTranslatornotification, Orders, Jobs, Documents, removeDocumentNotification, Languages, removeLanguagenotification
       , Courthauses, Courts, Definedcompanies, Definedcostumers, Kdvs, Translators, Payments, Cases, removeCasenotification, Recordtypes, removeRecordtypenotification
     } = this.props
@@ -70,11 +71,19 @@ export default class Orders extends Component {
     Notification(Documents.notifications, removeDocumentNotification)
     Notification(Languages.notifications, removeLanguagenotification)
     Notification(Printtemplates.notifications, removePrinttemplatenotification)
+    Notification(Files.notifications, removeFilenotification)
+
+    if (!Orders.isloading && Object.keys(Orders.selected_record).length > 0 && this.state.isPreviewloading) {
+      this.setState({
+        decoratedBody: PrintBodyReplacer(this.state.selectedPrintdesign?.Printtemplate, Orders.selected_record),
+        isPreviewloading: false
+      })
+    }
   }
 
   render() {
 
-    const { Orders, Profile, handleSelectedOrder, handleDeletemodal, Jobs, Documents, Languages, Cases, location, Recordtypes, Printtemplates } = this.props
+    const { Orders, Files, Profile, handleSelectedOrder, handleDeletemodal, Jobs, Documents, Languages, Cases, location, Recordtypes, Printtemplates, GetOrder } = this.props
     const { isLoading, isDispatching } = Orders
 
     const search = new URLSearchParams(location.search)
@@ -132,18 +141,6 @@ export default class Orders extends Component {
       { Header: Literals.Columns.delete[Profile.Language], accessor: 'delete', canGroupBy: false, canFilter: false, disableFilters: true, sortable: false, className: 'text-center action-column' }]
 
 
-    const jobColumns = [
-      { Header: Literals.Columns.Id[Profile.Language], accessor: 'Id', sortable: true, canGroupBy: true, canFilter: true, },
-      { Header: Literals.Columns.Jobno[Profile.Language], accessor: 'Jobno', sortable: true, canGroupBy: true, canFilter: true },
-      { Header: Literals.Columns.Sourcelanguage[Profile.Language], accessor: 'SourcelanguageID', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.languageCellhandler(col) },
-      { Header: Literals.Columns.Targetlanguage[Profile.Language], accessor: 'TargetlanguageID', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.languageCellhandler(col) },
-      { Header: Literals.Columns.Document[Profile.Language], accessor: 'DocumentID', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.documentCellhandler(col) },
-      { Header: Literals.Columns.Amount[Profile.Language], accessor: 'Amount', sortable: true, canGroupBy: true, canFilter: true },
-      { Header: Literals.Columns.Price[Profile.Language], accessor: 'Price', sortable: true, canGroupBy: true, canFilter: true },
-      { Header: Literals.Columns.Case[Profile.Language], accessor: 'CaseID', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.caseCellhandler(col) },
-      { Header: Literals.Columns.Info[Profile.Language], accessor: 'Info', sortable: true, canGroupBy: true, canFilter: true },
-    ]
-
     const metaKey = `Orders${recordType}`
     let tableMeta = (Profile.tablemeta || []).find(u => u.Meta === metaKey)
     const initialConfig = {
@@ -174,8 +171,9 @@ export default class Orders extends Component {
                 return <Dropdown.Item key={Math.random()}>
                   <div
                     onClick={() => {
-                      handleSelectedOrder(item)
-                      this.setState({ openPrintpreview: true, selectedPrintdesign: printdesign, isPreviewloading: true, decoratedBody: PrintBodyReplacer(printdesign.Printtemplate, item, Columns, jobColumns) }
+                      GetOrder(item.Uuid)
+                      //   this.setState({ openPrintpreview: true, selectedPrintdesign: printdesign, isPreviewloading: true, decoratedBody: PrintBodyReplacer(printdesign.Printtemplate, item, Columns) }
+                      this.setState({ openPrintpreview: true, selectedPrintdesign: printdesign, isPreviewloading: true }
                       )
                     }} className='text-[#3d3d3d] hover:text-[#3d3d3d]'><Icon className='id card ' />{printdesign.Name}</div>
                 </Dropdown.Item>
@@ -224,7 +222,7 @@ export default class Orders extends Component {
                   initialConfig={initialConfig}
                   Profile={Profile}
                   Jobs={Jobs}
-                  subColumns={jobColumns}
+                  Files={Files}
                   setselectedRow={this.setselectedRow}
                   Documents={Documents}
                   Languages={Languages}
@@ -335,22 +333,6 @@ export default class Orders extends Component {
       return <Loader size='small' active inline='centered' ></Loader>
     } else {
       return (Recordtypes.list || []).find(u => u.Uuid === col.value)?.Name
-    }
-  }
-  languageCellhandler = (col) => {
-    const { Languages } = this.props
-    if (Languages.isLoading) {
-      return <Loader size='small' active inline='centered' ></Loader>
-    } else {
-      return (Languages.list || []).find(u => u.Uuid === col.value)?.Name
-    }
-  }
-  documentCellhandler = (col) => {
-    const { Documents } = this.props
-    if (Documents.isLoading) {
-      return <Loader size='small' active inline='centered' ></Loader>
-    } else {
-      return (Documents.list || []).find(u => u.Uuid === col.value)?.Name
     }
   }
 

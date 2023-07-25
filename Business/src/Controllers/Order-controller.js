@@ -1,6 +1,7 @@
 const config = require("../Config")
 const messages = require("../Constants/Messages")
 const { sequelizeErrorCatcher, createAccessDenied, requestErrorCatcher } = require("../Utilities/Error")
+const http = require("../Utilities/Http")
 const { Getnumerator, Createnewnumerator, Getcurrentnumerator } = require("../Utilities/Numerator")
 const createValidationError = require("../Utilities/Error").createValidation
 const createNotfounderror = require("../Utilities/Error").createNotfounderror
@@ -47,20 +48,53 @@ async function GetOrder(req, res, next) {
         if (!order.Isactive) {
             return next(createNotfounderror([messages.ERROR.ORDER_NOT_ACTIVE]))
         }
-        const jobs = await db.jobModel.findAll({ where: { OrderID: order.Uuid } })
-        order.Jobs = jobs
+        let Cases = []
+        let Languages = []
+        let Documents = []
         try {
-            const filesresponse = await axios({
-                method: 'GET',
-                url: config.services.File + 'Files/GetbyorderfileID/' + order.Fileuuid,
-                headers: {
-                    session_key: config.session.secret
-                }
-            })
-            order.Files = filesresponse.data
+            const res = await Promise.all([
+                http('GET', config.services.Setting + `Cases`),
+                http('GET', config.services.Setting + `Languages`),
+                http('GET', config.services.Setting + `Documents`),
+                http('GET', config.services.Setting + `Recordtypes/${order.RecordtypeID}`),
+                http('GET', config.services.Setting + `Courthauses/${order.PrinciblecourthauseID}`),
+                http('GET', config.services.Setting + `Courts/${order.PrinciblecourtID}`),
+                http('GET', config.services.Setting + `Courthauses/${order.DirectivecourthauseID}`),
+                http('GET', config.services.Setting + `Courts/${order.DirectivecourtID}`),
+                http('GET', config.services.Setting + `Definedcostumers/${order.CostumerID}`),
+                http('GET', config.services.Setting + `Definedcompanies/${order.CompanyID}`),
+                http('GET', config.services.Setting + `Translators/${order.TranslatorID}`),
+                http('GET', config.services.Setting + `Kdvs/${order.KdvID}`),
+                http('GET', config.services.Setting + `Payments/${order.PaymentID}`),
+                http('GET', config.services.File + `Files/GetbyorderfileID/${order.Fileuuid}`),
+            ])
+            Cases = res[0]
+            Languages = res[1]
+            Documents = res[2]
+            order.Recordtype = res[3]
+            order.Princiblecourthause = res[4]
+            order.Princiblecourt = res[5]
+            order.Directivecourthause = res[6]
+            order.Directivecourt = res[7]
+            order.Costumer = res[8]
+            order.Company = res[9]
+            order.Translator = res[10]
+            order.Kdv = res[11]
+            order.Payment = res[12]
+            order.Files = res[13]
         } catch (error) {
-            return next(requestErrorCatcher(error, 'File'))
+            return next(requestErrorCatcher(error, 'Setting'))
         }
+        order.Case = Cases.find(u => u.Uuid === order.CaseID)
+
+        const jobs = await db.jobModel.findAll({ where: { OrderID: order.Uuid } })
+        for (const job of jobs) {
+            job.Sourcelanguage = Languages.find(u => u.Uuid === job.SourcelanguageID)
+            job.Targetlanguage = Languages.find(u => u.Uuid === job.TargetlanguageID)
+            job.Document = Documents.find(u => u.Uuid === job.DocumentID)
+            job.Case = Cases.find(u => u.Uuid === job.CaseID)
+        }
+        order.Jobs = jobs
         res.status(200).json(order)
     } catch (error) {
         return next(sequelizeErrorCatcher(error))

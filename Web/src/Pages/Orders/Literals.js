@@ -207,6 +207,10 @@ const Literals = {
             tr: 'Üst ID',
             en: 'Parent ID'
         },
+        File_Name: {
+            tr: 'Dosya Adı',
+            en: 'File Name'
+        },
         Filename: {
             tr: 'Orjinal Adı',
             en: 'Original Name'

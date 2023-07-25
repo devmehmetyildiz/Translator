@@ -81,6 +81,10 @@ export default class LanguagesEdit extends Component {
                                 <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.KdvPercent[Profile.Language]} options={Kdvoptions} name='KdvID' formtype="dropdown" />
                                 <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Discount[Profile.Language]} name="Discount" type='number' step='0.01' />
                             </Form.Group>
+                            <Form.Group widths='equal'>
+                                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Isdefaultsource[Profile.Language]} name="Isdefaultsource" formtype="checkbox" />
+                                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Isdefaulttarget[Profile.Language]} name="Isdefaulttarget" formtype="checkbox" />
+                            </Form.Group>
                             <Footerwrapper>
                                 <Form.Group widths={'equal'}>
                                     {history && <Link to="/Languages">
@@ -104,7 +108,9 @@ export default class LanguagesEdit extends Component {
         data.KdvID = this.context.formstates[`${this.PAGE_NAME}/KdvID`]
         data.Price = parseFloat(data.Price)
         data.Discount = parseFloat(data.Discount)
-
+        data.Isdefaultsource = this.context.formstates[`${this.PAGE_NAME}/Isdefaultsource`]
+        data.Isdefaulttarget = this.context.formstates[`${this.PAGE_NAME}/Isdefaulttarget`]
+        
         let errors = []
         if (!validator.isString(data.Name)) {
             errors.push({ type: 'Error', code: Literals.Page.Pageheader[Profile.Language], description: Literals.Messages.Namerequired[Profile.Language] })

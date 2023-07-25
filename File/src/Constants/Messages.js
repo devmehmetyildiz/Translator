@@ -18,6 +18,12 @@ const messages = {
         tr: 'Dosya bulunamadı',
       }
     },
+    FILE_CANT_REMOVE: {
+      code: 'FILE_CANT_REMOVE', description: {
+        en: 'File cant remove',
+        tr: 'Dosya Silinemedi',
+      }
+    },
     FILE_NOT_ACTIVE: {
       code: 'FILE_NOT_ACTIVE', description: {
         en: 'File not active',

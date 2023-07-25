@@ -109,7 +109,9 @@ export default class OrdersEdit extends Component {
       this.setState({
         isDatafetched: true,
         selectedJobs: selected_record.Jobs,
-        selectedFiles: selected_record.Files
+        selectedFiles: selected_record.Files.map(u => {
+          return { ...u, fileUploaded: true }
+        })
       })
       this.context.setForm(this.PAGE_NAME, selected_record)
     }
@@ -313,7 +315,7 @@ export default class OrdersEdit extends Component {
                                     </Button.Group>
                                   </Table.Cell>
                                   <Table.Cell>
-                                    <Form.Input  placeholder={Literals.Columns.Jobno[Profile.Language]} name="Jobno" fluid value={job.Jobno}  />
+                                    <Form.Input placeholder={Literals.Columns.Jobno[Profile.Language]} name="Jobno" fluid value={job.Jobno} />
                                   </Table.Cell>
                                   <Table.Cell>
                                     <Form.Field>
@@ -391,7 +393,7 @@ export default class OrdersEdit extends Component {
                               </Table.Row>
                             </Table.Header>
                             <Table.Body>
-                              {this.state.selectedFiles.sort((a, b) => a.Order - b.Order).map((file, index) => {
+                              {[...this.state.selectedFiles].sort((a, b) => a.Order - b.Order).map((file, index) => {
                                 return <Table.Row key={file.key}>
                                   <Table.Cell>
                                     <Button.Group basic size='small'>
@@ -406,12 +408,12 @@ export default class OrdersEdit extends Component {
                                     <Dropdown disabled={file.WillDelete} value={file.Usagetype} placeholder='Ürün Tanımı' name="Usagetype" clearable selection fluid options={usagetypes} onChange={(e, data) => { this.selectedFilesChangeHandler(file.key, 'Usagetype', data.value) }} />
                                   </Table.Cell>
                                   <Table.Cell>
-                                    {file.fileChanged ? <Form.Input className='w-full flex justify-center items-center' disabled={file.WillDelete} type='File' name="File" fluid onChange={(e) => { this.selectedFilesChangeHandler(file.key, 'File', e) }} />
-                                      : <><Label active={!file.WillDelete}>{file.Filename}</Label>{(file.Uuid && file.Uuid !== "") && <a target="_blank" rel="noopener noreferrer" href={`${config.services.File}${ROUTES.FILE}/Downloadfile/${file.Uuid}`} ><Icon name='download' /></a>}</>}
+                                    {!file.fileUploaded ? <Form.Input disabled={file.WillDelete} className='w-full flex justify-center items-center' type='File' name="File" fluid onChange={(e) => { this.selectedFilesChangeHandler(file.key, 'File', e) }} />
+                                      : <><Label >{file.Filename}</Label>{(file.Uuid && file.Uuid !== "") && <a target="_blank" rel="noopener noreferrer" href={`${config.services.File}${ROUTES.FILE}/Downloadfile/${file.Uuid}`} ><Icon name='download' /></a>}</>}
                                   </Table.Cell>
                                   <Table.Cell>
-                                    {!file.fileChanged ? <Icon onClick={() => { this.handleFilechange(file.key, file.fileChanged) }} className='cursor-pointer' color='green' name='checkmark' />
-                                      : <Icon active={!file.WillDelete} onClick={() => { this.handleFilechange(file.key, file.fileChanged) }} className='cursor-pointer' color='red' name='times circle' />}
+                                    {!file.fileUploaded ? <Icon onClick={() => { this.handleFilechange(file.key, file.fileChanged) }} className='cursor-pointer' color='red' name='times circle' />
+                                      : <Icon onClick={() => { this.handleFilechange(file.key, file.fileChanged) }} className='cursor-pointer' color='green' name='checkmark' />}
                                   </Table.Cell>
                                   <Table.Cell className='table-last-section'>
                                     <Icon className='type-conversion-remove-icon' link color={file.WillDelete ? 'green' : 'red'} name={`${file.WillDelete ? 'checkmark' : 'minus circle'}`}
@@ -516,7 +518,7 @@ export default class OrdersEdit extends Component {
       PaymentID: this.context.formstates[`${this.PAGE_NAME}/PaymentID`],
       CaseID: this.context.formstates[`${this.PAGE_NAME}/CaseID`],
       Jobs: jobs,
-      Files: files,
+      Files: this.DataCleaner(files),
       Fileuuid: Orders.selected_record.Fileuuid
     }
 
@@ -634,7 +636,8 @@ export default class OrdersEdit extends Component {
         File: {},
         key: Math.random(),
         WillDelete: false,
-        fileChanged: true,
+        fileChanged: false,
+        fileUploaded: false,
         Order: this.state.selectedFiles.length,
       }]
     })
@@ -644,14 +647,21 @@ export default class OrdersEdit extends Component {
     const index = this.state.selectedFiles.findIndex(file => file.key === key)
     let selectedFiles = this.state.selectedFiles
 
-    if (selectedFiles[index].Uuid) {
-      selectedFiles[index].WillDelete = !(selectedFiles[index].WillDelete)
+    if (selectedFiles[index].WillDelete) {
+      selectedFiles[index].WillDelete = false
       this.setState({ selectedFiles: selectedFiles })
     } else {
-      let files = selectedFiles.filter(file => file.key !== key)
-      files.filter(file => file.Order > order).forEach(file => file.Order--)
-      this.setState({ selectedFiles: files })
+      if (validator.isUUID(selectedFiles[index].Uuid)) {
+        selectedFiles[index].WillDelete = true
+        selectedFiles[index].fileUploaded = true
+        this.setState({ selectedFiles: selectedFiles })
+      } else {
+        let files = selectedFiles.filter(file => file.key !== key)
+        files.filter(file => file.Order > order).forEach(file => file.Order--)
+        this.setState({ selectedFiles: files })
+      }
     }
+
   }
 
   handleFilechange = (key) => {
@@ -660,11 +670,9 @@ export default class OrdersEdit extends Component {
     if (selectedFiles[index].WillDelete) {
       return
     }
-    if (selectedFiles[index].fileChanged) {
-      return
-    }
-    selectedFiles[index].fileChanged = !(selectedFiles[index].fileChanged)
+    selectedFiles[index].fileChanged = validator.isUUID(selectedFiles[index].Uuid) ? true : false
     selectedFiles[index].File = {}
+    selectedFiles[index].fileUploaded = false
     this.setState({ selectedFiles: selectedFiles })
   }
 
@@ -680,7 +688,8 @@ export default class OrdersEdit extends Component {
         selectedFiles[index][property] = value.target.files[0]
         selectedFiles[index].Filename = selectedFiles[index].File?.name
         selectedFiles[index].Name = selectedFiles[index].File?.name
-        selectedFiles[index].fileChanged = false
+        selectedFiles[index].fileChanged = validator.isUUID(selectedFiles[index].Uuid)
+        selectedFiles[index].fileUploaded = true
       }
     } else {
       selectedFiles[index][property] = value
@@ -688,29 +697,39 @@ export default class OrdersEdit extends Component {
     this.setState({ selectedFiles: selectedFiles })
   }
 
-  DataCleaner = (data) => {
-    if (data.Id !== undefined) {
-      delete data.Id;
+  DataCleaner = (arrayObj) => {
+    for (const data of arrayObj) {
+      if (this.Isnullorundefined(data.Id)) {
+        delete data.Id;
+      }
+      if (this.Isnullorundefined(data.Createduser)) {
+        delete data.Createduser;
+      }
+      if (this.Isnullorundefined(data.Createtime)) {
+        delete data.Createtime;
+      }
+      if (this.Isnullorundefined(data.Updateduser)) {
+        delete data.Updateduser;
+      }
+      if (this.Isnullorundefined(data.Updatetime)) {
+        delete data.Updatetime;
+      }
+      if (this.Isnullorundefined(data.Deleteduser)) {
+        delete data.Deleteduser;
+      }
+      if (this.Isnullorundefined(data.Deletetime)) {
+        delete data.Deletetime;
+      }
     }
-    if (data.Createduser !== undefined) {
-      delete data.Createduser;
+    return arrayObj
+  }
+
+  Isnullorundefined = (value) => {
+    if (value === null || value === undefined) {
+      return true
+    } else {
+      return false
     }
-    if (data.Createtime !== undefined) {
-      delete data.Createtime;
-    }
-    if (data.Updateduser !== undefined) {
-      delete data.Updateduser;
-    }
-    if (data.Updatetime !== undefined) {
-      delete data.Updatetime;
-    }
-    if (data.Deleteduser !== undefined) {
-      delete data.Deleteduser;
-    }
-    if (data.Deletetime !== undefined) {
-      delete data.Deletetime;
-    }
-    return data
   }
 
 }

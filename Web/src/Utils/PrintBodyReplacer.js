@@ -1,6 +1,5 @@
-import validator from './Validator'
 
-export default function PrintBodyReplacer(body, meta, columns, subcolumns) {
+export default function PrintBodyReplacer(body, meta) {
 
     Object.keys(meta).forEach(firstLayer => {
         if (meta[firstLayer] && Array.isArray(meta[firstLayer])) {
@@ -9,15 +8,22 @@ export default function PrintBodyReplacer(body, meta, columns, subcolumns) {
                 const matches = body.replace(/[\r\n]/gm, '').match(new RegExp(regexString, 'g')) || [];
                 if (matches.length > 0) {
                     let oldlayer = matches[0]
-                    let layer = matches[0].replace(`{{${firstLayer}-`, '').replace('}}', '')
-                    let newlayer = ''
+                    let fulllayer = ''
                     for (const job of meta[firstLayer]) {
-                        let text = ''
+                        let layer = matches[0].replace(`{{${firstLayer}-`, '').replace('}}', '')
                         Object.keys(job).forEach(key => {
-                            text = replaceAll(layer, `{${key}}`, job[key])
+                            if (job[key] && typeof job[key] === 'object') {
+                                Object.keys(job[key]).forEach(subKey => {
+                                    layer = replaceAll(layer, `{${key}.${subKey}}`, job[key][subKey])
+                                })
+                            } else {
+                                layer = replaceAll(layer, `{${key}}`, job[key])
+                            }
+
                         })
+                        fulllayer += layer
                     }
-                    body = replaceAll(body.replace(/[\r\n]/gm, ''), oldlayer, newlayer)
+                    body = replaceAll(body.replace(/[\r\n]/gm, ''), oldlayer, fulllayer)
                 }
             }
         }
@@ -37,11 +43,8 @@ export default function PrintBodyReplacer(body, meta, columns, subcolumns) {
                     if (body.includes(`{{${firstLayer}.${secondLayer}}}`)) { body = replaceAll(body, `{{${firstLayer}.${secondLayer}}}`, meta[firstLayer][secondLayer]) }
                 }
             })
-        }
-        else {
-            if (body.includes(`{{${firstLayer}}}`)) {
-                body = replaceAll(body, `{{${firstLayer}}}`, validator.isUUID(meta[firstLayer]) ? (columns || []).find(u => u.accessor === firstLayer).Cell({ value: meta[firstLayer] }) : meta[firstLayer])
-            }
+        } else {
+            if (body.includes(`{{${firstLayer}}}`)) { body = replaceAll(body, `{{${firstLayer}}}`, meta[firstLayer]) }
         }
     });
     return body;
