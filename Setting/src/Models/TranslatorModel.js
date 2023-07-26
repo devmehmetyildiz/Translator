@@ -13,6 +13,10 @@ module.exports = sequelize.define('translatorModel', {
     UserID: {
         type: Sequelize.STRING
     },
+    Isdefaulttranslator: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
+    },
     Createduser: {
         type: Sequelize.STRING
     },

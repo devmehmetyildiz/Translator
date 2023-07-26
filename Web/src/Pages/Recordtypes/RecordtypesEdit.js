@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Breadcrumb, Button, Divider, Dropdown, Form, Header, Icon, Popup } from 'semantic-ui-react'
+import { Breadcrumb, Button, Divider, Dropdown, Form, Header, Icon, Popup, Tab } from 'semantic-ui-react'
 import Notification from '../../Utils/Notification'
 import formToObject from 'form-to-object'
 import LoadingPage from '../../Utils/LoadingPage'
@@ -14,15 +14,43 @@ import Pagedivider from '../../Common/Styled/Pagedivider'
 import Headerbredcrump from '../../Common/Wrappers/Headerbredcrump'
 import Headerwrapper from '../../Common/Wrappers/Headerwrapper'
 import Footerwrapper from '../../Common/Wrappers/Footerwrapper'
+import Editor from "@monaco-editor/react";
 export default class RecordtypesEdit extends Component {
 
     PAGE_NAME = 'RecordtypesEdit'
 
     constructor(props) {
         super(props)
+        const json = {
+            visible: {
+                Orderno: true,
+                RecordtypeID: true,
+                PrinciblecourthauseID: true,
+                PrinciblecourtID: true,
+                Princibleno: true,
+                Desicionno: true,
+                DirectivecourthauseID: true,
+                DirectivecourtID: true,
+                Directiveno: true,
+                Directiveinfo: true,
+                CompanyID: true,
+                CostumerID: true,
+                Registerdate: true,
+                Deliverydate: true,
+                Prepayment: true,
+                Notaryexpense: true,
+                Netprice: true,
+                TranslatorID: true,
+                KdvID: true,
+                PaymentID: true,
+                CaseID: true
+            }
+        }
         this.state = {
             isDatafetched: false,
+            template: JSON.stringify(json)
         }
+        this.templateEditorRef = React.createRef()
     }
 
     componentDidMount() {
@@ -39,7 +67,7 @@ export default class RecordtypesEdit extends Component {
         const { Recordtypes, removeRecordtypenotification } = this.props
         const { selected_record, isLoading } = Recordtypes
         if (selected_record && Object.keys(selected_record).length > 0 && selected_record.Id !== 0 && !isLoading && !this.state.isDatafetched) {
-            this.setState({ isDatafetched: true })
+            this.setState({ isDatafetched: true, template: selected_record.Config })
             this.context.setForm(this.PAGE_NAME, selected_record)
         }
         Notification(Recordtypes.notifications, removeRecordtypenotification, this.context.clearForm)
@@ -64,13 +92,41 @@ export default class RecordtypesEdit extends Component {
                     <Pagedivider />
                     <Contentwrapper>
                         <Form onSubmit={this.handleSubmit}>
-                            <Form.Group widths={'equal'}>
-                                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
-                                {this.context.formstates[`${this.PAGE_NAME}/Ishaveprice`] ?
-                                    <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Price[Profile.Language]} name="Price" type='number' display='try' />
-                                    : null}
-                            </Form.Group>
-                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Ishaveprice[Profile.Language]} name="Ishaveprice" formtype={'checkbox'} />
+                            <Tab className='station-tab'
+                                panes={[
+                                    {
+                                        menuItem: Literals.Columns.Savescreen[Profile.Language],
+                                        pane: {
+                                            key: 'save',
+                                            content: <React.Fragment>
+                                                <Form.Group widths={'equal'}>
+                                                    <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
+                                                    {this.context.formstates[`${this.PAGE_NAME}/Ishaveprice`] ?
+                                                        <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Price[Profile.Language]} name="Price" type='number' display='try' />
+                                                        : null}
+                                                </Form.Group>
+                                                <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Ishaveprice[Profile.Language]} name="Ishaveprice" formtype={'checkbox'} />
+                                            </React.Fragment>
+                                        }
+                                    },
+                                    {
+                                        menuItem: Literals.Columns.Configscreen[Profile.Language],
+                                        pane: {
+                                            key: 'design',
+                                            content: <div className='max-h-[calc(66vh-10px)] overflow-y-auto overflow-x-hidden'>
+                                                <div className='p-2 shadow-lg shadow-gray-300'>
+                                                    <Editor
+                                                        height="60vh"
+                                                        language="json"
+                                                        value={this.state.template}
+                                                        onMount={this.handleTemplateEditorDidMount}
+                                                    />
+                                                </div>
+                                            </div>
+                                        }
+                                    }
+                                ]}
+                                renderActiveOnly={false} />
                             <Footerwrapper>
                                 <Form.Group widths={'equal'}>
                                     {history && <Link to="/Recordtypes">
@@ -93,6 +149,7 @@ export default class RecordtypesEdit extends Component {
         const { EditRecordtypes, history, fillRecordtypenotification, Recordtypes, Profile } = this.props
         const data = formToObject(e.target)
         data.Ishaveprice = this.context.formstates[`${this.PAGE_NAME}/Ishaveprice`] ? this.context.formstates[`${this.PAGE_NAME}/Ishaveprice`] : false
+        data.Config = this.state.template
         let errors = []
         if (!validator.isString(data.Name)) {
             errors.push({ type: 'Error', code: Literals.Page.Pageheader[Profile.Language], description: Literals.Messages.Namerequired[Profile.Language] })
@@ -104,6 +161,15 @@ export default class RecordtypesEdit extends Component {
         } else {
             EditRecordtypes({ data: { ...Recordtypes.selected_record, ...data }, history })
         }
+    }
+
+    handleTemplateEditorChange = () => {
+        this.setState({ template: this.templateEditorRef.current.getValue() })
+    }
+
+    handleTemplateEditorDidMount = (editor, monaco) => {
+        this.templateEditorRef.current = editor
+        this.templateEditorRef.current.onDidChangeModelContent(this.handleTemplateEditorChange)
     }
 }
 RecordtypesEdit.contextType = FormContext

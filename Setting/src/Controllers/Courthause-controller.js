@@ -58,6 +58,8 @@ async function AddCourthause(req, res, next) {
     let validationErrors = []
     const {
         Name,
+        Isdefaultdirective,
+        Isdefaultprincible
     } = req.body
 
     if (!validator.isString(Name)) {
@@ -73,6 +75,20 @@ async function AddCourthause(req, res, next) {
     const t = await db.sequelize.transaction();
 
     try {
+
+        if (Isdefaultdirective || Isdefaultprincible) {
+            const courthauses = await db.courthauseModel.findAll({ where: { Isactive: true } })
+            for (const courthause of courthauses) {
+                await db.courthauseModel.update({
+                    ...courthause,
+                    Isdefaultdirective: Isdefaultdirective ? false : courthause.Isdefaultdirective,
+                    Isdefaultprincible: Isdefaultprincible ? false : courthause.Isdefaultprincible,
+                    Updateduser: "System",
+                    Updatetime: new Date(),
+                }, { where: { Uuid: courthause.Uuid } }, { transaction: t })
+            }
+        }
+
         await db.courthauseModel.create({
             ...req.body,
             Uuid: courthauseuuid,
@@ -96,6 +112,8 @@ async function AddArrayCourthause(req, res, next) {
             for (const data of req.body) {
                 const {
                     Name,
+                    Isdefaultdirective,
+                    Isdefaultprincible
                 } = data
 
                 if (!validator.isString(Name)) {
@@ -104,6 +122,19 @@ async function AddArrayCourthause(req, res, next) {
 
                 if (validationErrors.length > 0) {
                     return next(createValidationError(validationErrors, req.language))
+                }
+
+                if (Isdefaultdirective || Isdefaultprincible) {
+                    const courthauses = await db.courthauseModel.findAll({ where: { Isactive: true } })
+                    for (const courthause of courthauses) {
+                        await db.courthauseModel.update({
+                            ...courthause,
+                            Isdefaultdirective: Isdefaultdirective ? false : courthause.Isdefaultdirective,
+                            Isdefaultprincible: Isdefaultprincible ? false : courthause.Isdefaultprincible,
+                            Updateduser: "System",
+                            Updatetime: new Date(),
+                        }, { where: { Uuid: courthause.Uuid } }, { transaction: t })
+                    }
                 }
 
                 let courthauseuuid = uuid()
@@ -131,7 +162,9 @@ async function UpdateCourthause(req, res, next) {
     let validationErrors = []
     const {
         Name,
-        Uuid
+        Uuid,
+        Isdefaultdirective,
+        Isdefaultprincible
     } = req.body
 
     if (!validator.isString(Name)) {
@@ -155,6 +188,19 @@ async function UpdateCourthause(req, res, next) {
         }
         if (courthause.Isactive === false) {
             return next(createAccessDenied([messages.ERROR.COURTHAUSE_NOT_ACTIVE], req.language))
+        }
+
+        if (Isdefaultdirective || Isdefaultprincible) {
+            const allcourthauses = await db.courthauseModel.findAll({ where: { Isactive: true } })
+            for (const courthausedata of allcourthauses) {
+                await db.courthauseModel.update({
+                    ...courthausedata,
+                    Isdefaultdirective: Isdefaultdirective ? false : courthausedata.Isdefaultdirective,
+                    Isdefaultprincible: Isdefaultprincible ? false : courthausedata.Isdefaultprincible,
+                    Updateduser: "System",
+                    Updatetime: new Date(),
+                }, { where: { Uuid: courthausedata.Uuid } }, { transaction: t })
+            }
         }
 
         await db.courthauseModel.update({

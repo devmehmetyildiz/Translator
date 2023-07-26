@@ -20,10 +20,12 @@ module.exports = sequelize.define('languageModel', {
         type: Sequelize.FLOAT
     },
     Isdefaultsource: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
     },
     Isdefaulttarget: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
     },
     Createduser: {
         type: Sequelize.STRING

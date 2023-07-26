@@ -19,6 +19,18 @@ module.exports = sequelize.define('caseModel', {
     CaseStatus: {
         type: Sequelize.INTEGER
     },
+    Isdefaultpassivecase: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
+    },
+    Isdefaultendcase: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
+    },
+    Isdefaultcancelcase: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
+    },
     Createduser: {
         type: Sequelize.STRING
     },

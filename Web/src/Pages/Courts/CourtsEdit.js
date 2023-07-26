@@ -65,6 +65,10 @@ export default class CourtsEdit extends Component {
                     <Contentwrapper>
                         <Form onSubmit={this.handleSubmit}>
                             <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
+                            <Form.Group widths={'equal'}>
+                                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Isdefaultprincible[Profile.Language]} name="Isdefaultprincible" formtype='checkbox' />
+                                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Isdefaultdirective[Profile.Language]} name="Isdefaultdirective" formtype='checkbox' />
+                            </Form.Group>
                             <Footerwrapper>
                                 <Form.Group widths={'equal'}>
                                     {history && <Link to="/Courts">
@@ -86,7 +90,8 @@ export default class CourtsEdit extends Component {
 
         const { EditCourts, history, fillCourtnotification, Courts, Profile } = this.props
         const data = formToObject(e.target)
-
+        data.Isdefaultprincible = this.context.formstates[`${this.PAGE_NAME}/Isdefaultprincible`]
+        data.Isdefaultdirective = this.context.formstates[`${this.PAGE_NAME}/Isdefaultdirective`]
         let errors = []
         if (!validator.isString(data.Name)) {
             errors.push({ type: 'Error', code: Literals.Page.Pageheader[Profile.Language], description: Literals.Messages.Namerequired[Profile.Language] })

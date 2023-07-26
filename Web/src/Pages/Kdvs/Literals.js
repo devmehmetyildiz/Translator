@@ -19,6 +19,10 @@ const Literals = {
             tr: 'Yüzde Değer',
             en: 'Percent'
         },
+        Isdefaultkdv: {
+            tr: 'Varsayılan Kdv mi?',
+            en: 'Is Default Kdv?'
+        },
         Createduser: {
             tr: 'Oluşturan Kullanıcı',
             en: 'Created User'
@@ -104,6 +108,14 @@ const Literals = {
         Percentrequired: {
             tr: "Yüzde değer Gerekli",
             en: "Percent Required"
+        },
+        Yes: {
+            tr: "EVET",
+            en: "YES"
+        },
+        No: {
+            tr: "HAYIR",
+            en: "NO"
         },
     }
 }

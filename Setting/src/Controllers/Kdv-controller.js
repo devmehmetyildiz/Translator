@@ -58,7 +58,8 @@ async function AddKdv(req, res, next) {
     let validationErrors = []
     const {
         Name,
-        Percent
+        Percent,
+        Isdefaultkdv
     } = req.body
 
     if (!validator.isString(Name)) {
@@ -77,6 +78,19 @@ async function AddKdv(req, res, next) {
     const t = await db.sequelize.transaction();
 
     try {
+
+        if (Isdefaultkdv) {
+            const kdvs = await db.kdvModel.findAll({ where: { Isactive: true } })
+            for (const kdv of kdvs) {
+                await db.kdvModel.update({
+                    ...kdv,
+                    Isdefaultkdv: Isdefaultkdv ? false : kdv.Isdefaultkdv,
+                    Updateduser: "System",
+                    Updatetime: new Date(),
+                }, { where: { Uuid: kdv.Uuid } }, { transaction: t })
+            }
+        }
+
         await db.kdvModel.create({
             ...req.body,
             Uuid: kdvuuid,
@@ -100,7 +114,8 @@ async function AddArrayKdv(req, res, next) {
             for (const data of req.body) {
                 const {
                     Name,
-                    Percent
+                    Percent,
+                    Isdefaultkdv
                 } = data
 
                 if (!validator.isString(Name)) {
@@ -112,6 +127,18 @@ async function AddArrayKdv(req, res, next) {
 
                 if (validationErrors.length > 0) {
                     return next(createValidationError(validationErrors, req.language))
+                }
+
+                if (Isdefaultkdv) {
+                    const kdvs = await db.kdvModel.findAll({ where: { Isactive: true } })
+                    for (const kdv of kdvs) {
+                        await db.kdvModel.update({
+                            ...kdv,
+                            Isdefaultkdv: Isdefaultkdv ? false : kdv.Isdefaultkdv,
+                            Updateduser: "System",
+                            Updatetime: new Date(),
+                        }, { where: { Uuid: kdv.Uuid } }, { transaction: t })
+                    }
                 }
 
                 let kdvuuid = uuid()
@@ -140,7 +167,8 @@ async function UpdateKdv(req, res, next) {
     const {
         Name,
         Percent,
-        Uuid
+        Uuid,
+        Isdefaultkdv
     } = req.body
 
     if (!validator.isString(Name)) {
@@ -167,6 +195,18 @@ async function UpdateKdv(req, res, next) {
         }
         if (kdv.Isactive === false) {
             return next(createAccessDenied([messages.ERROR.KDV_NOT_ACTIVE], req.language))
+        }
+
+        if (Isdefaultkdv) {
+            const allkdvs = await db.kdvModel.findAll({ where: { Isactive: true } })
+            for (const kdvdata of allkdvs) {
+                await db.kdvModel.update({
+                    ...kdvdata,
+                    Isdefaultkdv: Isdefaultkdv ? false : kdvdata.Isdefaultkdv,
+                    Updateduser: "System",
+                    Updatetime: new Date(),
+                }, { where: { Uuid: kdvdata.Uuid } }, { transaction: t })
+            }
         }
 
         await db.kdvModel.update({

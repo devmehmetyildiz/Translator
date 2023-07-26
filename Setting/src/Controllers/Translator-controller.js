@@ -77,6 +77,7 @@ async function AddTranslator(req, res, next) {
     let validationErrors = []
     const {
         Name,
+        Isdefaulttranslator
     } = req.body
 
     if (!validator.isString(Name)) {
@@ -92,6 +93,18 @@ async function AddTranslator(req, res, next) {
     const t = await db.sequelize.transaction();
 
     try {
+        if (Isdefaulttranslator) {
+            const translators = await db.translatorModel.findAll({ where: { Isactive: true } })
+            for (const translator of translators) {
+                await db.translatorModel.update({
+                    ...translator,
+                    Isdefaulttranslator: Isdefaulttranslator ? false : translator.Isdefaulttranslator,
+                    Updateduser: "System",
+                    Updatetime: new Date(),
+                }, { where: { Uuid: translator.Uuid } }, { transaction: t })
+            }
+        }
+
         await db.translatorModel.create({
             ...req.body,
             Uuid: translatoruuid,
@@ -115,6 +128,7 @@ async function AddArrayTranslator(req, res, next) {
             for (const data of req.body) {
                 const {
                     Name,
+                    Isdefaulttranslator
                 } = data
 
                 if (!validator.isString(Name)) {
@@ -123,6 +137,18 @@ async function AddArrayTranslator(req, res, next) {
 
                 if (validationErrors.length > 0) {
                     return next(createValidationError(validationErrors, req.language))
+                }
+
+                if (Isdefaulttranslator) {
+                    const translators = await db.translatorModel.findAll({ where: { Isactive: true } })
+                    for (const translator of translators) {
+                        await db.translatorModel.update({
+                            ...translator,
+                            Isdefaulttranslator: Isdefaulttranslator ? false : translator.Isdefaulttranslator,
+                            Updateduser: "System",
+                            Updatetime: new Date(),
+                        }, { where: { Uuid: translator.Uuid } }, { transaction: t })
+                    }
                 }
 
                 let translatoruuid = uuid()
@@ -151,6 +177,7 @@ async function UpdateTranslator(req, res, next) {
     const {
         Uuid,
         Name,
+        Isdefaulttranslator
     } = req.body
 
     if (!validator.isString(Name)) {
@@ -174,6 +201,18 @@ async function UpdateTranslator(req, res, next) {
         }
         if (translator.Isactive === false) {
             return next(createAccessDenied([messages.ERROR.TRANSLATOR_NOT_ACTIVE], req.language))
+        }
+
+        if (Isdefaulttranslator) {
+            const alltranslators = await db.translatorModel.findAll({ where: { Isactive: true } })
+            for (const translatordata of alltranslators) {
+                await db.translatorModel.update({
+                    ...translatordata,
+                    Isdefaulttranslator: Isdefaulttranslator ? false : translatordata.Isdefaulttranslator,
+                    Updateduser: "System",
+                    Updatetime: new Date(),
+                }, { where: { Uuid: translatordata.Uuid } }, { transaction: t })
+            }
         }
 
         await db.translatorModel.update({

@@ -53,7 +53,8 @@ export default class OrdersCreate extends Component {
       selectedFiles: [],
       modelOpened: false,
       editModalopen: false,
-      selectedModal: null
+      selectedModal: null,
+      isDatafetched: false
     }
   }
 
@@ -89,7 +90,7 @@ export default class OrdersCreate extends Component {
       removeTranslatornotification, removeKdvnotification, removePaymentnotification,
       removeLanguagenotification, removeDocumentnotification, removeCasenotification,
       Orders, Recordtypes, Courthauses, Courts, Definedcompanies,
-      Definedcostumers, Translators, Kdvs, Payments, Languages, Documents, Cases
+      Definedcostumers, Translators, Kdvs, Payments, Languages, Documents, Cases, location
     } = this.props
     Notification(Orders.notifications, removeOrdernotification, this.context.clearForm)
     Notification(Recordtypes.notifications, removeRecordtypenotification, this.context.clearForm)
@@ -104,6 +105,90 @@ export default class OrdersCreate extends Component {
     Notification(Documents.notifications, removeDocumentnotification, this.context.clearForm)
     Notification(Cases.notifications, removeCasenotification, this.context.clearForm)
 
+    const isLoading = Recordtypes.isLoading || Recordtypes.isDispatching ||
+      Courthauses.isLoading || Courthauses.isDispatching ||
+      Courts.isLoading || Courts.isDispatching ||
+      Definedcompanies.isLoading || Definedcompanies.isDispatching ||
+      Definedcostumers.isLoading || Definedcostumers.isDispatching ||
+      Payments.isLoading || Payments.isDispatching ||
+      Languages.isLoading || Languages.isDispatching ||
+      Documents.isLoading || Documents.isDispatching ||
+      Cases.isLoading || Cases.isDispatching ||
+      Kdvs.isLoading || Kdvs.isDispatching
+
+    if (!isLoading && !this.state.isDatafetched) {
+
+      const defaultdirectivecourthause = (Courthauses.list || []).find(u => u.Isdefaultdirective)
+      const defaultprinciblecourthause = (Courthauses.list || []).find(u => u.Isdefaultprincible)
+      const defaultdirectivecourt = (Courts.list || []).find(u => u.Isdefaultdirective)
+      const defaultprinciblecourt = (Courts.list || []).find(u => u.Isdefaultprincible)
+      const defaulttranslator = (Translators.list || []).find(u => u.Isdefaulttranslator)
+      const defaultpayment = (Payments.list || []).find(u => u.Isdefaultpayment)
+      const defaultkdv = (Kdvs.list || []).find(u => u.Isdefaultkdv)
+      const defaultpassivecase = (Cases.list || []).find(u => u.Isdefaultpassivecase)
+
+      const search = new URLSearchParams(location.search)
+      const recordTypeUuid = search.get('recordType') ? search.get('recordType') : ''
+      const recordtypeConfigrawObject = Recordtypes.list.find(u => u.Uuid === recordTypeUuid)?.Config
+      let recordtypeJson = null
+      try {
+        recordtypeJson = JSON.parse(recordtypeConfigrawObject)
+      } catch (err) {
+      }
+      const recordtypeConfig = recordtypeJson && recordtypeJson?.visible
+      const DirectivecourthauseIDstate = (defaultdirectivecourthause && (recordtypeConfig ? validator.isBoolean(recordtypeConfig["DirectivecourthauseID"]) ? recordtypeConfig["DirectivecourthauseID"] : true : true))
+      const PrinciblecourthauseIDstate = (defaultprinciblecourthause && (recordtypeConfig ? validator.isBoolean(recordtypeConfig["PrinciblecourthauseID"]) ? recordtypeConfig["PrinciblecourthauseID"] : true : true))
+      const PrinciblecourtIDstate = (defaultdirectivecourt && (recordtypeConfig ? validator.isBoolean(recordtypeConfig["PrinciblecourtID"]) ? recordtypeConfig["PrinciblecourtID"] : true : true))
+      const DirectivecourtIDstate = (defaultprinciblecourt && (recordtypeConfig ? validator.isBoolean(recordtypeConfig["DirectivecourtID"]) ? recordtypeConfig["DirectivecourtID"] : true : true))
+      const TranslatorIDstate = (defaulttranslator && (recordtypeConfig ? validator.isBoolean(recordtypeConfig["TranslatorID"]) ? recordtypeConfig["TranslatorID"] : true : true))
+      const PaymentIDstate = (defaultpayment && (recordtypeConfig ? validator.isBoolean(recordtypeConfig["PaymentID"]) ? recordtypeConfig["PaymentID"] : true : true))
+      const KdvIDstate = (defaultkdv && (recordtypeConfig ? validator.isBoolean(recordtypeConfig["KdvID"]) ? recordtypeConfig["KdvID"] : true : true))
+      const CaseIDstate = (defaultpassivecase && (recordtypeConfig ? validator.isBoolean(recordtypeConfig["CaseID"]) ? recordtypeConfig["CaseID"] : true : true))
+
+      this.context.setFormstates({
+        ...this.context.formstates,
+        [`${this.PAGE_NAME}/DirectivecourthauseID`]: DirectivecourthauseIDstate ? defaultdirectivecourthause.Uuid : '',
+        [`${this.PAGE_NAME}/PrinciblecourthauseID`]: PrinciblecourthauseIDstate ? defaultprinciblecourthause.Uuid : '',
+        [`${this.PAGE_NAME}/PrinciblecourtID`]: PrinciblecourtIDstate ? defaultdirectivecourt.Uuid : '',
+        [`${this.PAGE_NAME}/DirectivecourtID`]: DirectivecourtIDstate ? defaultprinciblecourt.Uuid : '',
+        [`${this.PAGE_NAME}/TranslatorID`]: TranslatorIDstate ? defaulttranslator.Uuid : '',
+        [`${this.PAGE_NAME}/PaymentID`]: PaymentIDstate ? defaultpayment.Uuid : '',
+        [`${this.PAGE_NAME}/KdvID`]: KdvIDstate ? defaultkdv.Uuid : '',
+        [`${this.PAGE_NAME}/CaseID`]: CaseIDstate ? defaultpassivecase.Uuid : '',
+      })
+      this.setState({ isDatafetched: true })
+    }
+   /*  if (this.arraysOfObjectsAreEqual(states.selectedJobs, this.state.selectedJobs)) {
+      console.log("eşit")
+    } else {
+      console.log("değil")
+
+    } */
+
+    this.setState((prestates)=>{
+      console.log('prestates: ', prestates);
+     /*  return {
+
+      } */
+    });
+  }
+
+  arraysOfObjectsAreEqual = (oldarray, newarray) => {
+    if (oldarray.length !== newarray.length) {
+      return false;
+    }
+    for (let index = 0; index < newarray.length; index++) {
+      const arrobjects = Object.keys(newarray[index])
+
+      for (const object of arrobjects) {
+        console.log('newarray[index][object]: ', newarray[index][object]);
+        console.log('oldarray[index][object]: ', oldarray[index][object]);
+        if (newarray[index][object] !== oldarray[index][object]) {
+          return false
+        }
+      }
+    }
+    return true;
   }
 
   render() {
@@ -225,36 +310,36 @@ export default class OrdersCreate extends Component {
                             {!validator.isString(recordTypename) && <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Recordtype[Profile.Language]} name="RecordtypeID" options={Recordtypeoption} formtype='dropdown' modal={addModal(<RecordtypesCreate />)} />}
                           </Form.Group>
                           <Form.Group widths={'equal'}>
-                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Princiblecourthause[Profile.Language]} name="PrinciblecourthauseID" options={Courthauseoption} formtype='dropdown' modal={addModal(<CourthausesCreate />)} />
-                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Princiblecourt[Profile.Language]} name="PrinciblecourtID" options={Courtoption} formtype='dropdown' modal={addModal(<CourtsCreate />)} />
-                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Princibleno[Profile.Language]} name="Princibleno" />
-                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Desicionno[Profile.Language]} name="Desicionno" />
+                            <FormInput visible={this.Checkvisiblestatus('PrinciblecourthauseID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Princiblecourthause[Profile.Language]} name="PrinciblecourthauseID" options={Courthauseoption} formtype='dropdown' modal={addModal(<CourthausesCreate />)} />
+                            <FormInput visible={this.Checkvisiblestatus('PrinciblecourtID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Princiblecourt[Profile.Language]} name="PrinciblecourtID" options={Courtoption} formtype='dropdown' modal={addModal(<CourtsCreate />)} />
+                            <FormInput visible={this.Checkvisiblestatus('Princibleno')} page={this.PAGE_NAME} placeholder={Literals.Columns.Princibleno[Profile.Language]} name="Princibleno" />
+                            <FormInput visible={this.Checkvisiblestatus('Desicionno')} page={this.PAGE_NAME} placeholder={Literals.Columns.Desicionno[Profile.Language]} name="Desicionno" />
                           </Form.Group>
                           <Form.Group widths={'equal'}>
-                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Directivecourthause[Profile.Language]} name="DirectivecourthauseID" options={Courthauseoption} formtype='dropdown' modal={addModal(<CourthausesCreate />)} />
-                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Directivecourt[Profile.Language]} name="DirectivecourtID" options={Courtoption} formtype='dropdown' modal={addModal(<CourtsCreate />)} />
-                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Directiveno[Profile.Language]} name="Directiveno" />
-                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Directiveinfo[Profile.Language]} name="Directiveinfo" />
+                            <FormInput visible={this.Checkvisiblestatus('DirectivecourthauseID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Directivecourthause[Profile.Language]} name="DirectivecourthauseID" options={Courthauseoption} formtype='dropdown' modal={addModal(<CourthausesCreate />)} />
+                            <FormInput visible={this.Checkvisiblestatus('DirectivecourtID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Directivecourt[Profile.Language]} name="DirectivecourtID" options={Courtoption} formtype='dropdown' modal={addModal(<CourtsCreate />)} />
+                            <FormInput visible={this.Checkvisiblestatus('Directiveno')} page={this.PAGE_NAME} placeholder={Literals.Columns.Directiveno[Profile.Language]} name="Directiveno" />
+                            <FormInput visible={this.Checkvisiblestatus('Directiveinfo')} page={this.PAGE_NAME} placeholder={Literals.Columns.Directiveinfo[Profile.Language]} name="Directiveinfo" />
                           </Form.Group>
                           <Form.Group widths={'equal'}>
-                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Company[Profile.Language]} name="CompanyID" options={Definedcompanyoption} formtype='dropdown' modal={addModal(<DefinedcompaniesCreate />)} />
-                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Costumer[Profile.Language]} name="CostumerID" options={Definedcostumeroption} formtype='dropdown' modal={addModal(<DefinedcostumersCreate />)} />
+                            <FormInput visible={this.Checkvisiblestatus('CompanyID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Company[Profile.Language]} name="CompanyID" options={Definedcompanyoption} formtype='dropdown' modal={addModal(<DefinedcompaniesCreate />)} />
+                            <FormInput visible={this.Checkvisiblestatus('CostumerID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Costumer[Profile.Language]} name="CostumerID" options={Definedcostumeroption} formtype='dropdown' modal={addModal(<DefinedcostumersCreate />)} />
                           </Form.Group>
                           <Form.Group widths={'equal'}>
-                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Registerdate[Profile.Language]} name="Registerdate" type='date' />
-                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Deliverydate[Profile.Language]} name="Deliverydate" type='date' />
+                            <FormInput visible={this.Checkvisiblestatus('Registerdate')} page={this.PAGE_NAME} placeholder={Literals.Columns.Registerdate[Profile.Language]} name="Registerdate" type='date' />
+                            <FormInput visible={this.Checkvisiblestatus('Deliverydate')} page={this.PAGE_NAME} placeholder={Literals.Columns.Deliverydate[Profile.Language]} name="Deliverydate" type='date' />
                           </Form.Group>
                           <Form.Group widths={'equal'}>
-                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Prepayment[Profile.Language]} name="Prepayment" type='number' step='0.01' display='try' />
-                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Notaryexpense[Profile.Language]} name="Notaryexpense" type='number' step='0.01' display='try' />
-                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Netprice[Profile.Language]} name="Netprice" type='number' step='0.01' display='try' />
-                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Calculatedprice[Profile.Language]} name="Calculatedprice" type='number' step='0.01' display='try' />
+                            <FormInput visible={this.Checkvisiblestatus('Prepayment')} page={this.PAGE_NAME} placeholder={Literals.Columns.Prepayment[Profile.Language]} name="Prepayment" type='number' step='0.01' display='try' />
+                            <FormInput visible={this.Checkvisiblestatus('Notaryexpense')} page={this.PAGE_NAME} placeholder={Literals.Columns.Notaryexpense[Profile.Language]} name="Notaryexpense" type='number' step='0.01' display='try' />
+                            <FormInput visible={this.Checkvisiblestatus('Netprice')} page={this.PAGE_NAME} placeholder={Literals.Columns.Netprice[Profile.Language]} name="Netprice" type='number' step='0.01' display='try' />
+                            <FormInput visible={this.Checkvisiblestatus('Calculatedprice')} page={this.PAGE_NAME} placeholder={Literals.Columns.Calculatedprice[Profile.Language]} name="Calculatedprice" type='number' step='0.01' display='try' />
                           </Form.Group>
                           <Form.Group widths={'equal'}>
-                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Translator[Profile.Language]} name="TranslatorID" options={Translatoroption} formtype='dropdown' modal={addModal(<TranslatorsCreate />)} />
-                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Kdv[Profile.Language]} name="KdvID" options={Kdvoption} formtype='dropdown' modal={addModal(<KdvsCreate />)} />
-                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Payment[Profile.Language]} name="PaymentID" options={Paymentoption} formtype='dropdown' modal={addModal(<PaymentsCreate />)} />
-                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Case[Profile.Language]} name="CaseID" options={Caseoption} formtype='dropdown' modal={addModal(<CasesCreate />)} />
+                            <FormInput visible={this.Checkvisiblestatus('TranslatorID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Translator[Profile.Language]} name="TranslatorID" options={Translatoroption} formtype='dropdown' modal={addModal(<TranslatorsCreate />)} />
+                            <FormInput visible={this.Checkvisiblestatus('KdvID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Kdv[Profile.Language]} name="KdvID" options={Kdvoption} formtype='dropdown' modal={addModal(<KdvsCreate />)} />
+                            <FormInput visible={this.Checkvisiblestatus('PaymentID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Payment[Profile.Language]} name="PaymentID" options={Paymentoption} formtype='dropdown' modal={addModal(<PaymentsCreate />)} />
+                            <FormInput visible={this.Checkvisiblestatus('CaseID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Case[Profile.Language]} name="CaseID" options={Caseoption} formtype='dropdown' modal={addModal(<CasesCreate />)} />
                           </Form.Group>
                         </div>
                       </React.Fragment>
@@ -550,17 +635,26 @@ export default class OrdersCreate extends Component {
   }
 
   AddNewJob = () => {
+
+    const { Documents, Languages, Cases } = this.props
+
+    const defaultDocument = (Documents.list || []).find(u => u.Isdefaultdocument)
+    const defaultTargetlanguage = (Languages.list || []).find(u => u.Isdefaulttarget)
+    const defaultSourcelanguage = (Languages.list || []).find(u => u.Isdefaultsource)
+    const defaultPassivecase = (Cases.list || []).find(u => u.Isdefaultpassivecase)
+    const language = (Languages.list || []).find(u => u.Uuid === defaultTargetlanguage?.Uuid)
+
     this.setState({
       selectedJobs: [...this.state.selectedJobs,
       {
         OrderID: '',
         Jobno: '',
-        SourcelanguageID: '',
-        TargetlanguageID: '',
-        DocumentID: '',
+        SourcelanguageID: defaultTargetlanguage ? defaultTargetlanguage.Uuid : '',
+        TargetlanguageID: defaultSourcelanguage ? defaultSourcelanguage.Uuid : '',
+        DocumentID: defaultDocument ? defaultDocument.Uuid : '',
         Amount: 1,
-        Price: 0,
-        CaseID: '',
+        Price: language ? language.Price : 0,
+        CaseID: defaultPassivecase ? defaultPassivecase.Uuid : '',
         Info: '',
         key: Math.random(),
         Wordcount: 0,
@@ -592,11 +686,16 @@ export default class OrdersCreate extends Component {
   }
 
   selectedJobChangeHandler = (key, property, value) => {
+    const { Languages } = this.props
     let jobRoutes = this.state.selectedJobs
     const index = jobRoutes.findIndex(jobroute => jobroute.key === key)
     if (property === 'Order') {
       jobRoutes.filter(jobroute => jobroute.Order === value)
         .forEach((jobroute) => jobroute.Order = jobRoutes[index].Order > value ? jobroute.Order + 1 : jobroute.Order - 1)
+    }
+    if (property === 'TargetlanguageID') {
+      const language = (Languages.list || []).find(u => u.Uuid === jobRoutes[index][property])
+      language && (jobRoutes[index]["Price"] = language.Price * jobRoutes[index]["Amount"])
     }
     jobRoutes[index][property] = value
     this.setState({ selectedJobs: jobRoutes }, () => {
@@ -709,6 +808,26 @@ export default class OrdersCreate extends Component {
       }
     }
     return arrayObj
+  }
+
+  Checkvisiblestatus = (name) => {
+    const { location, Recordtypes } = this.props
+    const search = new URLSearchParams(location.search)
+    const recordTypeUuid = search.get('recordType') ? search.get('recordType') : ''
+    const recordtypeConfigrawObject = Recordtypes.list.find(u => u.Uuid === recordTypeUuid)?.Config
+    if (!recordtypeConfigrawObject) {
+      return true
+    }
+    let recordtypeJson = null
+    try {
+      recordtypeJson = JSON.parse(recordtypeConfigrawObject)
+    } catch (err) {
+    }
+    const recordtypeConfig = recordtypeJson && recordtypeJson?.visible
+    if (!recordtypeConfig) {
+      return true
+    }
+    return validator.isBoolean(recordtypeConfig[name]) ? recordtypeConfig[name] : true
   }
 
 }

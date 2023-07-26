@@ -37,6 +37,8 @@ export default class Courts extends Component {
       { Header: Literals.Columns.Id[Profile.Language], accessor: 'Id', sortable: true, canGroupBy: true, canFilter: true, },
       { Header: Literals.Columns.Uuid[Profile.Language], accessor: 'Uuid', sortable: true, canGroupBy: true, canFilter: true, },
       { Header: Literals.Columns.Name[Profile.Language], accessor: 'Name', sortable: true, canGroupBy: true, canFilter: true },
+      { Header: Literals.Columns.Isdefaultprincible[Profile.Language], accessor: 'Isdefaultprincible', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.boolCellhandler(col) },
+      { Header: Literals.Columns.Isdefaultdirective[Profile.Language], accessor: 'Isdefaultdirective', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.boolCellhandler(col) },
       { Header: Literals.Columns.Createduser[Profile.Language], accessor: 'Createduser', sortable: true, canGroupBy: true, canFilter: true, },
       { Header: Literals.Columns.Updateduser[Profile.Language], accessor: 'Updateduser', sortable: true, canGroupBy: true, canFilter: true, },
       { Header: Literals.Columns.Createtime[Profile.Language], accessor: 'Createtime', sortable: true, canGroupBy: true, canFilter: true, },
@@ -105,5 +107,9 @@ export default class Courts extends Component {
           <CourtsDelete />
         </React.Fragment >
     )
+  }
+  boolCellhandler = (col) => {
+    const { Profile } = this.props
+    return col.value !== null && (col.value ? Literals.Messages.Yes[Profile.Language] : Literals.Messages.No[Profile.Language])
   }
 }

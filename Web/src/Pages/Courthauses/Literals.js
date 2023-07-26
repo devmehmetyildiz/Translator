@@ -15,6 +15,14 @@ const Literals = {
             tr: 'Adliye Adı',
             en: 'Courthause Name'
         },
+        Isdefaultdirective: {
+            tr: 'Varsayılan Talimat mı?',
+            en: 'Is Default Directive?'
+        },
+        Isdefaultprincible: {
+            tr: 'Varsayılan Esas mı?',
+            en: 'Is default Princible?'
+        },
         Createduser: {
             tr: 'Oluşturan Kullanıcı',
             en: 'Created User'
@@ -103,6 +111,14 @@ const Literals = {
             tr: "İsim Gerekli",
             en: "Name Required"
         },
+        Yes: {
+            tr: "EVET",
+            en: "YES"
+        },
+        No: {
+            tr: "HAYIR",
+            en: "NO"
+        }
     }
 }
 

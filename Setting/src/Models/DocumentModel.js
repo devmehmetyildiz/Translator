@@ -10,6 +10,10 @@ module.exports = sequelize.define('documentModel', {
     Name: {
         type: Sequelize.STRING
     },
+    Isdefaultdocument: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
+    },
     Createduser: {
         type: Sequelize.STRING
     },

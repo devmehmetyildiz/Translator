@@ -247,36 +247,36 @@ export default class OrdersEdit extends Component {
                             <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Recordtype[Profile.Language]} name="RecordtypeID" options={Recordtypeoption} formtype='dropdown' modal={addModal(<RecordtypesCreate />)} />
                           </Form.Group>
                           <Form.Group widths={'equal'}>
-                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Princiblecourthause[Profile.Language]} name="PrinciblecourthauseID" options={Courthauseoption} formtype='dropdown' modal={addModal(<CourthausesCreate />)} />
-                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Princiblecourt[Profile.Language]} name="PrinciblecourtID" options={Courtoption} formtype='dropdown' modal={addModal(<CourtsCreate />)} />
-                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Princibleno[Profile.Language]} name="Princibleno" />
-                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Desicionno[Profile.Language]} name="Desicionno" />
+                            <FormInput visible={this.Checkvisiblestatus('PrinciblecourthauseID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Princiblecourthause[Profile.Language]} name="PrinciblecourthauseID" options={Courthauseoption} formtype='dropdown' modal={addModal(<CourthausesCreate />)} />
+                            <FormInput visible={this.Checkvisiblestatus('PrinciblecourtID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Princiblecourt[Profile.Language]} name="PrinciblecourtID" options={Courtoption} formtype='dropdown' modal={addModal(<CourtsCreate />)} />
+                            <FormInput visible={this.Checkvisiblestatus('Princibleno')} page={this.PAGE_NAME} placeholder={Literals.Columns.Princibleno[Profile.Language]} name="Princibleno" />
+                            <FormInput visible={this.Checkvisiblestatus('Desicionno')} page={this.PAGE_NAME} placeholder={Literals.Columns.Desicionno[Profile.Language]} name="Desicionno" />
                           </Form.Group>
                           <Form.Group widths={'equal'}>
-                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Directivecourthause[Profile.Language]} name="DirectivecourthauseID" options={Courthauseoption} formtype='dropdown' modal={addModal(<CourthausesCreate />)} />
-                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Directivecourt[Profile.Language]} name="DirectivecourtID" options={Courtoption} formtype='dropdown' modal={addModal(<CourtsCreate />)} />
-                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Directiveno[Profile.Language]} name="Directiveno" />
-                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Directiveinfo[Profile.Language]} name="Directiveinfo" />
+                            <FormInput visible={this.Checkvisiblestatus('DirectivecourthauseID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Directivecourthause[Profile.Language]} name="DirectivecourthauseID" options={Courthauseoption} formtype='dropdown' modal={addModal(<CourthausesCreate />)} />
+                            <FormInput visible={this.Checkvisiblestatus('DirectivecourtID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Directivecourt[Profile.Language]} name="DirectivecourtID" options={Courtoption} formtype='dropdown' modal={addModal(<CourtsCreate />)} />
+                            <FormInput visible={this.Checkvisiblestatus('Directiveno')} page={this.PAGE_NAME} placeholder={Literals.Columns.Directiveno[Profile.Language]} name="Directiveno" />
+                            <FormInput visible={this.Checkvisiblestatus('Directiveinfo')} page={this.PAGE_NAME} placeholder={Literals.Columns.Directiveinfo[Profile.Language]} name="Directiveinfo" />
                           </Form.Group>
                           <Form.Group widths={'equal'}>
-                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Company[Profile.Language]} name="CompanyID" options={Definedcompanyoption} formtype='dropdown' modal={addModal(<DefinedcompaniesCreate />)} />
-                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Costumer[Profile.Language]} name="CostumerID" options={Definedcostumeroption} formtype='dropdown' modal={addModal(<DefinedcostumersCreate />)} />
+                            <FormInput visible={this.Checkvisiblestatus('CompanyID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Company[Profile.Language]} name="CompanyID" options={Definedcompanyoption} formtype='dropdown' modal={addModal(<DefinedcompaniesCreate />)} />
+                            <FormInput visible={this.Checkvisiblestatus('CostumerID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Costumer[Profile.Language]} name="CostumerID" options={Definedcostumeroption} formtype='dropdown' modal={addModal(<DefinedcostumersCreate />)} />
                           </Form.Group>
                           <Form.Group widths={'equal'}>
-                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Registerdate[Profile.Language]} name="Registerdate" type='date' />
-                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Deliverydate[Profile.Language]} name="Deliverydate" type='date' />
+                            <FormInput visible={this.Checkvisiblestatus('Registerdate')} page={this.PAGE_NAME} placeholder={Literals.Columns.Registerdate[Profile.Language]} name="Registerdate" type='date' />
+                            <FormInput visible={this.Checkvisiblestatus('Deliverydate')} page={this.PAGE_NAME} placeholder={Literals.Columns.Deliverydate[Profile.Language]} name="Deliverydate" type='date' />
                           </Form.Group>
                           <Form.Group widths={'equal'}>
-                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Prepayment[Profile.Language]} name="Prepayment" type='number' step='0.01' />
-                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Notaryexpense[Profile.Language]} name="Notaryexpense" type='number' step='0.01' />
-                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Netprice[Profile.Language]} name="Netprice" type='number' step='0.01' />
-                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Calculatedprice[Profile.Language]} name="Calculatedprice" type='number' step='0.01' />
+                            <FormInput visible={this.Checkvisiblestatus('Prepayment')} page={this.PAGE_NAME} placeholder={Literals.Columns.Prepayment[Profile.Language]} name="Prepayment" type='number' step='0.01' display='try' />
+                            <FormInput visible={this.Checkvisiblestatus('Notaryexpense')} page={this.PAGE_NAME} placeholder={Literals.Columns.Notaryexpense[Profile.Language]} name="Notaryexpense" type='number' step='0.01' display='try' />
+                            <FormInput visible={this.Checkvisiblestatus('Netprice')} page={this.PAGE_NAME} placeholder={Literals.Columns.Netprice[Profile.Language]} name="Netprice" type='number' step='0.01' display='try' />
+                            <FormInput visible={this.Checkvisiblestatus('Calculatedprice')} page={this.PAGE_NAME} placeholder={Literals.Columns.Calculatedprice[Profile.Language]} name="Calculatedprice" type='number' step='0.01' display='try' />
                           </Form.Group>
                           <Form.Group widths={'equal'}>
-                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Translator[Profile.Language]} name="TranslatorID" options={Translatoroption} formtype='dropdown' modal={addModal(<TranslatorsCreate />)} />
-                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Kdv[Profile.Language]} name="KdvID" options={Kdvoption} formtype='dropdown' modal={addModal(<KdvsCreate />)} />
-                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Payment[Profile.Language]} name="PaymentID" options={Paymentoption} formtype='dropdown' modal={addModal(<PaymentsCreate />)} />
-                            <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Case[Profile.Language]} name="CaseID" options={Caseoption} formtype='dropdown' modal={addModal(<CasesCreate />)} />
+                            <FormInput visible={this.Checkvisiblestatus('TranslatorID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Translator[Profile.Language]} name="TranslatorID" options={Translatoroption} formtype='dropdown' modal={addModal(<TranslatorsCreate />)} />
+                            <FormInput visible={this.Checkvisiblestatus('KdvID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Kdv[Profile.Language]} name="KdvID" options={Kdvoption} formtype='dropdown' modal={addModal(<KdvsCreate />)} />
+                            <FormInput visible={this.Checkvisiblestatus('PaymentID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Payment[Profile.Language]} name="PaymentID" options={Paymentoption} formtype='dropdown' modal={addModal(<PaymentsCreate />)} />
+                            <FormInput visible={this.Checkvisiblestatus('CaseID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Case[Profile.Language]} name="CaseID" options={Caseoption} formtype='dropdown' modal={addModal(<CasesCreate />)} />
                           </Form.Group>
                         </div>
                       </React.Fragment>
@@ -732,5 +732,24 @@ export default class OrdersEdit extends Component {
     }
   }
 
+  Checkvisiblestatus = (name) => {
+    const { location, Recordtypes } = this.props
+    const search = new URLSearchParams(location.search)
+    const recordTypeUuid = search.get('recordType') ? search.get('recordType') : ''
+    const recordtypeConfigrawObject = Recordtypes.list.find(u => u.Uuid === recordTypeUuid)?.Config
+    if (!recordtypeConfigrawObject) {
+      return true
+    }
+    let recordtypeJson = null
+    try {
+      recordtypeJson = JSON.parse(recordtypeConfigrawObject)
+    } catch (err) {
+    }
+    const recordtypeConfig = recordtypeJson && recordtypeJson?.visible
+    if (!recordtypeConfig) {
+      return true
+    }
+    return validator.isBoolean(recordtypeConfig[name]) ? recordtypeConfig[name] : true
+  }
 }
 OrdersEdit.contextType = FormContext

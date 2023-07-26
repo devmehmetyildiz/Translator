@@ -47,6 +47,14 @@ const Literals = {
             tr: 'Sil',
             en: 'Delete'
         },
+        Savescreen: {
+            tr: 'Kayıt',
+            en: 'Save'
+        },
+        Configscreen: {
+            tr: 'Ayarlar',
+            en: 'Configs'
+        },
     },
     Page: {
         Pageheader: {

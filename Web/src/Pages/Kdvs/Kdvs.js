@@ -37,6 +37,7 @@ export default class Kdvs extends Component {
             { Header: Literals.Columns.Uuid[Profile.Language], accessor: 'Uuid', sortable: true, canGroupBy: true, canFilter: true, },
             { Header: Literals.Columns.Name[Profile.Language], accessor: 'Name', sortable: true, canGroupBy: true, canFilter: true },
             { Header: Literals.Columns.Percent[Profile.Language], accessor: 'Percent', sortable: true, canGroupBy: true, canFilter: true, Cell: col => { return col.value + '%' } },
+            { Header: Literals.Columns.Isdefaultkdv[Profile.Language], accessor: 'Isdefaultkdv', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.boolCellhandler(col) },
             { Header: Literals.Columns.Createduser[Profile.Language], accessor: 'Createduser', sortable: true, canGroupBy: true, canFilter: true, },
             { Header: Literals.Columns.Updateduser[Profile.Language], accessor: 'Updateduser', sortable: true, canGroupBy: true, canFilter: true, },
             { Header: Literals.Columns.Createtime[Profile.Language], accessor: 'Createtime', sortable: true, canGroupBy: true, canFilter: true, },
@@ -54,9 +55,9 @@ export default class Kdvs extends Component {
                 return item.key
             }) : [],
             groupBy: tableMeta ? JSON.parse(tableMeta.Config).filter(u => u.isGroup === true).map(item => {
-              return item.key
+                return item.key
             }) : [],
-          };
+        };
 
         const list = (Kdvs.list || []).map(item => {
 
@@ -105,5 +106,10 @@ export default class Kdvs extends Component {
                     <KdvsDelete />
                 </React.Fragment >
         )
+    }
+
+    boolCellhandler = (col) => {
+        const { Profile } = this.props
+        return col.value !== null && (col.value ? Literals.Messages.Yes[Profile.Language] : Literals.Messages.No[Profile.Language])
     }
 }

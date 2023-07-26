@@ -322,3 +322,7 @@ input::-webkit-inner-spin-button {
 .ui.button {
   margin: 2px !important;
 }
+
+.equal.width.fields:empty {
+  margin: 0;
+}

@@ -19,6 +19,10 @@ const Literals = {
             tr: 'Bağlı Kullanıcı',
             en: 'Connected User'
         },
+        Isdefaulttranslator: {
+            tr: 'Varsayılan çevirmen mi?',
+            en: 'Is Default Translator?'
+        },
         Createduser: {
             tr: 'Oluşturan Kullanıcı',
             en: 'Created User'
@@ -105,6 +109,14 @@ const Literals = {
             tr: "Bağlı Kullanıcı Gerekli",
             en: "Connected User Required"
         },
+        Yes: {
+            tr: "EVET",
+            en: "YES"
+        },
+        No: {
+            tr: "HAYIR",
+            en: "NO"
+        }
     }
 }
 

@@ -15,6 +15,10 @@ const Literals = {
             tr: 'Ödeme yöntem adı',
             en: 'Payment Name'
         },
+        Isdefaultpayment: {
+            tr: 'Varsayılan Ödeme Yönte mi?',
+            en: 'Is default Payment type?'
+        },
         Createduser: {
             tr: 'Oluşturan Kullanıcı',
             en: 'Created User'
@@ -97,6 +101,14 @@ const Literals = {
             tr: "İsim Gerekli",
             en: "Name Required"
         },
+        Yes: {
+            tr: "EVET",
+            en: "YES"
+        },
+        No: {
+            tr: "HAYIR",
+            en: "NO"
+        }
     }
 }
 

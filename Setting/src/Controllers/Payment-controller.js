@@ -58,6 +58,7 @@ async function AddPayment(req, res, next) {
     let validationErrors = []
     const {
         Name,
+        Isdefaultpayment
     } = req.body
 
     if (!validator.isString(Name)) {
@@ -73,6 +74,19 @@ async function AddPayment(req, res, next) {
     const t = await db.sequelize.transaction();
 
     try {
+
+        if (Isdefaultpayment) {
+            const payments = await db.paymentModel.findAll({ where: { Isactive: true } })
+            for (const payment of payments) {
+                await db.paymentModel.update({
+                    ...payment,
+                    Isdefaultpayment: Isdefaultpayment ? false : payment.Isdefaultpayment,
+                    Updateduser: "System",
+                    Updatetime: new Date(),
+                }, { where: { Uuid: payment.Uuid } }, { transaction: t })
+            }
+        }
+
         await db.paymentModel.create({
             ...req.body,
             Uuid: paymentuuid,
@@ -96,6 +110,7 @@ async function AddArrayPayment(req, res, next) {
             for (const data of req.body) {
                 const {
                     Name,
+                    Isdefaultpayment
                 } = data
 
                 if (!validator.isString(Name)) {
@@ -104,6 +119,18 @@ async function AddArrayPayment(req, res, next) {
 
                 if (validationErrors.length > 0) {
                     return next(createValidationError(validationErrors, req.language))
+                }
+
+                if (Isdefaultpayment) {
+                    const payments = await db.paymentModel.findAll({ where: { Isactive: true } })
+                    for (const payment of payments) {
+                        await db.paymentModel.update({
+                            ...payment,
+                            Isdefaultpayment: Isdefaultpayment ? false : payment.Isdefaultpayment,
+                            Updateduser: "System",
+                            Updatetime: new Date(),
+                        }, { where: { Uuid: payment.Uuid } }, { transaction: t })
+                    }
                 }
 
                 let paymentuuid = uuid()
@@ -131,7 +158,8 @@ async function UpdatePayment(req, res, next) {
     let validationErrors = []
     const {
         Name,
-        Uuid
+        Uuid,
+        Isdefaultpayment
     } = req.body
 
     if (!validator.isString(Name)) {
@@ -155,6 +183,18 @@ async function UpdatePayment(req, res, next) {
         }
         if (payment.Isactive === false) {
             return next(createAccessDenied([messages.ERROR.PAYMENT_NOT_ACTIVE], req.language))
+        }
+
+        if (Isdefaultpayment) {
+            const allpayments = await db.paymentModel.findAll({ where: { Isactive: true } })
+            for (const paymentdata of allpayments) {
+                await db.paymentModel.update({
+                    ...paymentdata,
+                    Isdefaultpayment: Isdefaultpayment ? false : paymentdata.Isdefaultpayment,
+                    Updateduser: "System",
+                    Updatetime: new Date(),
+                }, { where: { Uuid: paymentdata.Uuid } }, { transaction: t })
+            }
         }
 
         await db.paymentModel.update({

@@ -10,6 +10,14 @@ module.exports = sequelize.define('courtModel', {
     Name: {
         type: Sequelize.STRING
     },
+    Isdefaultdirective: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
+    },
+    Isdefaultprincible: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
+    },
     Createduser: {
         type: Sequelize.STRING
     },

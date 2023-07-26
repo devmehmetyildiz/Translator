@@ -44,6 +44,18 @@ const Literals = {
             tr: 'Departmanlar',
             en: 'Departments'
         },
+        Isdefaultpassivecase: {
+            tr: 'Varsayılan Pasif Durum mu?',
+            en: 'Is default passive case'
+        },
+        Isdefaultendcase: {
+            tr: 'Varsayılan Bitirme Durum mu?',
+            en: 'Is default End case'
+        },
+        Isdefaultcancelcase: {
+            tr: 'Varsayılan İptal Durum mu?',
+            en: 'Is default cancel case'
+        },
         Createduser: {
             tr: 'Oluşturan Kullanıcı',
             en: 'Created User'
@@ -143,7 +155,14 @@ const Literals = {
             tr: "Durum Rengi Gerekli",
             en: "Case color Required"
         },
-
+        Yes: {
+            tr: "EVET",
+            en: "YES"
+        },
+        No: {
+            tr: "HAYIR",
+            en: "NO"
+        }
     }
 }
 

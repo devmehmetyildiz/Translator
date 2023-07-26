@@ -22,6 +22,7 @@ export default class CasesCreate extends Component {
   componentDidUpdate() {
     const { Cases, removeCasenotification } = this.props
     Notification(Cases.notifications, removeCasenotification, this.context.clearForm)
+    this.Checkvalues()
   }
 
   render() {
@@ -68,6 +69,11 @@ export default class CasesCreate extends Component {
                 <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Casecolor[Profile.Language]} name="Casecolor" attention="blue,red,green..." />
                 <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.CaseStatus[Profile.Language]} options={casestatusOption} name='CaseStatus' formtype="dropdown" />
               </Form.Group>
+              <Form.Group widths='equal'>
+                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Isdefaultcancelcase[Profile.Language]} name="Isdefaultcancelcase" formtype="checkbox" />
+                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Isdefaultendcase[Profile.Language]} name='Isdefaultendcase' formtype="checkbox" />
+                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Isdefaultpassivecase[Profile.Language]} name='Isdefaultpassivecase' formtype="checkbox" />
+              </Form.Group>
               <Footerwrapper>
                 <Form.Group widths={'equal'}>
                   {history && <Link to="/Cases">
@@ -88,6 +94,9 @@ export default class CasesCreate extends Component {
     const { AddCases, history, fillCasenotification, Profile } = this.props
     const data = formToObject(e.target)
     data.CaseStatus = this.context.formstates[`${this.PAGE_NAME}/CaseStatus`]
+    data.Isdefaultcancelcase = this.context.formstates[`${this.PAGE_NAME}/Isdefaultcancelcase`]
+    data.Isdefaultendcase = this.context.formstates[`${this.PAGE_NAME}/Isdefaultendcase`]
+    data.Isdefaultpassivecase = this.context.formstates[`${this.PAGE_NAME}/Isdefaultpassivecase`]
 
     let errors = []
     if (!validator.isString(data.Name)) {
@@ -108,6 +117,22 @@ export default class CasesCreate extends Component {
       })
     } else {
       AddCases({ data, history })
+    }
+  }
+
+  Checkvalues = () => {
+    const CaseStatus = this.context.formstates[`${this.PAGE_NAME}/CaseStatus`]
+    const Isdefaultcancelcase = this.context.formstates[`${this.PAGE_NAME}/Isdefaultcancelcase`]
+    const Isdefaultendcase = this.context.formstates[`${this.PAGE_NAME}/Isdefaultendcase`]
+    const Isdefaultpassivecase = this.context.formstates[`${this.PAGE_NAME}/Isdefaultpassivecase`]
+    if (CaseStatus !== 1 && Isdefaultendcase) {
+      this.context.setFormstates({ ...this.context.formstates, [`${this.PAGE_NAME}/Isdefaultendcase`]: false })
+    }
+    if (CaseStatus !== 0 && Isdefaultpassivecase) {
+      this.context.setFormstates({ ...this.context.formstates, [`${this.PAGE_NAME}/Isdefaultpassivecase`]: false })
+    }
+    if (CaseStatus !== -1 && Isdefaultcancelcase) {
+      this.context.setFormstates({ ...this.context.formstates, [`${this.PAGE_NAME}/Isdefaultcancelcase`]: false })
     }
   }
 }

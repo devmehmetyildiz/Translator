@@ -10,6 +10,10 @@ module.exports = sequelize.define('paymentModel', {
     Name: {
         type: Sequelize.STRING
     },
+    Isdefaultpayment: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
+    },
     Createduser: {
         type: Sequelize.STRING
     },

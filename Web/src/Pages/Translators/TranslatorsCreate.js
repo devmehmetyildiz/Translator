@@ -63,6 +63,7 @@ export default class TranslatorsCreate extends Component {
                                 <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
                                 <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.UserName[Profile.Language]} name="UserID" options={Useroptions} formtype="dropdown" />
                             </Form.Group>
+                            <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Isdefaulttranslator[Profile.Language]} name="Isdefaulttranslator" formtype="checkbox" />
                             <Footerwrapper>
                                 <Form.Group widths={'equal'}>
                                     {history && <Link to="/Translators">
@@ -84,6 +85,7 @@ export default class TranslatorsCreate extends Component {
         const { AddTranslators, history, fillTranslatornotification, Profile } = this.props
         const data = formToObject(e.target)
         data.UserID = this.context.formstates[`${this.PAGE_NAME}/UserID`]
+        data.Isdefaulttranslator = this.context.formstates[`${this.PAGE_NAME}/Isdefaulttranslator`]
 
         let errors = []
         if (!validator.isString(data.Name)) {

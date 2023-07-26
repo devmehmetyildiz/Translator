@@ -13,6 +13,10 @@ module.exports = sequelize.define('kdvModel', {
     Percent: {
         type: Sequelize.FLOAT
     },
+    Isdefaultkdv: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
+    },
     Createduser: {
         type: Sequelize.STRING
     },

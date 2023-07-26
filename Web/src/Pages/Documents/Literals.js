@@ -15,6 +15,10 @@ const Literals = {
             tr: 'Doküman Adı',
             en: 'Document Name'
         },
+        Isdefaultdocument: {
+            tr: 'Varsayılan Doküman mı?',
+            en: 'Is Default Document?'
+        },
         Createduser: {
             tr: 'Oluşturan Kullanıcı',
             en: 'Created User'
@@ -96,6 +100,14 @@ const Literals = {
         Namerequired: {
             tr: "İsim Gerekli",
             en: "Name Required"
+        },
+        Yes: {
+            tr: "EVET",
+            en: "YES"
+        },
+        No: {
+            tr: "HAYIR",
+            en: "NO"
         },
     }
 }

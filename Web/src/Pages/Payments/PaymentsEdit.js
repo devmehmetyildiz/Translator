@@ -64,9 +64,8 @@ export default class PaymentsEdit extends Component {
                     <Pagedivider />
                     <Contentwrapper>
                         <Form onSubmit={this.handleSubmit}>
-                            <Form.Group widths={'equal'}>
-                                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
-                            </Form.Group>
+                            <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
+                            <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Isdefaultpayment[Profile.Language]} name="Isdefaultpayment" formtype='checkbox'/>
                             <Footerwrapper>
                                 <Form.Group widths={'equal'}>
                                     {history && <Link to="/Payments">
@@ -88,7 +87,7 @@ export default class PaymentsEdit extends Component {
 
         const { EditPayments, history, fillPaymentnotification, Payments, Profile } = this.props
         const data = formToObject(e.target)
-
+        data.Isdefaultpayment = this.context.formstates[`${this.PAGE_NAME}/Isdefaultpayment`]
         let errors = []
         if (!validator.isString(data.Name)) {
             errors.push({ type: 'Error', code: Literals.Page.Pageheader[Profile.Language], description: Literals.Messages.Namerequired[Profile.Language] })

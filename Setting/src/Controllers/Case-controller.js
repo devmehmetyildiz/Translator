@@ -91,6 +91,9 @@ async function AddCase(req, res, next) {
         Shortname,
         Casecolor,
         CaseStatus,
+        Isdefaultpassivecase,
+        Isdefaultendcase,
+        Isdefaultcancelcase
     } = req.body
 
     if (!validator.isString(Name)) {
@@ -115,6 +118,21 @@ async function AddCase(req, res, next) {
     const t = await db.sequelize.transaction();
 
     try {
+
+        if (Isdefaultpassivecase || Isdefaultendcase || Isdefaultcancelcase) {
+            const cases = await db.caseModel.findAll({ where: { Isactive: true } })
+            for (const casedata of cases) {
+                await db.casedata.update({
+                    ...casedata,
+                    Isdefaultpassivecase: Isdefaultpassivecase ? false : casedata.Isdefaultpassivecase,
+                    Isdefaultendcase: Isdefaultendcase ? false : casedata.Isdefaultendcase,
+                    Isdefaultcancelcase: Isdefaultcancelcase ? false : casedata.Isdefaultcancelcase,
+                    Updateduser: "System",
+                    Updatetime: new Date(),
+                }, { where: { Uuid: casedata.Uuid } }, { transaction: t })
+            }
+        }
+
         await db.caseModel.create({
             ...req.body,
             Uuid: caseuuid,
@@ -142,6 +160,9 @@ async function AddArrayCase(req, res, next) {
                     Shortname,
                     Casecolor,
                     CaseStatus,
+                    Isdefaultpassivecase,
+                    Isdefaultendcase,
+                    Isdefaultcancelcase
                 } = data
 
                 if (!validator.isString(Name)) {
@@ -159,6 +180,20 @@ async function AddArrayCase(req, res, next) {
 
                 if (validationErrors.length > 0) {
                     return next(createValidationError(validationErrors, req.language))
+                }
+
+                if (Isdefaultpassivecase || Isdefaultendcase || Isdefaultcancelcase) {
+                    const cases = await db.caseModel.findAll({ where: { Isactive: true } })
+                    for (const casedata of cases) {
+                        await db.casedata.update({
+                            ...casedata,
+                            Isdefaultpassivecase: Isdefaultpassivecase ? false : casedata.Isdefaultpassivecase,
+                            Isdefaultendcase: Isdefaultendcase ? false : casedata.Isdefaultendcase,
+                            Isdefaultcancelcase: Isdefaultcancelcase ? false : casedata.Isdefaultcancelcase,
+                            Updateduser: "System",
+                            Updatetime: new Date(),
+                        }, { where: { Uuid: casedata.Uuid } }, { transaction: t })
+                    }
                 }
 
                 let caseuuid = uuid()
@@ -189,7 +224,10 @@ async function UpdateCase(req, res, next) {
         Shortname,
         Casecolor,
         CaseStatus,
-        Uuid
+        Uuid,
+        Isdefaultpassivecase,
+        Isdefaultendcase,
+        Isdefaultcancelcase
     } = req.body
 
     if (!validator.isString(Name)) {
@@ -216,12 +254,27 @@ async function UpdateCase(req, res, next) {
 
     const t = await db.sequelize.transaction();
     try {
+
         const casedata = db.caseModel.findOne({ where: { Uuid: Uuid } })
         if (!casedata) {
             return next(createNotfounderror([messages.ERROR.CASE_NOT_FOUND], req.language))
         }
         if (casedata.Isactive === false) {
             return next(createAccessDenied([messages.ERROR.CASE_NOT_ACTIVE], req.language))
+        }
+
+        if (Isdefaultpassivecase || Isdefaultendcase || Isdefaultcancelcase) {
+            const allcases = await db.caseModel.findAll({ where: { Isactive: true } })
+            for (const casedatas of allcases) {
+                await db.caseModel.update({
+                    ...casedatas,
+                    Isdefaultpassivecase: Isdefaultpassivecase ? false : casedatas.Isdefaultpassivecase,
+                    Isdefaultendcase: Isdefaultendcase ? false : casedatas.Isdefaultendcase,
+                    Isdefaultcancelcase: Isdefaultcancelcase ? false : casedatas.Isdefaultcancelcase,
+                    Updateduser: "System",
+                    Updatetime: new Date(),
+                }, { where: { Uuid: casedatas.Uuid } }, { transaction: t })
+            }
         }
 
         await db.caseModel.update({

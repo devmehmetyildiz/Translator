@@ -1,6 +1,6 @@
 const Literals = {
     Options: {
-       
+
     },
     Columns: {
         Id: {
@@ -14,6 +14,14 @@ const Literals = {
         Name: {
             tr: 'Mahkeme Adı',
             en: 'Court Name'
+        },
+        Isdefaultdirective: {
+            tr: 'Varsayılan Talimat mı?',
+            en: 'Is Default Directive?'
+        },
+        Isdefaultprincible: {
+            tr: 'Varsayılan Esas mı?',
+            en: 'Is default Princible?'
         },
         Createduser: {
             tr: 'Oluşturan Kullanıcı',
@@ -97,6 +105,14 @@ const Literals = {
             tr: "İsim Gerekli",
             en: "Name Required"
         },
+        Yes: {
+            tr: "EVET",
+            en: "YES"
+        },
+        No: {
+            tr: "HAYIR",
+            en: "NO"
+        }
     }
 }
 

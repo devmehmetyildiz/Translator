@@ -65,6 +65,7 @@ export default class DocumentsEdit extends Component {
                     <Contentwrapper>
                         <Form onSubmit={this.handleSubmit}>
                             <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
+                            <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Isdefaultdocument[Profile.Language]} name="Isdefaultdocument" formtype="checkbox" />
                             <Footerwrapper>
                                 <Form.Group widths={'equal'}>
                                     {history && <Link to="/Documents">
@@ -86,7 +87,7 @@ export default class DocumentsEdit extends Component {
 
         const { EditDocuments, history, fillDocumentnotification, Documents, Profile } = this.props
         const data = formToObject(e.target)
-
+        data.Isdefaultdocument = this.context.formstates[`${this.PAGE_NAME}/Isdefaultdocument`]
         let errors = []
         if (!validator.isString(data.Name)) {
             errors.push({ type: 'Error', code: Literals.Page.Pageheader[Profile.Language], description: Literals.Messages.Namerequired[Profile.Language] })

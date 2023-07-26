@@ -47,6 +47,7 @@ export default class KdvsCreate extends Component {
                                 <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
                                 <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Percent[Profile.Language]} name="Percent" type='number' step='0.01' attention='yüzde değer giriniz' display='percent' />
                             </Form.Group>
+                            <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Isdefaultkdv[Profile.Language]} name="Isdefaultkdv" formtype="checkbox"/>
                             <Footerwrapper>
                                 <Form.Group widths={'equal'}>
                                     <Link to="/Kdvs">
@@ -67,7 +68,7 @@ export default class KdvsCreate extends Component {
         const { AddKdvs, history, fillKdvnotification, Profile } = this.props
         const data = formToObject(e.target)
         data.Percent = parseFloat(data.Percent)
-
+        data.Isdefaultkdv = this.context.formstates[`${this.PAGE_NAME}/Isdefaultkdv`]
         let errors = []
         if (!validator.isString(data.Name)) {
             errors.push({ type: 'Error', code: Literals.Page.Pageheader[Profile.Language], description: Literals.Messages.Namerequired[Profile.Language] })

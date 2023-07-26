@@ -58,6 +58,7 @@ async function AddDocument(req, res, next) {
     let validationErrors = []
     const {
         Name,
+        Isdefaultdocument
     } = req.body
 
     if (!validator.isString(Name)) {
@@ -73,6 +74,19 @@ async function AddDocument(req, res, next) {
     const t = await db.sequelize.transaction();
 
     try {
+
+        if (Isdefaultdocument) {
+            const documents = await db.documentModel.findAll({ where: { Isactive: true } })
+            for (const document of documents) {
+                await db.courthauseModel.update({
+                    ...document,
+                    Isdefaultdocument: Isdefaultdocument ? false : document.Isdefaultdocument,
+                    Updateduser: "System",
+                    Updatetime: new Date(),
+                }, { where: { Uuid: document.Uuid } }, { transaction: t })
+            }
+        }
+
         await db.documentModel.create({
             ...req.body,
             Uuid: documentuuid,
@@ -96,6 +110,7 @@ async function AddArrayDocument(req, res, next) {
             for (const data of req.body) {
                 const {
                     Name,
+                    Isdefaultdocument
                 } = data
 
                 if (!validator.isString(Name)) {
@@ -104,6 +119,18 @@ async function AddArrayDocument(req, res, next) {
 
                 if (validationErrors.length > 0) {
                     return next(createValidationError(validationErrors, req.language))
+                }
+
+                if (Isdefaultdocument) {
+                    const documents = await db.documentModel.findAll({ where: { Isactive: true } })
+                    for (const document of documents) {
+                        await db.courthauseModel.update({
+                            ...document,
+                            Isdefaultdocument: Isdefaultdocument ? false : document.Isdefaultdocument,
+                            Updateduser: "System",
+                            Updatetime: new Date(),
+                        }, { where: { Uuid: document.Uuid } }, { transaction: t })
+                    }
                 }
 
                 let documentuuid = uuid()
@@ -131,7 +158,8 @@ async function UpdateDocument(req, res, next) {
     let validationErrors = []
     const {
         Name,
-        Uuid
+        Uuid,
+        Isdefaultdocument
     } = req.body
 
     if (!validator.isString(Name)) {
@@ -155,6 +183,18 @@ async function UpdateDocument(req, res, next) {
         }
         if (document.Isactive === false) {
             return next(createAccessDenied([messages.ERROR.DOCUMENT_NOT_ACTIVE], req.language))
+        }
+
+        if (Isdefaultdocument) {
+            const alldocuments = await db.documentModel.findAll({ where: { Isactive: true } })
+            for (const documentdata of alldocuments) {
+                await db.documentModel.update({
+                    ...documentdata,
+                    Isdefaultdocument: Isdefaultdocument ? false : documentdata.Isdefaultdocument,
+                    Updateduser: "System",
+                    Updatetime: new Date(),
+                }, { where: { Uuid: documentdata.Uuid } }, { transaction: t })
+            }
         }
 
         await db.documentModel.update({

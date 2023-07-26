@@ -147,7 +147,9 @@ async function AddLanguage(req, res, next) {
         Name,
         Price,
         KdvID,
-        Discount
+        Discount,
+        Isdefaultsource,
+        Isdefaulttarget
     } = req.body
 
     if (!validator.isString(Name)) {
@@ -172,6 +174,20 @@ async function AddLanguage(req, res, next) {
     const t = await db.sequelize.transaction();
 
     try {
+
+        if (Isdefaultsource || Isdefaulttarget) {
+            const languages = await db.languageModel.findAll({ where: { Isactive: true } })
+            for (const language of languages) {
+                await db.languageModel.update({
+                    ...language,
+                    Isdefaultsource: Isdefaultsource ? false : language.Isdefaultsource,
+                    Isdefaulttarget: Isdefaulttarget ? false : language.Isdefaulttarget,
+                    Updateduser: "System",
+                    Updatetime: new Date(),
+                }, { where: { Uuid: language.Uuid } }, { transaction: t })
+            }
+        }
+
         await db.languageModel.create({
             ...req.body,
             Uuid: languageuuid,
@@ -197,7 +213,9 @@ async function AddArrayLanguage(req, res, next) {
                     Name,
                     Price,
                     KdvID,
-                    Discount
+                    Discount,
+                    Isdefaultsource,
+                    Isdefaulttarget
                 } = data
 
                 if (!validator.isString(Name)) {
@@ -215,6 +233,19 @@ async function AddArrayLanguage(req, res, next) {
 
                 if (validationErrors.length > 0) {
                     return next(createValidationError(validationErrors, req.language))
+                }
+
+                if (Isdefaultsource || Isdefaulttarget) {
+                    const languages = await db.languageModel.findAll({ where: { Isactive: true } })
+                    for (const language of languages) {
+                        await db.languageModel.update({
+                            ...language,
+                            Isdefaultsource: Isdefaultsource ? false : language.Isdefaultsource,
+                            Isdefaulttarget: Isdefaulttarget ? false : language.Isdefaulttarget,
+                            Updateduser: "System",
+                            Updatetime: new Date(),
+                        }, { where: { Uuid: language.Uuid } }, { transaction: t })
+                    }
                 }
 
                 let languageuuid = uuid()
@@ -245,7 +276,9 @@ async function UpdateLanguage(req, res, next) {
         Name,
         Price,
         KdvID,
-        Discount
+        Discount,
+        Isdefaultsource,
+        Isdefaulttarget
     } = req.body
 
     if (!validator.isString(Name)) {
@@ -278,6 +311,19 @@ async function UpdateLanguage(req, res, next) {
         }
         if (language.Isactive === false) {
             return next(createAccessDenied([messages.ERROR.LANGUAGE_NOT_ACTIVE], req.language))
+        }
+
+        if (Isdefaultsource || Isdefaulttarget) {
+            const alllanguages = await db.languageModel.findAll({ where: { Isactive: true } })
+            for (const languagedata of alllanguages) {
+                await db.languageModel.update({
+                    ...languagedata,
+                    Isdefaultsource: Isdefaultsource ? false : languagedata.Isdefaultsource,
+                    Isdefaulttarget: Isdefaulttarget ? false : languagedata.Isdefaulttarget,
+                    Updateduser: "System",
+                    Updatetime: new Date(),
+                }, { where: { Uuid: languagedata.Uuid } }, { transaction: t })
+            }
         }
 
         await db.languageModel.update({

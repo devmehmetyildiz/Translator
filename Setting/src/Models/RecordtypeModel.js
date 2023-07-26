@@ -16,6 +16,9 @@ module.exports = sequelize.define('recordtypeModel', {
     Price: {
         type: Sequelize.FLOAT
     },
+    Config: {
+        type: Sequelize.TEXT
+    },
     Createduser: {
         type: Sequelize.STRING
     },

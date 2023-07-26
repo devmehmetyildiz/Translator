@@ -59,6 +59,9 @@ export default class Cases extends Component {
       { Header: Literals.Columns.Shortname[Profile.Language], accessor: 'Shortname', sortable: true, canGroupBy: true, canFilter: true },
       { Header: Literals.Columns.CaseStatus[Profile.Language], accessor: 'CaseStatus', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.casesstatusCellhandler(col, casestatusOption) },
       { Header: Literals.Columns.Casecolor[Profile.Language], accessor: 'Casecolor', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.casecolorCellhandler(col) },
+      { Header: Literals.Columns.Isdefaultcancelcase[Profile.Language], accessor: 'Isdefaultcancelcase', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.boolCellhandler(col) },
+      { Header: Literals.Columns.Isdefaultendcase[Profile.Language], accessor: 'Isdefaultendcase', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.boolCellhandler(col) },
+      { Header: Literals.Columns.Isdefaultpassivecase[Profile.Language], accessor: 'Isdefaultpassivecase', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.boolCellhandler(col) },
       { Header: Literals.Columns.Createduser[Profile.Language], accessor: 'Createduser', sortable: true, canGroupBy: true, canFilter: true, },
       { Header: Literals.Columns.Updateduser[Profile.Language], accessor: 'Updateduser', sortable: true, canGroupBy: true, canFilter: true, },
       { Header: Literals.Columns.Createtime[Profile.Language], accessor: 'Createtime', sortable: true, canGroupBy: true, canFilter: true, },
@@ -139,6 +142,11 @@ export default class Cases extends Component {
       return <div className='flex flex-row justify-center items-center text-center'><p className='m-0 p-0'>{col.value}</p><Icon style={{ color: col.value }} className="ml-2" name='circle' /></div>
     }
     return null
+  }
+
+  boolCellhandler = (col) => {
+    const { Profile } = this.props
+    return col.value !== null && (col.value ? Literals.Messages.Yes[Profile.Language] : Literals.Messages.No[Profile.Language])
   }
 }
 Cases.contextType = FormContext
