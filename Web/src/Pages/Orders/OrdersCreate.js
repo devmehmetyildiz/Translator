@@ -80,6 +80,19 @@ export default class OrdersCreate extends Component {
         fileorderUuid: this.context.formstates[`${this.PAGE_NAME}/Fileuuid`]
       })
     }
+
+    const currentDate = new Date();
+
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+    const day = String(currentDate.getDate()).padStart(2, '0');
+    const formattedDate = `${year}-${month}-${day}`;
+
+    this.context.setFormstates({
+      ...this.context.formstates,
+      [`${this.PAGE_NAME}/Registerdate`]: formattedDate,
+      [`${this.PAGE_NAME}/Deliverydate`]: formattedDate,
+    })
   }
 
   componentDidUpdate() {
@@ -158,38 +171,22 @@ export default class OrdersCreate extends Component {
       })
       this.setState({ isDatafetched: true })
     }
-   /*  if (this.arraysOfObjectsAreEqual(states.selectedJobs, this.state.selectedJobs)) {
-      console.log("eşit")
-    } else {
-      console.log("değil")
+    this.Checkfinalprice()
 
-    } */
-
-    this.setState((prestates)=>{
-      console.log('prestates: ', prestates);
-     /*  return {
-
-      } */
-    });
   }
 
-  arraysOfObjectsAreEqual = (oldarray, newarray) => {
-    if (oldarray.length !== newarray.length) {
-      return false;
-    }
-    for (let index = 0; index < newarray.length; index++) {
-      const arrobjects = Object.keys(newarray[index])
+  Checkfinalprice = () => {
+    const calculatedprice = this.context.formstates[`${this.PAGE_NAME}/Calculatedprice`]
+    const price = this.state.selectedJobs.length > 0 ? this.state.selectedJobs.map(u => { return u.Price }).reduce((total, num) => { return total + num }) : 0
 
-      for (const object of arrobjects) {
-        console.log('newarray[index][object]: ', newarray[index][object]);
-        console.log('oldarray[index][object]: ', oldarray[index][object]);
-        if (newarray[index][object] !== oldarray[index][object]) {
-          return false
-        }
-      }
+    if (calculatedprice !== price) {
+      this.context.setFormstates({
+        ...this.context.formstates,
+        [`${this.PAGE_NAME}/Calculatedprice`]: price
+      })
     }
-    return true;
   }
+
 
   render() {
 
@@ -333,7 +330,7 @@ export default class OrdersCreate extends Component {
                             <FormInput visible={this.Checkvisiblestatus('Prepayment')} page={this.PAGE_NAME} placeholder={Literals.Columns.Prepayment[Profile.Language]} name="Prepayment" type='number' step='0.01' display='try' />
                             <FormInput visible={this.Checkvisiblestatus('Notaryexpense')} page={this.PAGE_NAME} placeholder={Literals.Columns.Notaryexpense[Profile.Language]} name="Notaryexpense" type='number' step='0.01' display='try' />
                             <FormInput visible={this.Checkvisiblestatus('Netprice')} page={this.PAGE_NAME} placeholder={Literals.Columns.Netprice[Profile.Language]} name="Netprice" type='number' step='0.01' display='try' />
-                            <FormInput visible={this.Checkvisiblestatus('Calculatedprice')} page={this.PAGE_NAME} placeholder={Literals.Columns.Calculatedprice[Profile.Language]} name="Calculatedprice" type='number' step='0.01' display='try' />
+                            <FormInput disableOnchange visible={this.Checkvisiblestatus('Calculatedprice')} page={this.PAGE_NAME} placeholder={Literals.Columns.Calculatedprice[Profile.Language]} name="Calculatedprice" type='number' step='0.01' display='try' />
                           </Form.Group>
                           <Form.Group widths={'equal'}>
                             <FormInput visible={this.Checkvisiblestatus('TranslatorID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Translator[Profile.Language]} name="TranslatorID" options={Translatoroption} formtype='dropdown' modal={addModal(<TranslatorsCreate />)} />
@@ -693,11 +690,15 @@ export default class OrdersCreate extends Component {
       jobRoutes.filter(jobroute => jobroute.Order === value)
         .forEach((jobroute) => jobroute.Order = jobRoutes[index].Order > value ? jobroute.Order + 1 : jobroute.Order - 1)
     }
+    jobRoutes[index][property] = value
     if (property === 'TargetlanguageID') {
       const language = (Languages.list || []).find(u => u.Uuid === jobRoutes[index][property])
       language && (jobRoutes[index]["Price"] = language.Price * jobRoutes[index]["Amount"])
     }
-    jobRoutes[index][property] = value
+    if (property === 'Amount') {
+      const language = (Languages.list || []).find(u => u.Uuid === jobRoutes[index]['TargetlanguageID'])
+      language && (jobRoutes[index]["Price"] = language.Price * jobRoutes[index]["Amount"])
+    }
     this.setState({ selectedJobs: jobRoutes }, () => {
       this.context.setFormstates({
         ...this.context.formstates, [`${this.PAGE_NAME}/Jobs`]: this.state.selectedJobs,

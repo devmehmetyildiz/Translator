@@ -32,7 +32,8 @@ function DefaultColumnFilter({
 }
 
 
-export const DataTable = ({ Columns, Data, Config, renderRowSubComponent, thColor }) => {
+export const DataTable = ({ Columns, Data, Config, renderRowSubComponent, thColor, Cases }) => {
+    console.log('Cases: ', Cases);
     const columns = useMemo(() => Columns, [Columns])
     const data = useMemo(() => Data, [Data])
 
@@ -196,9 +197,12 @@ export const DataTable = ({ Columns, Data, Config, renderRowSubComponent, thColo
                         <tbody {...getTableBodyProps()}>
                             {page.map(row => {
                                 prepareRow(row)
+                                console.log('Cases: ', Cases);
+                                console.log('row.original.CaseID: ', row.original.CaseID);
+                                console.log('(Cases?.list || []).find(u => u.Uuid === row.original.CaseID): ', (Cases?.list || []).find(u => u.Uuid === row.original.CaseID));
                                 return (
-                                    <React.Fragment key={`rw-${row.id}`}>
-                                        <tr {...row.getRowProps()} style={{ backgroundColor: row.original?.case ? row.original.case?.casecolor : null }} >
+                                    <React.Fragment key={`rw-${row.Id}`}>
+                                        <tr {...row.getRowProps()} style={{ backgroundColor: row.original?.CaseID ? (Cases?.list || []).find(u => u.Uuid === row.original.CaseID)?.Casecolor : null }} >
                                             {row.cells.map(cell => {
                                                 return (
                                                     <td  {...cell.getCellProps({ className: cell.column.className })}>

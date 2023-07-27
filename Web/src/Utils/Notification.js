@@ -16,8 +16,7 @@ function notification(notifications, removeNotification, clearForm) {
                 cogoToast.error(description, toastoptions)
                 break;
             case "Clear":
-                clearForm(code)
-                console.log("temizlendi")
+                clearForm && clearForm(code)
             default:
                 break;
         }

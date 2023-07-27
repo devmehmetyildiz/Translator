@@ -66,11 +66,11 @@ export default class DefinedcompaniesEdit extends Component {
                         <Form onSubmit={this.handleSubmit}>
                             <Form.Group widths={'equal'}>
                                 <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
-                                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Address[Profile.Language]} name="Address" />
+                                <FormInput page={this.PAGE_NAME}  placeholder={Literals.Columns.Address[Profile.Language]} name="Address" />
                             </Form.Group>
                             <Form.Group widths={'equal'}>
-                                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Acccountcode[Profile.Language]} name="Acccountcode" />
-                                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Accountname[Profile.Language]} name="Accountname" />
+                                <FormInput page={this.PAGE_NAME}  placeholder={Literals.Columns.Acccountcode[Profile.Language]} name="Acccountcode" />
+                                <FormInput page={this.PAGE_NAME}  placeholder={Literals.Columns.Accountname[Profile.Language]} name="Accountname" />
                             </Form.Group>
                             <Footerwrapper>
                                 <Form.Group widths={'equal'}>
@@ -97,15 +97,6 @@ export default class DefinedcompaniesEdit extends Component {
         let errors = []
         if (!validator.isString(data.Name)) {
             errors.push({ type: 'Error', code: Literals.Page.Pageheader[Profile.Language], description: Literals.Messages.Namerequired[Profile.Language] })
-        }
-        if (!validator.isString(data.Address)) {
-            errors.push({ type: 'Error', code: Literals.Page.Pageheader[Profile.Language], description: Literals.Messages.Addressrequired[Profile.Language] })
-        }
-        if (!validator.isString(data.Acccountcode)) {
-            errors.push({ type: 'Error', code: Literals.Page.Pageheader[Profile.Language], description: Literals.Messages.Accountcoderequired[Profile.Language] })
-        }
-        if (!validator.isString(data.Accountname)) {
-            errors.push({ type: 'Error', code: Literals.Page.Pageheader[Profile.Language], description: Literals.Messages.Accountnamerequired[Profile.Language] })
         }
         if (errors.length > 0) {
             errors.forEach(error => {

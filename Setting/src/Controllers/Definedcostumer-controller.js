@@ -58,34 +58,10 @@ async function AddDefinedcostumer(req, res, next) {
     let validationErrors = []
     const {
         Name,
-        CountryID,
-        Phone,
-        Email,
-        City,
-        Town,
-        Address,
     } = req.body
 
     if (!validator.isString(Name)) {
         validationErrors.push(messages.VALIDATION_ERROR.NAME_REQUIRED)
-    }
-    if (!validator.isString(CountryID)) {
-        validationErrors.push(messages.VALIDATION_ERROR.COUNTRYID_REQUIRED)
-    }
-    if (!validator.isString(Phone)) {
-        validationErrors.push(messages.VALIDATION_ERROR.PHONE_REQUIRED)
-    }
-    if (!validator.isString(Email)) {
-        validationErrors.push(messages.VALIDATION_ERROR.EMAIL_REQUIRED)
-    }
-    if (!validator.isString(City)) {
-        validationErrors.push(messages.VALIDATION_ERROR.CITY_REQUIRED)
-    }
-    if (!validator.isString(Town)) {
-        validationErrors.push(messages.VALIDATION_ERROR.TOWN_REQUIRED)
-    }
-    if (!validator.isString(Address)) {
-        validationErrors.push(messages.VALIDATION_ERROR.ADDRESS_REQUIRED)
     }
 
     if (validationErrors.length > 0) {
@@ -120,34 +96,10 @@ async function AddArrayDefinedcostumer(req, res, next) {
             for (const data of req.body) {
                 const {
                     Name,
-                    CountryID,
-                    Phone,
-                    Email,
-                    City,
-                    Town,
-                    Address,
                 } = data
 
                 if (!validator.isString(Name)) {
                     validationErrors.push(messages.VALIDATION_ERROR.NAME_REQUIRED)
-                }
-                if (!validator.isString(CountryID)) {
-                    validationErrors.push(messages.VALIDATION_ERROR.COUNTRYID_REQUIRED)
-                }
-                if (!validator.isString(Phone)) {
-                    validationErrors.push(messages.VALIDATION_ERROR.PHONE_REQUIRED)
-                }
-                if (!validator.isString(Email)) {
-                    validationErrors.push(messages.VALIDATION_ERROR.EMAIL_REQUIRED)
-                }
-                if (!validator.isString(City)) {
-                    validationErrors.push(messages.VALIDATION_ERROR.CITY_REQUIRED)
-                }
-                if (!validator.isString(Town)) {
-                    validationErrors.push(messages.VALIDATION_ERROR.TOWN_REQUIRED)
-                }
-                if (!validator.isString(Address)) {
-                    validationErrors.push(messages.VALIDATION_ERROR.ADDRESS_REQUIRED)
                 }
 
                 if (validationErrors.length > 0) {
@@ -180,34 +132,10 @@ async function UpdateDefinedcostumer(req, res, next) {
     const {
         Uuid,
         Name,
-        CountryID,
-        Phone,
-        Email,
-        City,
-        Town,
-        Address,
     } = req.body
 
     if (!validator.isString(Name)) {
         validationErrors.push(messages.VALIDATION_ERROR.NAME_REQUIRED)
-    }
-    if (!validator.isString(CountryID)) {
-        validationErrors.push(messages.VALIDATION_ERROR.COUNTRYID_REQUIRED)
-    }
-    if (!validator.isString(Phone)) {
-        validationErrors.push(messages.VALIDATION_ERROR.PHONE_REQUIRED)
-    }
-    if (!validator.isString(Email)) {
-        validationErrors.push(messages.VALIDATION_ERROR.EMAIL_REQUIRED)
-    }
-    if (!validator.isString(City)) {
-        validationErrors.push(messages.VALIDATION_ERROR.CITY_REQUIRED)
-    }
-    if (!validator.isString(Town)) {
-        validationErrors.push(messages.VALIDATION_ERROR.TOWN_REQUIRED)
-    }
-    if (!validator.isString(Address)) {
-        validationErrors.push(messages.VALIDATION_ERROR.ADDRESS_REQUIRED)
     }
     if (!Uuid) {
         validationErrors.push(messages.VALIDATION_ERROR.DEFINEDCOSTUMERID_REQUIRED)

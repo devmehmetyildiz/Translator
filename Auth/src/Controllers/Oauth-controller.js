@@ -48,7 +48,9 @@ async function ValidateToken(req, res, next) {
     if (!accessToken) {
         return next(createAutherror(messages.ERROR.ACCESS_TOKEN_NOT_FOUND, req.language))
     }
-    if (accessToken.ExpiresAt <= new Date()) {
+    const g1 = new Date(accessToken.ExpiresAt)
+    const g2 = new Date()
+    if (g1.getTime() <= g2.getTime()) {
         return next(createAutherror(messages.ERROR.ACCESS_TOKEN_INVALID, req.language))
     }
     return res.status(200).json(accessToken)
@@ -104,6 +106,7 @@ async function responseToGetTokenByGrantPassword(req, res, next) {
         accessToken: uuid(),
         refreshToken: uuid(),
         ExpiresAt: new Date(new Date().getTime() + 59 * 60000),
+        RefreshtokenexpiresAt: new Date(new Date().getTime() + 59 * 60000),
     }
 
     try {
@@ -115,6 +118,7 @@ async function responseToGetTokenByGrantPassword(req, res, next) {
             Accesstoken: accessToken.accessToken,
             Refreshtoken: accessToken.refreshToken,
             ExpiresAt: accessToken.ExpiresAt,
+            RefreshtokenexpiresAt: accessToken.RefreshtokenexpiresAt,
             Createduser: "System",
             Createtime: new Date(),
             Updateduser: null,
@@ -139,7 +143,7 @@ async function responseToGetTokenByRefreshToken(req, res, next) {
     let validationErrors = []
 
     if (!req.body.refreshToken) {
-        validationErrors.push(messages.VALIDATION_ERROR.REFRESH_TOKEN_REQUIRED)
+        validationErrors.push(messages.VALIDATION_ERROR.REFRESHTOKEN_REQUIRED)
     }
 
     if (validationErrors.length > 0) {
@@ -151,18 +155,21 @@ async function responseToGetTokenByRefreshToken(req, res, next) {
         return next(createNotfounderror([messages.ERROR.REFRESH_TOKEN_NOT_FOUND], req.language))
     }
 
-    if (token.ExpiresAt <= new Date()) {
+    const g1 = new Date(token.RefreshtokenexpiresAt)
+    const g2 = new Date()
+    if (g1.getTime() <= g2.getTime()) {
         return next(createValidationError([messages.ERROR.REFRESH_TOKEN_EXPIRED], req.language))
     }
-    const user = null
+    let user = null
     try {
-        user = await axios({
+        const userresponce = await axios({
             method: 'GET',
             url: config.services.Userrole + `Users/${token.Userid}`,
             headers: {
                 session_key: config.session.secret
             }
         })
+        user = userresponce.data
     } catch (error) {
         return next(requestErrorCatcher(error, "USERROLE"))
     }
@@ -171,7 +178,8 @@ async function responseToGetTokenByRefreshToken(req, res, next) {
         token_type: 'bearer',
         accessToken: uuid(),
         refreshToken: uuid(),
-        ExpiresAt: new Date(new Date().getTime() + 0 * 60000),
+        ExpiresAt: new Date(new Date().getTime() + 59 * 60000),
+        RefreshtokenexpiresAt: new Date(new Date().getTime() + 59 * 60000),
     }
 
     try {
@@ -182,6 +190,7 @@ async function responseToGetTokenByRefreshToken(req, res, next) {
             Accesstoken: accessToken.accessToken,
             Refreshtoken: accessToken.refreshToken,
             ExpiresAt: accessToken.ExpiresAt,
+            RefreshtokenexpiresAt: accessToken.RefreshtokenexpiresAt,
             Createduser: "System",
             Createtime: new Date(),
             Updateduser: null,

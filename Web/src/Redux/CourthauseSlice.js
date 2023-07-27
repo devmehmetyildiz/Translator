@@ -74,7 +74,7 @@ export const AddCourthauses = createAsyncThunk(
             }));
             dispatch(fillCourthausenotification({
                 type: 'Clear',
-                code: 'CourthausesUpdate',
+                code: 'CourthausesCreate',
                 description: '',
             }));
             history && history.push('/Courthauses');
@@ -120,6 +120,11 @@ export const EditCourthauses = createAsyncThunk(
                 type: 'Success',
                 code: Literals.updatecode[Language],
                 description: Literals.updatedescription[Language],
+            }));
+            dispatch(fillCourthausenotification({
+                type: 'Clear',
+                code: 'CourthausesUpdate',
+                description: '',
             }));
             history && history.push('/Courthauses');
             return response.data;

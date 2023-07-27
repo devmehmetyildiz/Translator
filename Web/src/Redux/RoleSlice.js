@@ -104,7 +104,7 @@ export const AddRoles = createAsyncThunk(
                 code: 'RolesCreate',
                 description: '',
             }));
-history && history.push('/Roles');
+            history && history.push('/Roles');
             return response.data;
         } catch (error) {
             const errorPayload = AxiosErrorHelper(error);
@@ -131,7 +131,7 @@ export const EditRoles = createAsyncThunk(
                 code: 'RolesEdit',
                 description: '',
             }));
-history && history.push('/Roles');
+            history && history.push('/Roles');
             return response.data;
         } catch (error) {
             const errorPayload = AxiosErrorHelper(error);

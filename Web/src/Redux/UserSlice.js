@@ -76,7 +76,7 @@ export const AddUsers = createAsyncThunk(
                 code: 'UsersCreate',
                 description: '',
             }));
-history && history.push('/Users');
+            history && history.push('/Users');
             return response.data;
         } catch (error) {
             const errorPayload = AxiosErrorHelper(error);
@@ -88,7 +88,7 @@ history && history.push('/Users');
 
 export const EditUsers = createAsyncThunk(
     'Users/EditUsers',
-    async ({ data, history }, { dispatch, getState }) => {
+    async ({ data, history, redirectUrl }, { dispatch, getState }) => {
         try {
             const state = getState()
             const Language = state.Profile.Language || 'en'
@@ -103,7 +103,10 @@ export const EditUsers = createAsyncThunk(
                 code: 'UsersEdit',
                 description: '',
             }));
-history && history.push('/Users');
+            if (redirectUrl && redirectUrl === 'Goback') {
+                history && history.goBack()
+            }
+            history && history.push('/Users');
             return response.data;
         } catch (error) {
             const errorPayload = AxiosErrorHelper(error);

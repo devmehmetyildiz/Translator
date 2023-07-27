@@ -58,22 +58,11 @@ async function AddDefinedcompany(req, res, next) {
     let validationErrors = []
     const {
         Name,
-        Address,
-        Acccountcode,
-        Accountname
+       
     } = req.body
 
     if (!validator.isString(Name)) {
         validationErrors.push(messages.VALIDATION_ERROR.NAME_REQUIRED)
-    }
-    if (!validator.isString(Address)) {
-        validationErrors.push(messages.VALIDATION_ERROR.ADDRESS_REQUIRED)
-    }
-    if (!validator.isString(Acccountcode)) {
-        validationErrors.push(messages.VALIDATION_ERROR.ACCOUNTCODE_REQUIRED)
-    }
-    if (!validator.isString(Accountname)) {
-        validationErrors.push(messages.VALIDATION_ERROR.ACCOUNTNAME_REQUIRED)
     }
 
     if (validationErrors.length > 0) {
@@ -108,22 +97,10 @@ async function AddArrayDefinedcompany(req, res, next) {
             for (const data of req.body) {
                 const {
                     Name,
-                    Address,
-                    Acccountcode,
-                    Accountname
                 } = data
 
                 if (!validator.isString(Name)) {
                     validationErrors.push(messages.VALIDATION_ERROR.NAME_REQUIRED)
-                }
-                if (!validator.isString(Address)) {
-                    validationErrors.push(messages.VALIDATION_ERROR.ADDRESS_REQUIRED)
-                }
-                if (!validator.isString(Acccountcode)) {
-                    validationErrors.push(messages.VALIDATION_ERROR.ACCOUNTCODE_REQUIRED)
-                }
-                if (!validator.isString(Accountname)) {
-                    validationErrors.push(messages.VALIDATION_ERROR.ACCOUNTNAME_REQUIRED)
                 }
 
                 if (validationErrors.length > 0) {
@@ -155,23 +132,11 @@ async function UpdateDefinedcompany(req, res, next) {
     let validationErrors = []
     const {
         Name,
-        Address,
-        Acccountcode,
-        Accountname,
         Uuid
     } = req.body
 
     if (!validator.isString(Name)) {
         validationErrors.push(messages.VALIDATION_ERROR.NAME_REQUIRED)
-    }
-    if (!validator.isString(Address)) {
-        validationErrors.push(messages.VALIDATION_ERROR.ADDRESS_REQUIRED)
-    }
-    if (!validator.isString(Acccountcode)) {
-        validationErrors.push(messages.VALIDATION_ERROR.ACCOUNTCODE_REQUIRED)
-    }
-    if (!validator.isString(Accountname)) {
-        validationErrors.push(messages.VALIDATION_ERROR.ACCOUNTNAME_REQUIRED)
     }
     if (!Uuid) {
         validationErrors.push(messages.VALIDATION_ERROR.DEFINEDCOMPANYID_REQUIRED)

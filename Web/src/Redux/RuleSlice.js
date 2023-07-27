@@ -108,7 +108,7 @@ export const AddRules = createAsyncThunk(
                 code: 'RulesCreate',
                 description: '',
             }));
-history && history.push('/Rules');
+            history && history.push('/Rules');
             return response.data;
         } catch (error) {
             const errorPayload = AxiosErrorHelper(error);
@@ -135,7 +135,7 @@ export const EditRules = createAsyncThunk(
                 code: 'RulesEdit',
                 description: '',
             }));
-history && history.push('/Rules');
+            history && history.push('/Rules');
             return response.data;
         } catch (error) {
             const errorPayload = AxiosErrorHelper(error);

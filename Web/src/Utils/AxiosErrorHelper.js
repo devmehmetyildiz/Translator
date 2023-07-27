@@ -1,9 +1,9 @@
 import Cookies from "universal-cookie";
 import config from "../Config";
-
+import store from ".."
+import { removeauth } from "../Redux/ProfileSlice";
 export default function AxiosErrorHelper(error) {
     if (error) {
-        console.log('error: ', error);
         if (error.code === 'ERR_NETWORK') {
             let domain = (error && error.config && error.config.url) ? error.config.url : 'undefined'
             if (domain !== 'undefined') {
@@ -63,6 +63,7 @@ export default function AxiosErrorHelper(error) {
 function handle401Error(error) {
     const localcookies = new Cookies();
     localcookies.remove("patientcare")
+    store.dispatch(removeauth())
     if (window.location.pathname !== "/Login") {
         window.location = `/Login?redirecturl=${window.location.pathname}`
     }

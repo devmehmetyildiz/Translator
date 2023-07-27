@@ -16,6 +16,9 @@ module.exports = sequelize.define('accesstokenModel', {
     ExpiresAt: {
         type: Sequelize.DATE,
     },
+    RefreshtokenexpiresAt: {
+        type: Sequelize.DATE,
+    },
     Createduser: {
         type: Sequelize.STRING
     },

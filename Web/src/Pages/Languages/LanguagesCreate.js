@@ -99,9 +99,6 @@ export default class LanguagesCreate extends Component {
         if (!validator.isUUID(data.KdvID)) {
             errors.push({ type: 'Error', code: Literals.Page.Pageheader[Profile.Language], description: Literals.Messages.Kdvrequired[Profile.Language] })
         }
-        if (!validator.isNumber(data.Discount)) {
-            errors.push({ type: 'Error', code: Literals.Page.Pageheader[Profile.Language], description: Literals.Messages.Discountrequired[Profile.Language] })
-        }
         if (errors.length > 0) {
             errors.forEach(error => {
                 fillLanguagenotification(error)

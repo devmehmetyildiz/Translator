@@ -112,6 +112,11 @@ export const EditJobs = createAsyncThunk(
                 code: 'Veri Güncelleme',
                 description: 'İş başarı ile Güncellendi',
             }));
+            dispatch(fillJobnotification({
+                type: 'Clear',
+                code: 'JobsEdit',
+                description: '',
+            }));
             history && history.push('/Jobs');
             return response.data;
         } catch (error) {

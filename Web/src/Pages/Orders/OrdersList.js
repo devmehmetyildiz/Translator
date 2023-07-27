@@ -3,6 +3,7 @@ import { Header, Label, Loader } from 'semantic-ui-react'
 import DataTable from '../../Utils/DataTable'
 import Literals from './Literals'
 export default function OrdersList({ Data, Columns, initialConfig, Profile, Jobs, Files, Cases, Languages, Documents }) {
+    console.log('CasesOrdersList: ', Cases);
 
 
     const caseCellhandler = (col) => {
@@ -32,8 +33,6 @@ export default function OrdersList({ Data, Columns, initialConfig, Profile, Jobs
             if (row && row.original && row.original.Id) {
                 let jobs = (Jobs.list || []).filter(u => u.OrderID === Data.find(u => u.Id === row.original.Id).Uuid)
                 let files = (Files.list || []).filter(u => u.ParentID === Data.find(u => u.Id === row.original.Id).Fileuuid)
-                console.log('Files: ', Files);
-                console.log('files: ', files);
                 const jobcolumns = [
                     { Header: Literals.Columns.Id[Profile.Language], accessor: 'Id', sortable: true, canGroupBy: true, canFilter: true, },
                     { Header: Literals.Columns.Jobno[Profile.Language], accessor: 'Jobno', sortable: true, canGroupBy: true, canFilter: true },
@@ -65,6 +64,7 @@ export default function OrdersList({ Data, Columns, initialConfig, Profile, Jobs
                             Columns={jobcolumns}
                             Data={jobs.sort((a, b) => a.Order - b.Order)}
                             thColor={'#f0f4f5'}
+                            Cases={Cases}
                         />
                     </div>
                     <div className='p-2'>
@@ -75,6 +75,7 @@ export default function OrdersList({ Data, Columns, initialConfig, Profile, Jobs
                             Columns={filecolumns}
                             Data={files.sort((a, b) => a.Order - b.Order)}
                             thColor={'#f0f4f5'}
+                            Cases={Cases}
                         />
                     </div>
                 </div>
@@ -91,6 +92,7 @@ export default function OrdersList({ Data, Columns, initialConfig, Profile, Jobs
             Data={Data}
             Config={initialConfig}
             renderRowSubComponent={renderRowSubComponent}
+            Cases={Cases}
         />
     )
 }

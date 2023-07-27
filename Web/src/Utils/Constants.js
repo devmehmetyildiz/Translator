@@ -1,4 +1,6 @@
 export const ROUTES = {
+    AUTH: 'Oauth',
+
     JOB: 'Jobs',
     ORDER: 'Orders',
 

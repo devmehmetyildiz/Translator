@@ -12,6 +12,7 @@ export const logIn = createAsyncThunk(
             const response = await instanse.post(config.services.Auth, `Oauth/Login`, data);
             const localcookies = new Cookies();
             localcookies.set('patientcare', response.data.accessToken, { path: '/' })
+            localcookies.set('patientcareRefresh', response.data.refreshToken, { path: '/' })
             dispatch(fillnotification({
                 type: 'Success',
                 code: 'Elder Camp',
@@ -199,6 +200,12 @@ export const ProfileSlice = createSlice({
         removenotification: (state) => {
             state.notifications.splice(0, 1);
         },
+        removeauth: (state) => {
+            state.auth = false
+        },
+        handleauth: (state) => {
+            state.auth = true
+        },
         logOut: () => {
             const localcookies = new Cookies();
             localcookies.remove('patientcare')
@@ -212,6 +219,7 @@ export const ProfileSlice = createSlice({
                 state.errMsg = null;
             })
             .addCase(logIn.fulfilled, (state, action) => {
+                state.auth = true;
                 state.isLogging = false;
             })
             .addCase(logIn.rejected, (state, action) => {
@@ -339,7 +347,9 @@ export const ProfileSlice = createSlice({
 export const {
     fillnotification,
     removenotification,
-    logOut
+    logOut,
+    removeauth,
+    handleauth
 } = ProfileSlice.actions;
 
 export default ProfileSlice.reducer;

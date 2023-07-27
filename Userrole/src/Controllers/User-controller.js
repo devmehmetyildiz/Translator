@@ -334,9 +334,6 @@ async function AddUser(req, res, next) {
         Name,
         Surname,
         Language,
-        Town,
-        City,
-        Address,
         Email,
         Password,
         Roles,
@@ -354,15 +351,6 @@ async function AddUser(req, res, next) {
     }
     if (!validator.isString(Language)) {
         validationErrors.push(messages.VALIDATION_ERROR.LANGUAGE_REQUIRED)
-    }
-    if (!validator.isString(Town)) {
-        validationErrors.push(messages.VALIDATION_ERROR.TOWN_REQUIRED)
-    }
-    if (!validator.isString(City)) {
-        validationErrors.push(messages.VALIDATION_ERROR.CITY_REQUIRED)
-    }
-    if (!validator.isString(Address)) {
-        validationErrors.push(messages.VALIDATION_ERROR.ADDRESS_REQUIRED)
     }
     if (!validator.isString(Password)) {
         validationErrors.push(messages.VALIDATION_ERROR.PASSWORD_REQUIRED)
@@ -447,9 +435,6 @@ async function UpdateUser(req, res, next) {
         Surname,
         UserID,
         Language,
-        Town,
-        City,
-        Address,
         Email,
         Roles,
     } = req.body
@@ -468,15 +453,6 @@ async function UpdateUser(req, res, next) {
     }
     if (!validator.isString(Language)) {
         validationErrors.push(messages.VALIDATION_ERROR.LANGUAGE_REQUIRED)
-    }
-    if (!validator.isString(Town)) {
-        validationErrors.push(messages.VALIDATION_ERROR.TOWN_REQUIRED)
-    }
-    if (!validator.isString(City)) {
-        validationErrors.push(messages.VALIDATION_ERROR.CITY_REQUIRED)
-    }
-    if (!validator.isString(Address)) {
-        validationErrors.push(messages.VALIDATION_ERROR.ADDRESS_REQUIRED)
     }
     if (!validator.isString(Email)) {
         validationErrors.push(messages.VALIDATION_ERROR.EMAIL_REQUIRED)

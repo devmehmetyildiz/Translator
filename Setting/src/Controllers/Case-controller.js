@@ -122,7 +122,7 @@ async function AddCase(req, res, next) {
         if (Isdefaultpassivecase || Isdefaultendcase || Isdefaultcancelcase) {
             const cases = await db.caseModel.findAll({ where: { Isactive: true } })
             for (const casedata of cases) {
-                await db.casedata.update({
+                await db.caseModel.update({
                     ...casedata,
                     Isdefaultpassivecase: Isdefaultpassivecase ? false : casedata.Isdefaultpassivecase,
                     Isdefaultendcase: Isdefaultendcase ? false : casedata.Isdefaultendcase,
@@ -185,7 +185,7 @@ async function AddArrayCase(req, res, next) {
                 if (Isdefaultpassivecase || Isdefaultendcase || Isdefaultcancelcase) {
                     const cases = await db.caseModel.findAll({ where: { Isactive: true } })
                     for (const casedata of cases) {
-                        await db.casedata.update({
+                        await db.caseModel.update({
                             ...casedata,
                             Isdefaultpassivecase: Isdefaultpassivecase ? false : casedata.Isdefaultpassivecase,
                             Isdefaultendcase: Isdefaultendcase ? false : casedata.Isdefaultendcase,

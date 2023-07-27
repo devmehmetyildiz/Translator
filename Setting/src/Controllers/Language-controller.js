@@ -147,7 +147,6 @@ async function AddLanguage(req, res, next) {
         Name,
         Price,
         KdvID,
-        Discount,
         Isdefaultsource,
         Isdefaulttarget
     } = req.body
@@ -161,10 +160,6 @@ async function AddLanguage(req, res, next) {
     if (!validator.isUUID(KdvID)) {
         validationErrors.push(messages.VALIDATION_ERROR.KDVID_REQUIRED)
     }
-    if (!validator.isNumber(Discount)) {
-        validationErrors.push(messages.VALIDATION_ERROR.DISCOUNT_REQUIRED)
-    }
-
     if (validationErrors.length > 0) {
         return next(createValidationError(validationErrors, req.language))
     }
@@ -213,7 +208,6 @@ async function AddArrayLanguage(req, res, next) {
                     Name,
                     Price,
                     KdvID,
-                    Discount,
                     Isdefaultsource,
                     Isdefaulttarget
                 } = data
@@ -226,9 +220,6 @@ async function AddArrayLanguage(req, res, next) {
                 }
                 if (!validator.isUUID(KdvID)) {
                     validationErrors.push(messages.VALIDATION_ERROR.KDVID_REQUIRED)
-                }
-                if (!validator.isNumber(Discount)) {
-                    validationErrors.push(messages.VALIDATION_ERROR.DISCOUNT_REQUIRED)
                 }
 
                 if (validationErrors.length > 0) {
@@ -276,7 +267,6 @@ async function UpdateLanguage(req, res, next) {
         Name,
         Price,
         KdvID,
-        Discount,
         Isdefaultsource,
         Isdefaulttarget
     } = req.body
@@ -289,9 +279,6 @@ async function UpdateLanguage(req, res, next) {
     }
     if (!validator.isUUID(KdvID)) {
         validationErrors.push(messages.VALIDATION_ERROR.KDVID_REQUIRED)
-    }
-    if (!validator.isNumber(Discount)) {
-        validationErrors.push(messages.VALIDATION_ERROR.DISCOUNT_REQUIRED)
     }
     if (!Uuid) {
         validationErrors.push(messages.VALIDATION_ERROR.LANGUAGEID_REQUIRED)

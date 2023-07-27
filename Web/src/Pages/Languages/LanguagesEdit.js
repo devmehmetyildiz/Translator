@@ -106,6 +106,7 @@ export default class LanguagesEdit extends Component {
         const { EditLanguages, Languages, history, fillLanguagenotification, Profile } = this.props
         const data = formToObject(e.target)
         data.KdvID = this.context.formstates[`${this.PAGE_NAME}/KdvID`]
+        console.log('data.Discount: ', data.Discount);
         data.Price = parseFloat(data.Price)
         data.Discount = parseFloat(data.Discount)
         data.Isdefaultsource = this.context.formstates[`${this.PAGE_NAME}/Isdefaultsource`]
@@ -120,9 +121,6 @@ export default class LanguagesEdit extends Component {
         }
         if (!validator.isUUID(data.KdvID)) {
             errors.push({ type: 'Error', code: Literals.Page.Pageheader[Profile.Language], description: Literals.Messages.Kdvrequired[Profile.Language] })
-        }
-        if (!validator.isNumber(data.Discount)) {
-            errors.push({ type: 'Error', code: Literals.Page.Pageheader[Profile.Language], description: Literals.Messages.Discountrequired[Profile.Language] })
         }
         if (errors.length > 0) {
             errors.forEach(error => {

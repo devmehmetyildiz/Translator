@@ -5,7 +5,7 @@ import store from '..';
 import validator from './Validator';
 export default function FormInput(props) {
 
-    const { display, page, visible } = props
+    const { display, page, visible, disableOnchange } = props
     const name = `${page}/${props.name}`
     const context = React.useContext(FormContext)
     const [formdata, setFormdata] = useState(context.formstates)
@@ -53,6 +53,9 @@ export default function FormInput(props) {
                 {!props.formtype ?
                     <Form.Input icon={display ? true : false} {...props} value={formdata[name] ? formdata[name] : ''} onChange={(e) => {
                         e.preventDefault()
+                        if (disableOnchange) {
+                            return
+                        }
                         context.setFormstates({ ...formdata, [name]: e.target.value })
                     }} onKeyPress={(e) => { handleKeyPress(e) }} onKeyUp={onKeyUpinput} fluid >
                     </Form.Input>

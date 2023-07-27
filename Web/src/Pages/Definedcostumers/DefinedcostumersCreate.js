@@ -55,7 +55,7 @@ export default class DefinedcostumersCreate extends Component {
                                 <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.City[Profile.Language]} name="City" />
                                 <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Town[Profile.Language]} name="Town" />
                             </Form.Group>
-                            <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Address[Profile.Language]} name="Address" />
+                            <FormInput page={this.PAGE_NAME}  placeholder={Literals.Columns.Address[Profile.Language]} name="Address" />
                             <Footerwrapper>
                                 <Form.Group widths={'equal'}>
                                     {history && <Link to="/Definedcostumers">

@@ -74,7 +74,7 @@ export const AddKdvs = createAsyncThunk(
             }));
             dispatch(fillKdvnotification({
                 type: 'Clear',
-                code: 'JobsCreate',
+                code: 'KdvsCreate',
                 description: '',
             }));
             history && history.push('/Kdvs');
@@ -123,7 +123,7 @@ export const EditKdvs = createAsyncThunk(
             }));
             dispatch(fillKdvnotification({
                 type: 'Clear',
-                code: 'JobsEdit',
+                code: 'KdvsEdit',
                 description: '',
             }));
             history && history.push('/Kdvs');

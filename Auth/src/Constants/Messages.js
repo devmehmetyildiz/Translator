@@ -165,6 +165,12 @@ const messages = {
         tr: 'E-posta zaten mevcut',
       }
     },
+    REFRESHTOKEN_REQUIRED: {
+      code: 'REFRESHTOKEN_REQUIRED', description: {
+        en: 'Refresh token required',
+        tr: 'Refresh token Gerekli',
+      }
+    },
   }
 
 }

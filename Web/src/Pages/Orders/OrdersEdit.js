@@ -605,18 +605,27 @@ export default class OrdersEdit extends Component {
   }
 
   selectedJobChangeHandler = (key, property, value) => {
-    this.setState(prevState => {
-      const jobRoutes = prevState.selectedJobs.map(jobRoute => ({ ...jobRoute }));
-      const index = jobRoutes.findIndex(jobRoute => jobRoute.key === key);
-      if (property === 'Order') {
-        jobRoutes
-          .filter(jobRoute => jobRoute.Order === value)
-          .forEach(jobRoute => {
-            jobRoute.Order = jobRoutes[index].Order > value ? jobRoute.Order + 1 : jobRoute.Order - 1;
-          });
-      }
-      jobRoutes[index][property] = value;
-      return { selectedJobs: jobRoutes };
+    const { Languages } = this.props
+    let jobRoutes = this.state.selectedJobs
+    const index = jobRoutes.findIndex(jobroute => jobroute.key === key)
+    if (property === 'Order') {
+      jobRoutes.filter(jobroute => jobroute.Order === value)
+        .forEach((jobroute) => jobroute.Order = jobRoutes[index].Order > value ? jobroute.Order + 1 : jobroute.Order - 1)
+    }
+    jobRoutes[index][property] = value
+    if (property === 'TargetlanguageID') {
+      const language = (Languages.list || []).find(u => u.Uuid === jobRoutes[index][property])
+      language && (jobRoutes[index]["Price"] = language.Price * jobRoutes[index]["Amount"])
+    }
+    if (property === 'Amount') {
+      const language = (Languages.list || []).find(u => u.Uuid === jobRoutes[index]['TargetlanguageID'])
+      language && (jobRoutes[index]["Price"] = language.Price * jobRoutes[index]["Amount"])
+    }
+    this.setState({ selectedJobs: jobRoutes }, () => {
+      this.context.setFormstates({
+        ...this.context.formstates, [`${this.PAGE_NAME}/Jobs`]: this.state.selectedJobs,
+        [`${this.PAGE_NAME}/Fileuuid`]: this.state.fileorderUuid
+      })
     })
   }
 
