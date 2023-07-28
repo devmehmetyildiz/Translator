@@ -14,17 +14,20 @@ import RecordtypesDelete from '../../Containers/Recordtypes/RecordtypesDelete'
 import Pagedivider from '../../Common/Styled/Pagedivider'
 import ExcelImport from '../../Containers/Utils/ExcelImport'
 import ExcelExport from '../../Containers/Utils/ExcelExport'
+import validator from '../../Utils/Validator'
 
 export default class Recordtypes extends Component {
 
     componentDidMount() {
-        const { GetRecordtypes } = this.props
+        const { GetRecordtypes, GetGoals } = this.props
         GetRecordtypes()
+        GetGoals()
     }
 
     componentDidUpdate() {
-        const { Recordtypes, removeRecordtypenotification } = this.props
+        const { Recordtypes, removeRecordtypenotification, Goals, removeGoalnotification } = this.props
         Notification(Recordtypes.notifications, removeRecordtypenotification)
+        Notification(Goals.notifications, removeGoalnotification)
     }
 
     render() {
@@ -38,6 +41,8 @@ export default class Recordtypes extends Component {
             { Header: Literals.Columns.Name[Profile.Language], accessor: 'Name', sortable: true, canGroupBy: true, canFilter: true },
             { Header: Literals.Columns.Ishaveprice[Profile.Language], accessor: 'Ishaveprice', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.boolCellhandler(col) },
             { Header: Literals.Columns.Price[Profile.Language], accessor: 'Price', sortable: true, canGroupBy: true, canFilter: true, Cell: col => { return col.value ? col.value : 0 + ' ₺' } },
+            { Header: Literals.Columns.Pricetype[Profile.Language], accessor: 'Pricetype', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.pricetypeCellhandler(col) },
+            { Header: Literals.Columns.Goal[Profile.Language], accessor: 'GoalID', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.goalCellhandler(col) },
             { Header: Literals.Columns.Createduser[Profile.Language], accessor: 'Createduser', sortable: true, canGroupBy: true, canFilter: true, },
             { Header: Literals.Columns.Updateduser[Profile.Language], accessor: 'Updateduser', sortable: true, canGroupBy: true, canFilter: true, },
             { Header: Literals.Columns.Createtime[Profile.Language], accessor: 'Createtime', sortable: true, canGroupBy: true, canFilter: true, },
@@ -55,9 +60,9 @@ export default class Recordtypes extends Component {
                 return item.key
             }) : [],
             groupBy: tableMeta ? JSON.parse(tableMeta.Config).filter(u => u.isGroup === true).map(item => {
-              return item.key
+                return item.key
             }) : [],
-          };
+        };
 
         const list = (Recordtypes.list || []).map(item => {
 
@@ -111,5 +116,23 @@ export default class Recordtypes extends Component {
     boolCellhandler = (col) => {
         const { Profile } = this.props
         return col.value !== null && (col.value ? Literals.Messages.Yes[Profile.Language] : Literals.Messages.No[Profile.Language])
+    }
+
+    pricetypeCellhandler = (col) => {
+        const Pricetypeoptions = [
+            { key: 1, text: 'GELİR', value: 1 },
+            { key: 2, text: 'GİDER', value: -1 },
+            { key: 3, text: 'PASİF', value: 0 },
+        ]
+        return col.value !== null && validator.isNumber(col.value) && Pricetypeoptions.find(u => u.value === col.value)?.text
+    }
+
+    goalCellhandler = (col) => {
+        const { Goals } = this.props
+        if (Goals.isLoading) {
+            return <Loader size='small' active inline='centered' ></Loader>
+        } else {
+            return (Goals.list || []).find(u => u.Uuid === col.value)?.Name
+        }
     }
 }

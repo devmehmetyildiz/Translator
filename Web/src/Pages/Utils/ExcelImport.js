@@ -34,14 +34,14 @@ class ExcelImport extends Component {
                         <Table celled>
                             <Table.Header>
                                 <Table.Row>
-                                    {this.state.columnHeaders.map((key, index) => {
-                                        return <Table.HeaderCell key={index}>{key}</Table.HeaderCell>
+                                    {this.state.columnHeaders.map((key) => {
+                                        return <Table.HeaderCell key={Math.random()}>{key}</Table.HeaderCell>
                                     })}
                                 </Table.Row>
                             </Table.Header>
                             <Table.Body>
                                 {this.state.data.map((row, i) => {
-                                    return <Table.Row key={i}>
+                                    return <Table.Row key={Math.random()}>
                                         {Object.values(row).map((cell, ii) => {
                                             return <Table.Cell key={i + ii}>
                                                 <Label >{cell}</Label>

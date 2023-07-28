@@ -4,15 +4,17 @@ import {
   GetRecordtypes, DeleteRecordtypes, removeRecordtypenotification, AddRecordRecordtypes,
   fillRecordtypenotification, handleDeletemodal, handleSelectedRecordtype
 } from "../../Redux/RecordtypeSlice"
+import { GetGoals, removeGoalnotification } from "../../Redux/GoalSlice"
 
 const mapStateToProps = (state) => ({
   Recordtypes: state.Recordtypes,
-  Profile: state.Profile
+  Profile: state.Profile,
+  Goals: state.Goals
 })
 
 const mapDispatchToProps = {
   GetRecordtypes, DeleteRecordtypes, removeRecordtypenotification, AddRecordRecordtypes,
-  fillRecordtypenotification, handleDeletemodal, handleSelectedRecordtype
+  fillRecordtypenotification, handleDeletemodal, handleSelectedRecordtype, GetGoals, removeGoalnotification
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Recordtypes)

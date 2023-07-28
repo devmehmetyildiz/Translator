@@ -31,8 +31,8 @@ export default function OrdersList({ Data, Columns, initialConfig, Profile, Jobs
     const renderRowSubComponent = React.useCallback(
         ({ row }) => {
             if (row && row.original && row.original.Id) {
-                let jobs = (Jobs.list || []).filter(u => u.OrderID === Data.find(u => u.Id === row.original.Id).Uuid)
-                let files = (Files.list || []).filter(u => u.ParentID === Data.find(u => u.Id === row.original.Id).Fileuuid)
+                let jobs = (Jobs.list || []).filter(u => u.OrderID === Data.find(u => u.Id === row.original.Id)?.Uuid)
+                let files = (Files.list || []).filter(u => u.ParentID === Data.find(u => u.Id === row.original.Id)?.Fileuuid)
                 const jobcolumns = [
                     { Header: Literals.Columns.Id[Profile.Language], accessor: 'Id', sortable: true, canGroupBy: true, canFilter: true, },
                     { Header: Literals.Columns.Jobno[Profile.Language], accessor: 'Jobno', sortable: true, canGroupBy: true, canFilter: true },

@@ -28,10 +28,10 @@ async function GetDefinedcompany(req, res, next) {
 
     let validationErrors = []
     if (!req.params.definedcompanyId) {
-        validationErrors.push(messages.VALIDATION_ERROR.CASEID_REQUIRED)
+        validationErrors.push(messages.VALIDATION_ERROR.DEFINEDCOMPANYID_REQUIRED)
     }
     if (!validator.isUUID(req.params.definedcompanyId)) {
-        validationErrors.push(messages.VALIDATION_ERROR.UNSUPPORTED_CASEID)
+        validationErrors.push(messages.VALIDATION_ERROR.UNSUPPORTED_DEFINEDCOMPANYID)
     }
     if (validationErrors.length > 0) {
         return next(createValidationError(validationErrors, req.language))
@@ -40,10 +40,10 @@ async function GetDefinedcompany(req, res, next) {
     try {
         const definedcompany = await db.definedcompanyModel.findOne({ where: { Uuid: req.params.definedcompanyId } });
         if (!definedcompany) {
-            return next(createNotfounderror([messages.ERROR.CASE_NOT_FOUND]))
+            return next(createNotfounderror([messages.ERROR.DEFINEDCOMPANY_NOT_FOUND]))
         }
         if (!definedcompany.Isactive) {
-            return next(createNotfounderror([messages.ERROR.CASE_NOT_ACTIVE]))
+            return next(createNotfounderror([messages.ERROR.DEFINEDCOMPANY_NOT_ACTIVE]))
         }
         res.status(200).json(definedcompany)
     } catch (error) {

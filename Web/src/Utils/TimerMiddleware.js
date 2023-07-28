@@ -2,7 +2,8 @@ import Cookies from "universal-cookie";
 import config from "../Config";
 import { ROUTES } from "./Constants";
 import instanse from "../Redux/axios";
-const INTERVAL = 1000 * 60 * 5
+
+const INTERVAL = 1000 * 60 * 2
 
 const timerMiddleware = store => next => action => {
 
@@ -12,15 +13,19 @@ const timerMiddleware = store => next => action => {
                 type: 'EXECUTED_TIMER'
             })
             try {
+                console.log("refresh token yenileniyor")
                 const localcookies = new Cookies();
                 let token = localcookies.get('patientcareRefresh')
                 const response = await instanse.post(config.services.Auth, `Oauth/Login`, {
                     grant_type: 'refresh_token',
                     refreshToken: token
                 });
+                console.log('response.data: ', response.data);
                 localcookies.set('patientcare', response.data.accessToken, { path: '/' })
                 localcookies.set('patientcareRefresh', response.data.refreshToken, { path: '/' })
+                console.log("refresh token yenilendi")
             } catch (error) {
+                console.log('error: ', error);
                 console.log("refresh token hatalı")
             }
 

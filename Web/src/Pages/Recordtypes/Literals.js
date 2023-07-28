@@ -23,6 +23,14 @@ const Literals = {
             tr: 'Birim Ücret',
             en: 'Unit Price'
         },
+        Pricetype: {
+            tr: 'Ücret türü',
+            en: 'Price type'
+        },
+        Goal: {
+            tr: 'Aylık Hedef',
+            en: 'Monthly Goal'
+        },
         Createduser: {
             tr: 'Oluşturan Kullanıcı',
             en: 'Created User'

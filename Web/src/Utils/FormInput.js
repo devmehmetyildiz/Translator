@@ -5,7 +5,7 @@ import store from '..';
 import validator from './Validator';
 export default function FormInput(props) {
 
-    const { display, page, visible, disableOnchange } = props
+    const { display, page, isFormvisible, disableOnchange } = props
     const name = `${page}/${props.name}`
     const context = React.useContext(FormContext)
     const [formdata, setFormdata] = useState(context.formstates)
@@ -30,8 +30,10 @@ export default function FormInput(props) {
         e.stopPropagation()
     }
 
+    const contextProp = { ...props }
+    contextProp.isFormvisible && delete contextProp.isFormvisible
     return (
-        (validator.isBoolean(visible) ? visible : true) ?
+        (validator.isBoolean(isFormvisible) ? isFormvisible : true) ?
             <Form.Field>
                 <div className='flex flex-row m-2'>
                     {!props.dontshowlabel && <label className='text-[#000000de]'>{props.placeholder}{props.modal ? props.modal : null}</label>}
@@ -51,7 +53,7 @@ export default function FormInput(props) {
                     />}
                 </div>
                 {!props.formtype ?
-                    <Form.Input icon={display ? true : false} {...props} value={formdata[name] ? formdata[name] : ''} onChange={(e) => {
+                    <Form.Input icon={display ? true : false} {...contextProp} value={formdata[name] ? formdata[name] : ''} onChange={(e) => {
                         e.preventDefault()
                         if (disableOnchange) {
                             return
@@ -63,7 +65,7 @@ export default function FormInput(props) {
                     <>
                         <>
                             {props.formtype === 'dropdown' ?
-                                < Dropdown value={formdata[name] !== undefined ? formdata[name] : (props.multiple ? [] : '')} {...props} clearable search fluid selection
+                                < Dropdown value={formdata[name] !== undefined ? formdata[name] : (props.multiple ? [] : '')} {...contextProp} clearable search fluid selection
                                     onChange={(e, data) => {
                                         context.setFormstates({ ...formdata, [name]: data.value })
 

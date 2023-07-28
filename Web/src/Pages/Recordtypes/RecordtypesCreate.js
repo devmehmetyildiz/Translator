@@ -61,6 +61,12 @@ export default class RecordtypesCreate extends Component {
     render() {
         const { Recordtypes, Profile, history } = this.props
 
+        const Pricetypeoptions = [
+            { key: 1, text: 'GELİR', value: 1 },
+            { key: 2, text: 'GİDER', value: -1 },
+            { key: 3, text: 'PASİF', value: 0 },
+        ]
+
         return (
             Recordtypes.isLoading || Recordtypes.isDispatching ? <LoadingPage /> :
                 <Pagewrapper>
@@ -88,6 +94,10 @@ export default class RecordtypesCreate extends Component {
                                                     {this.context.formstates[`${this.PAGE_NAME}/Ishaveprice`] ?
                                                         <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Price[Profile.Language]} name="Price" type='number' display='try' />
                                                         : null}
+                                                </Form.Group>
+                                                <Form.Group widths={'equal'}>
+                                                    <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Pricetype[Profile.Language]} name="Pricetype" options={Pricetypeoptions} formtype="dropdown" />
+                                                    <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Pricetype[Profile.Language]} name="GoalID" options={Pricetypeoptions} formtype="dropdown" />
                                                 </Form.Group>
                                                 <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Ishaveprice[Profile.Language]} name="Ishaveprice" formtype={'checkbox'} />
                                             </React.Fragment>
@@ -132,6 +142,7 @@ export default class RecordtypesCreate extends Component {
         const data = formToObject(e.target)
         data.Ishaveprice = this.context.formstates[`${this.PAGE_NAME}/Ishaveprice`] ? this.context.formstates[`${this.PAGE_NAME}/Ishaveprice`] : false
         data.Config = this.state.template
+        data.Pricetype = this.context.formstates[`${this.PAGE_NAME}/Pricetype`]
         let errors = []
         if (!validator.isString(data.Name)) {
             errors.push({ type: 'Error', code: Literals.Page.Pageheader[Profile.Language], description: Literals.Messages.Namerequired[Profile.Language] })

@@ -40,7 +40,7 @@ import PaymentsCreate from '../../Containers/Payments/PaymentsCreate'
 import LanguageCalculate from './LanguageCalculate'
 import { ROUTES } from '../../Utils/Constants'
 import config from '../../Config'
-
+import _ from 'lodash'
 export default class OrdersEdit extends Component {
 
   PAGE_NAME = 'OrdersEdit'
@@ -127,8 +127,30 @@ export default class OrdersEdit extends Component {
     Notification(Languages.notifications, removeLanguagenotification, this.context.clearForm)
     Notification(Documents.notifications, removeDocumentnotification, this.context.clearForm)
     Notification(Cases.notifications, removeCasenotification, this.context.clearForm)
+
+    this.Checkfinalprice()
   }
 
+  Checkfinalprice = () => {
+    const calculatedprice = this.context.formstates[`${this.PAGE_NAME}/Calculatedprice`]
+    const price = this.state.selectedJobs.length > 0 ? this.state.selectedJobs.map(u => { return u.Price }).reduce((total, num) => { return total + num }) : 0
+
+    if (calculatedprice !== price) {
+      this.context.setFormstates({
+        ...this.context.formstates,
+        [`${this.PAGE_NAME}/Calculatedprice`]: price
+      })
+    }
+  }
+
+  customSearch = (options, query) => {
+    const newOptions = options.map(u => {
+      let newtext = u.text.props.children[0]
+      return { ...u, text: newtext }
+    })
+    const re = new RegExp(_.escapeRegExp(query))
+    return newOptions.filter((opt) => re.test(opt.text))
+  }
 
   render() {
     const { Orders, Recordtypes, Courthauses, Courts, Definedcompanies, history, location,
@@ -204,6 +226,9 @@ export default class OrdersEdit extends Component {
 
     const usagetypes = [
       { key: 'Genel Depolama', value: 'Genel Depolama', text: 'Genel Depolama' },
+      { key: 'Klasör 1', value: 'Klasör 1', text: 'Klasör 1' },
+      { key: 'Klasör 2', value: 'Klasör 2', text: 'Klasör 2' },
+      { key: 'Klasör 3', value: 'Klasör 3', text: 'Klasör 3' },
     ]
 
     const formLoading = Recordtypes.isLoading || Recordtypes.isDispatching ||
@@ -216,7 +241,6 @@ export default class OrdersEdit extends Component {
       Documents.isLoading || Documents.isDispatching ||
       Cases.isLoading || Cases.isDispatching ||
       Kdvs.isLoading || Kdvs.isDispatching
-
 
     return (
       isLoading || isDispatching
@@ -247,36 +271,36 @@ export default class OrdersEdit extends Component {
                             <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Recordtype[Profile.Language]} name="RecordtypeID" options={Recordtypeoption} formtype='dropdown' modal={addModal(<RecordtypesCreate />)} />
                           </Form.Group>
                           <Form.Group widths={'equal'}>
-                            <FormInput visible={this.Checkvisiblestatus('PrinciblecourthauseID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Princiblecourthause[Profile.Language]} name="PrinciblecourthauseID" options={Courthauseoption} formtype='dropdown' modal={addModal(<CourthausesCreate />)} />
-                            <FormInput visible={this.Checkvisiblestatus('PrinciblecourtID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Princiblecourt[Profile.Language]} name="PrinciblecourtID" options={Courtoption} formtype='dropdown' modal={addModal(<CourtsCreate />)} />
-                            <FormInput visible={this.Checkvisiblestatus('Princibleno')} page={this.PAGE_NAME} placeholder={Literals.Columns.Princibleno[Profile.Language]} name="Princibleno" />
-                            <FormInput visible={this.Checkvisiblestatus('Desicionno')} page={this.PAGE_NAME} placeholder={Literals.Columns.Desicionno[Profile.Language]} name="Desicionno" />
+                            <FormInput isFormvisible={this.Checkvisiblestatus('PrinciblecourthauseID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Princiblecourthause[Profile.Language]} name="PrinciblecourthauseID" options={Courthauseoption} formtype='dropdown' modal={addModal(<CourthausesCreate />)} />
+                            <FormInput isFormvisible={this.Checkvisiblestatus('PrinciblecourtID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Princiblecourt[Profile.Language]} name="PrinciblecourtID" options={Courtoption} formtype='dropdown' modal={addModal(<CourtsCreate />)} />
+                            <FormInput isFormvisible={this.Checkvisiblestatus('Princibleno')} page={this.PAGE_NAME} placeholder={Literals.Columns.Princibleno[Profile.Language]} name="Princibleno" />
+                            <FormInput isFormvisible={this.Checkvisiblestatus('Desicionno')} page={this.PAGE_NAME} placeholder={Literals.Columns.Desicionno[Profile.Language]} name="Desicionno" />
                           </Form.Group>
                           <Form.Group widths={'equal'}>
-                            <FormInput visible={this.Checkvisiblestatus('DirectivecourthauseID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Directivecourthause[Profile.Language]} name="DirectivecourthauseID" options={Courthauseoption} formtype='dropdown' modal={addModal(<CourthausesCreate />)} />
-                            <FormInput visible={this.Checkvisiblestatus('DirectivecourtID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Directivecourt[Profile.Language]} name="DirectivecourtID" options={Courtoption} formtype='dropdown' modal={addModal(<CourtsCreate />)} />
-                            <FormInput visible={this.Checkvisiblestatus('Directiveno')} page={this.PAGE_NAME} placeholder={Literals.Columns.Directiveno[Profile.Language]} name="Directiveno" />
-                            <FormInput visible={this.Checkvisiblestatus('Directiveinfo')} page={this.PAGE_NAME} placeholder={Literals.Columns.Directiveinfo[Profile.Language]} name="Directiveinfo" />
+                            <FormInput isFormvisible={this.Checkvisiblestatus('DirectivecourthauseID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Directivecourthause[Profile.Language]} name="DirectivecourthauseID" options={Courthauseoption} formtype='dropdown' modal={addModal(<CourthausesCreate />)} />
+                            <FormInput isFormvisible={this.Checkvisiblestatus('DirectivecourtID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Directivecourt[Profile.Language]} name="DirectivecourtID" options={Courtoption} formtype='dropdown' modal={addModal(<CourtsCreate />)} />
+                            <FormInput isFormvisible={this.Checkvisiblestatus('Directiveno')} page={this.PAGE_NAME} placeholder={Literals.Columns.Directiveno[Profile.Language]} name="Directiveno" />
+                            <FormInput isFormvisible={this.Checkvisiblestatus('Directiveinfo')} page={this.PAGE_NAME} placeholder={Literals.Columns.Directiveinfo[Profile.Language]} name="Directiveinfo" />
                           </Form.Group>
                           <Form.Group widths={'equal'}>
-                            <FormInput visible={this.Checkvisiblestatus('CompanyID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Company[Profile.Language]} name="CompanyID" options={Definedcompanyoption} formtype='dropdown' modal={addModal(<DefinedcompaniesCreate />)} />
-                            <FormInput visible={this.Checkvisiblestatus('CostumerID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Costumer[Profile.Language]} name="CostumerID" options={Definedcostumeroption} formtype='dropdown' modal={addModal(<DefinedcostumersCreate />)} />
+                            <FormInput isFormvisible={this.Checkvisiblestatus('CompanyID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Company[Profile.Language]} name="CompanyID" options={Definedcompanyoption} formtype='dropdown' modal={addModal(<DefinedcompaniesCreate />)} />
+                            <FormInput isFormvisible={this.Checkvisiblestatus('CostumerID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Costumer[Profile.Language]} name="CostumerID" options={Definedcostumeroption} formtype='dropdown' modal={addModal(<DefinedcostumersCreate />)} />
                           </Form.Group>
                           <Form.Group widths={'equal'}>
-                            <FormInput visible={this.Checkvisiblestatus('Registerdate')} page={this.PAGE_NAME} placeholder={Literals.Columns.Registerdate[Profile.Language]} name="Registerdate" type='date' />
-                            <FormInput visible={this.Checkvisiblestatus('Deliverydate')} page={this.PAGE_NAME} placeholder={Literals.Columns.Deliverydate[Profile.Language]} name="Deliverydate" type='date' />
+                            <FormInput isFormvisible={this.Checkvisiblestatus('Registerdate')} page={this.PAGE_NAME} placeholder={Literals.Columns.Registerdate[Profile.Language]} name="Registerdate" type='date' />
+                            <FormInput isFormvisible={this.Checkvisiblestatus('Deliverydate')} page={this.PAGE_NAME} placeholder={Literals.Columns.Deliverydate[Profile.Language]} name="Deliverydate" type='date' />
                           </Form.Group>
                           <Form.Group widths={'equal'}>
-                            <FormInput visible={this.Checkvisiblestatus('Prepayment')} page={this.PAGE_NAME} placeholder={Literals.Columns.Prepayment[Profile.Language]} name="Prepayment" type='number' step='0.01' display='try' />
-                            <FormInput visible={this.Checkvisiblestatus('Notaryexpense')} page={this.PAGE_NAME} placeholder={Literals.Columns.Notaryexpense[Profile.Language]} name="Notaryexpense" type='number' step='0.01' display='try' />
-                            <FormInput visible={this.Checkvisiblestatus('Netprice')} page={this.PAGE_NAME} placeholder={Literals.Columns.Netprice[Profile.Language]} name="Netprice" type='number' step='0.01' display='try' />
-                            <FormInput visible={this.Checkvisiblestatus('Calculatedprice')} page={this.PAGE_NAME} placeholder={Literals.Columns.Calculatedprice[Profile.Language]} name="Calculatedprice" type='number' step='0.01' display='try' />
+                            <FormInput isFormvisible={this.Checkvisiblestatus('Prepayment')} page={this.PAGE_NAME} placeholder={Literals.Columns.Prepayment[Profile.Language]} name="Prepayment" type='number' step='0.01' display='try' />
+                            <FormInput isFormvisible={this.Checkvisiblestatus('Notaryexpense')} page={this.PAGE_NAME} placeholder={Literals.Columns.Notaryexpense[Profile.Language]} name="Notaryexpense" type='number' step='0.01' display='try' />
+                            <FormInput isFormvisible={this.Checkvisiblestatus('Netprice')} page={this.PAGE_NAME} placeholder={Literals.Columns.Netprice[Profile.Language]} name="Netprice" type='number' step='0.01' display='try' />
+                            <FormInput isFormvisible={this.Checkvisiblestatus('Calculatedprice')} page={this.PAGE_NAME} placeholder={Literals.Columns.Calculatedprice[Profile.Language]} name="Calculatedprice" type='number' step='0.01' display='try' />
                           </Form.Group>
                           <Form.Group widths={'equal'}>
-                            <FormInput visible={this.Checkvisiblestatus('TranslatorID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Translator[Profile.Language]} name="TranslatorID" options={Translatoroption} formtype='dropdown' modal={addModal(<TranslatorsCreate />)} />
-                            <FormInput visible={this.Checkvisiblestatus('KdvID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Kdv[Profile.Language]} name="KdvID" options={Kdvoption} formtype='dropdown' modal={addModal(<KdvsCreate />)} />
-                            <FormInput visible={this.Checkvisiblestatus('PaymentID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Payment[Profile.Language]} name="PaymentID" options={Paymentoption} formtype='dropdown' modal={addModal(<PaymentsCreate />)} />
-                            <FormInput visible={this.Checkvisiblestatus('CaseID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Case[Profile.Language]} name="CaseID" options={Caseoption} formtype='dropdown' modal={addModal(<CasesCreate />)} />
+                            <FormInput isFormvisible={this.Checkvisiblestatus('TranslatorID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Translator[Profile.Language]} name="TranslatorID" options={Translatoroption} formtype='dropdown' modal={addModal(<TranslatorsCreate />)} />
+                            <FormInput isFormvisible={this.Checkvisiblestatus('KdvID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Kdv[Profile.Language]} name="KdvID" options={Kdvoption} formtype='dropdown' modal={addModal(<KdvsCreate />)} />
+                            <FormInput isFormvisible={this.Checkvisiblestatus('PaymentID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Payment[Profile.Language]} name="PaymentID" options={Paymentoption} formtype='dropdown' modal={addModal(<PaymentsCreate />)} />
+                            <FormInput isFormvisible={this.Checkvisiblestatus('CaseID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Case[Profile.Language]} name="CaseID" options={Caseoption} formtype='dropdown' modal={addModal(<CasesCreate />)} />
                           </Form.Group>
                         </div>
                       </React.Fragment>
@@ -319,17 +343,17 @@ export default class OrdersEdit extends Component {
                                   </Table.Cell>
                                   <Table.Cell>
                                     <Form.Field>
-                                      <Dropdown placeholder={Literals.Columns.Sourcelanguage[Profile.Language]} name="SourcelanguageID" clearable search fluid selection options={Languageoption} value={job.SourcelanguageID} onChange={(e, data) => { this.selectedJobChangeHandler(job.key, 'SourcelanguageID', data.value) }} />
+                                      <Dropdown placeholder={Literals.Columns.Sourcelanguage[Profile.Language]} name="SourcelanguageID" clearable search={this.customSearch} fluid selection options={Languageoption} value={job.SourcelanguageID} onChange={(e, data) => { this.selectedJobChangeHandler(job.key, 'SourcelanguageID', data.value) }} />
                                     </Form.Field>
                                   </Table.Cell>
                                   <Table.Cell>
                                     <Form.Field>
-                                      <Dropdown placeholder={Literals.Columns.Targetlanguage[Profile.Language]} name="TargetlanguageID" clearable search fluid selection options={Languageoption} value={job.TargetlanguageID} onChange={(e, data) => { this.selectedJobChangeHandler(job.key, 'TargetlanguageID', data.value) }} />
+                                      <Dropdown placeholder={Literals.Columns.Targetlanguage[Profile.Language]} name="TargetlanguageID" clearable search={this.customSearch} fluid selection options={Languageoption} value={job.TargetlanguageID} onChange={(e, data) => { this.selectedJobChangeHandler(job.key, 'TargetlanguageID', data.value) }} />
                                     </Form.Field>
                                   </Table.Cell>
                                   <Table.Cell>
                                     <Form.Field>
-                                      <Dropdown placeholder={Literals.Columns.Document[Profile.Language]} name="DocumentID" clearable search fluid selection options={Documentoption} value={job.DocumentID} onChange={(e, data) => { this.selectedJobChangeHandler(job.key, 'DocumentID', data.value) }} />
+                                      <Dropdown placeholder={Literals.Columns.Document[Profile.Language]} name="DocumentID" clearable search={this.customSearch} fluid selection options={Documentoption} value={job.DocumentID} onChange={(e, data) => { this.selectedJobChangeHandler(job.key, 'DocumentID', data.value) }} />
                                     </Form.Field>
                                   </Table.Cell>
                                   <Table.Cell>
@@ -340,7 +364,7 @@ export default class OrdersEdit extends Component {
                                   </Table.Cell>
                                   <Table.Cell>
                                     <Form.Field>
-                                      <Dropdown placeholder={Literals.Columns.Case[Profile.Language]} name="CaseID" clearable search fluid selection options={Caseoption} value={job.CaseID} onChange={(e, data) => { this.selectedJobChangeHandler(job.key, 'CaseID', data.value) }} />
+                                      <Dropdown placeholder={Literals.Columns.Case[Profile.Language]} name="CaseID" clearable search={this.customSearch} fluid selection options={Caseoption} value={job.CaseID} onChange={(e, data) => { this.selectedJobChangeHandler(job.key, 'CaseID', data.value) }} />
                                     </Form.Field>
                                   </Table.Cell>
                                   <Table.Cell>
@@ -573,18 +597,26 @@ export default class OrdersEdit extends Component {
   }
 
   AddNewJob = () => {
-    const { selected_record } = this.props.Orders
+
+    const { Documents, Languages, Cases } = this.props
+
+    const defaultDocument = (Documents.list || []).find(u => u.Isdefaultdocument)
+    const defaultTargetlanguage = (Languages.list || []).find(u => u.Isdefaulttarget)
+    const defaultSourcelanguage = (Languages.list || []).find(u => u.Isdefaultsource)
+    const defaultPassivecase = (Cases.list || []).find(u => u.Isdefaultpassivecase)
+    const language = (Languages.list || []).find(u => u.Uuid === defaultTargetlanguage?.Uuid)
+
     this.setState({
       selectedJobs: [...this.state.selectedJobs,
       {
-        OrderID: selected_record.Uuid,
+        OrderID: '',
         Jobno: '',
-        SourcelanguageID: '',
-        TargetlanguageID: '',
-        DocumentID: '',
-        Amount: 0,
-        Price: 0,
-        CaseID: '',
+        SourcelanguageID: defaultTargetlanguage ? defaultTargetlanguage.Uuid : '',
+        TargetlanguageID: defaultSourcelanguage ? defaultSourcelanguage.Uuid : '',
+        DocumentID: defaultDocument ? defaultDocument.Uuid : '',
+        Amount: 1,
+        Price: language ? language.Price : 0,
+        CaseID: defaultPassivecase ? defaultPassivecase.Uuid : '',
         Info: '',
         key: Math.random(),
         Wordcount: 0,
@@ -594,38 +626,48 @@ export default class OrdersEdit extends Component {
         Preferredprice: 0,
         Calculatedprice: 0,
         Order: this.state.selectedJobs.length,
+        Fileuuid: this.state.fileorderUuid
       }]
-    })
-  }
-
-  removeJobs = (key, order) => {
-    let jobs = this.state.selectedJobs.filter(jobroute => jobroute.key !== key)
-    jobs.filter(job => job.Order > order).forEach(job => job.Order--)
-    this.setState({ selectedJobs: jobs })
-  }
-
-  selectedJobChangeHandler = (key, property, value) => {
-    const { Languages } = this.props
-    let jobRoutes = this.state.selectedJobs
-    const index = jobRoutes.findIndex(jobroute => jobroute.key === key)
-    if (property === 'Order') {
-      jobRoutes.filter(jobroute => jobroute.Order === value)
-        .forEach((jobroute) => jobroute.Order = jobRoutes[index].Order > value ? jobroute.Order + 1 : jobroute.Order - 1)
-    }
-    jobRoutes[index][property] = value
-    if (property === 'TargetlanguageID') {
-      const language = (Languages.list || []).find(u => u.Uuid === jobRoutes[index][property])
-      language && (jobRoutes[index]["Price"] = language.Price * jobRoutes[index]["Amount"])
-    }
-    if (property === 'Amount') {
-      const language = (Languages.list || []).find(u => u.Uuid === jobRoutes[index]['TargetlanguageID'])
-      language && (jobRoutes[index]["Price"] = language.Price * jobRoutes[index]["Amount"])
-    }
-    this.setState({ selectedJobs: jobRoutes }, () => {
+    }, () => {
       this.context.setFormstates({
         ...this.context.formstates, [`${this.PAGE_NAME}/Jobs`]: this.state.selectedJobs,
         [`${this.PAGE_NAME}/Fileuuid`]: this.state.fileorderUuid
       })
+    })
+  }
+
+  removeJobs = (key, order) => {
+    let jobRoutes = this.state.selectedJobs
+    const index = jobRoutes.findIndex(jobroute => jobroute.key === key)
+    if (!validator.isUUID(jobRoutes[index]["Uuid"])) {
+      let jobs = this.state.selectedJobs.filter(jobroute => jobroute.key !== key)
+      jobs.filter(job => job.Order > order).forEach(job => job.Order--)
+      this.setState({ selectedJobs: jobs })
+    }
+  }
+
+  selectedJobChangeHandler = (key, property, value) => {
+    const { Languages } = this.props
+    this.setState(prevState => {
+      const jobRoutes = prevState.selectedJobs.map(jobRoute => ({ ...jobRoute }));
+      const index = jobRoutes.findIndex(jobRoute => jobRoute.key === key);
+      if (property === 'Order') {
+        jobRoutes
+          .filter(jobRoute => jobRoute.Order === value)
+          .forEach(jobRoute => {
+            jobRoute.Order = jobRoutes[index].Order > value ? jobRoute.Order + 1 : jobRoute.Order - 1;
+          });
+      }
+      jobRoutes[index][property] = value;
+      if (property === 'TargetlanguageID') {
+        const language = (Languages.list || []).find(u => u.Uuid === jobRoutes[index][property])
+        language && (jobRoutes[index]["Price"] = language.Price * jobRoutes[index]["Amount"])
+      }
+      if (property === 'Amount') {
+        const language = (Languages.list || []).find(u => u.Uuid === jobRoutes[index]['TargetlanguageID'])
+        language && (jobRoutes[index]["Price"] = language.Price * jobRoutes[index]["Amount"])
+      }
+      return { selectedJobs: jobRoutes };
     })
   }
 

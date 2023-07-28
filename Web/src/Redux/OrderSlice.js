@@ -27,7 +27,7 @@ const Literals = {
         en: 'Order updated successfully',
         tr: 'Sipariş Başarı ile güncellendi'
     },
-    updatedescription: {
+    updatefiledescription: {
         en: 'Files updated successfully',
         tr: 'Dosyalar Başarı ile güncellendi'
     },
@@ -97,7 +97,7 @@ export const AddOrders = createAsyncThunk(
             dispatch(fillOrdernotification({
                 type: 'Success',
                 code: Literals.addcode[Language],
-                description: Literals.adddescription[Language],
+                description: Literals.addfiledescription[Language],
             }));
             dispatch(fillOrdernotification({
                 type: 'Clear',
@@ -141,8 +141,8 @@ export const EditOrders = createAsyncThunk(
             })
             dispatch(fillOrdernotification({
                 type: 'Success',
-                code: Literals.addcode[Language],
-                description: Literals.adddescription[Language],
+                code: Literals.updatecode[Language],
+                description: Literals.updatefiledescription[Language],
             }));
             dispatch(fillOrdernotification({
                 type: 'Clear',

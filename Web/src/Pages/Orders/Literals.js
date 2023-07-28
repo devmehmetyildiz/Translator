@@ -302,12 +302,12 @@ const Literals = {
     },
     Messages: {
         Nodatafind: {
-            tr: "tanımlı iş Yok",
-            en: "There is no job found"
+            tr: "tanımlı sipariş Yok",
+            en: "There is no order found"
         },
         Deletecheck: {
-            tr: "işini silmek istediğinize emin misiniz?",
-            en: "job will delete, are you sure?"
+            tr: "siparişini silmek istediğinize emin misiniz?",
+            en: "order will delete, are you sure?"
         },
         Ordernorequired: {
             tr: "Sipariş numarası Gerekli",
