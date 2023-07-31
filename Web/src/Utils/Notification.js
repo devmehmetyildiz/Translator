@@ -12,6 +12,9 @@ function notification(notifications, removeNotification, clearForm) {
             case "Success":
                 cogoToast.success(description, toastoptions)
                 break;
+            case "Info":
+                cogoToast.info(description, toastoptions)
+                break;
             case "Error":
                 cogoToast.error(description, toastoptions)
                 break;

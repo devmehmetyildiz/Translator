@@ -91,8 +91,8 @@ async function AddDefinedcostumer(req, res, next) {
 async function AddArrayDefinedcostumer(req, res, next) {
     let validationErrors = []
     if (Array.isArray(req.body)) {
+        const t = await db.sequelize.transaction();
         try {
-            const t = await db.sequelize.transaction();
             for (const data of req.body) {
                 const {
                     Name,

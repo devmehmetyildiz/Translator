@@ -35,7 +35,7 @@ export default class Kdvs extends Component {
         const Columns = [
             { Header: Literals.Columns.Id[Profile.Language], accessor: 'Id', sortable: true, canGroupBy: true, canFilter: true, },
             { Header: Literals.Columns.Uuid[Profile.Language], accessor: 'Uuid', sortable: true, canGroupBy: true, canFilter: true, },
-            { Header: Literals.Columns.Name[Profile.Language], accessor: 'Name', sortable: true, canGroupBy: true, canFilter: true },
+            { Header: Literals.Columns.Name[Profile.Language], accessor: 'Name', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.nameCellhandler(col) },
             { Header: Literals.Columns.Percent[Profile.Language], accessor: 'Percent', sortable: true, canGroupBy: true, canFilter: true, Cell: col => { return col.value + '%' } },
             { Header: Literals.Columns.Isdefaultkdv[Profile.Language], accessor: 'Isdefaultkdv', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.boolCellhandler(col) },
             { Header: Literals.Columns.Createduser[Profile.Language], accessor: 'Createduser', sortable: true, canGroupBy: true, canFilter: true, },
@@ -92,7 +92,7 @@ export default class Kdvs extends Component {
                                     </Link>
                                     <ColumnChooser meta={Profile.tablemeta} columns={Columns} metaKey={metaKey} />
                                     <ExcelImport columns={Columns} addData={AddRecordKdvs} />
-                                    <ExcelExport data={list} name={metaKey} Config={initialConfig} />
+                                    <ExcelExport columns={Columns} data={list} name={metaKey} Config={initialConfig} />
                                 </GridColumn>
                             </Grid>
                         </Headerwrapper>
@@ -112,4 +112,23 @@ export default class Kdvs extends Component {
         const { Profile } = this.props
         return col.value !== null && (col.value ? Literals.Messages.Yes[Profile.Language] : Literals.Messages.No[Profile.Language])
     }
+    nameCellhandler = (col) => {
+        const { fillKdvnotification,Profile } = this.props
+        if (col.value) {
+            let copytext = col.row?.original?.Uuid
+            return <div className='group flex flex-row justify-between items-center text-center'>
+                <p className='m-0 p-0 '>{col.value}</p>
+                <Icon onClick={() => {
+                    navigator.clipboard.writeText(copytext)
+                    fillKdvnotification({
+                        type: 'Info',
+                        code: Literals.Columns.copied[Profile.Language],
+                        description: copytext,
+                    })
+                }} className="m-0 p-0 cursor-pointer text-blue-600 shadow-sm shadow-blue-400 !opacity-0 group-hover:!opacity-100 delay-300 transition-all duration-1000" name='file' />
+            </div>
+        }
+        return null
+    }
+
 }

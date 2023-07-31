@@ -340,6 +340,12 @@ export const ReportsSlice = createSlice({
         logs: [],
         isLoading: false,
         isDispatching: false,
+        Pricepotancial: 0,
+        Pricenet: 0,
+        Pricereal: 0,
+        Pricereal: 0,
+        Priceexpence: 0
+
     },
     reducers: {
         fillReportnotification: (state, action) => {

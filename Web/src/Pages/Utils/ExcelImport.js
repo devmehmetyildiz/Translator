@@ -55,13 +55,13 @@ class ExcelImport extends Component {
                         : <Form.Input label={Literals.Columns.File} type='file' accept=".xlsx, .xls" fluid onChange={this.handleFileChange} />}
                 </Modal.Content>
                 <Modal.Actions >
-                    <Button className='!m-2' floated='left' type='button' negative onClick={() => this.setState({
+                    <Button className='!m-4' floated='left' type='button' negative onClick={() => this.setState({
                         opened: false,
                         columnHeaders: [],
                         data: [],
                         dataUploaded: false
                     })}>{Literals.Button.Giveup[Profile.Language]}</Button>
-                    <Button className='!m-2' floated='right' type='submit' positive onClick={() => this.saveChanges()}>{Literals.Button.Create[Profile.Language]}</Button>
+                    <Button className='!m-4' floated='right' type='submit' positive onClick={() => this.saveChanges()}>{Literals.Button.Create[Profile.Language]}</Button>
                 </Modal.Actions>
             </Modal>
         </React.Fragment>

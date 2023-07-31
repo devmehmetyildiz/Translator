@@ -182,6 +182,7 @@ export default class OrdersEdit extends Component {
             })
           }}>
           <Icon
+            className='cursor-pointer'
             name="edit"
             color='blue'
             size='small'
@@ -203,7 +204,7 @@ export default class OrdersEdit extends Component {
       return { key: definecompany.Uuid, text: optionContainer(definecompany.Name, <DefinedcompaniesEdit DefinedcompanyID={definecompany.Uuid} />), value: definecompany.Uuid }
     })
     const Definedcostumeroption = (Definedcostumers.list || []).map(definedcostumer => {
-      return { key: definedcostumer.Uuid, text: optionContainer(definedcostumer.Name, <DefinedcostumersEdit DefinedcostumerID={definedcostumer.Uuid} />), value: definedcostumer.Uuid }
+      return { key: definedcostumer.Uuid, text: optionContainer(`${definedcostumer.Name} - ${definedcostumer.CountryID}`, <DefinedcostumersEdit DefinedcostumerID={definedcostumer.Uuid} />), value: definedcostumer.Uuid }
     })
     const Translatoroption = (Translators.list || []).map(translator => {
       return { key: translator.Uuid, text: optionContainer(translator.Name, <TranslatorsEdit TranslatorID={translator.Uuid} />), value: translator.Uuid }
@@ -271,20 +272,20 @@ export default class OrdersEdit extends Component {
                             <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Recordtype[Profile.Language]} name="RecordtypeID" options={Recordtypeoption} formtype='dropdown' modal={addModal(<RecordtypesCreate />)} />
                           </Form.Group>
                           <Form.Group widths={'equal'}>
-                            <FormInput isFormvisible={this.Checkvisiblestatus('PrinciblecourthauseID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Princiblecourthause[Profile.Language]} name="PrinciblecourthauseID" options={Courthauseoption} formtype='dropdown' modal={addModal(<CourthausesCreate />)} />
-                            <FormInput isFormvisible={this.Checkvisiblestatus('PrinciblecourtID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Princiblecourt[Profile.Language]} name="PrinciblecourtID" options={Courtoption} formtype='dropdown' modal={addModal(<CourtsCreate />)} />
+                            <FormInput isFormvisible={this.Checkvisiblestatus('PrinciblecourthauseID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Princiblecourthause[Profile.Language]} name="PrinciblecourthauseID" search={this.customSearch} options={Courthauseoption} formtype='dropdown' modal={addModal(<CourthausesCreate />)} />
+                            <FormInput isFormvisible={this.Checkvisiblestatus('PrinciblecourtID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Princiblecourt[Profile.Language]} name="PrinciblecourtID" search={this.customSearch} options={Courtoption} formtype='dropdown' modal={addModal(<CourtsCreate />)} />
                             <FormInput isFormvisible={this.Checkvisiblestatus('Princibleno')} page={this.PAGE_NAME} placeholder={Literals.Columns.Princibleno[Profile.Language]} name="Princibleno" />
                             <FormInput isFormvisible={this.Checkvisiblestatus('Desicionno')} page={this.PAGE_NAME} placeholder={Literals.Columns.Desicionno[Profile.Language]} name="Desicionno" />
                           </Form.Group>
                           <Form.Group widths={'equal'}>
-                            <FormInput isFormvisible={this.Checkvisiblestatus('DirectivecourthauseID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Directivecourthause[Profile.Language]} name="DirectivecourthauseID" options={Courthauseoption} formtype='dropdown' modal={addModal(<CourthausesCreate />)} />
-                            <FormInput isFormvisible={this.Checkvisiblestatus('DirectivecourtID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Directivecourt[Profile.Language]} name="DirectivecourtID" options={Courtoption} formtype='dropdown' modal={addModal(<CourtsCreate />)} />
+                            <FormInput isFormvisible={this.Checkvisiblestatus('DirectivecourthauseID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Directivecourthause[Profile.Language]} name="DirectivecourthauseID" search={this.customSearch} options={Courthauseoption} formtype='dropdown' modal={addModal(<CourthausesCreate />)} />
+                            <FormInput isFormvisible={this.Checkvisiblestatus('DirectivecourtID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Directivecourt[Profile.Language]} name="DirectivecourtID" search={this.customSearch} options={Courtoption} formtype='dropdown' modal={addModal(<CourtsCreate />)} />
                             <FormInput isFormvisible={this.Checkvisiblestatus('Directiveno')} page={this.PAGE_NAME} placeholder={Literals.Columns.Directiveno[Profile.Language]} name="Directiveno" />
                             <FormInput isFormvisible={this.Checkvisiblestatus('Directiveinfo')} page={this.PAGE_NAME} placeholder={Literals.Columns.Directiveinfo[Profile.Language]} name="Directiveinfo" />
                           </Form.Group>
                           <Form.Group widths={'equal'}>
-                            <FormInput isFormvisible={this.Checkvisiblestatus('CompanyID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Company[Profile.Language]} name="CompanyID" options={Definedcompanyoption} formtype='dropdown' modal={addModal(<DefinedcompaniesCreate />)} />
-                            <FormInput isFormvisible={this.Checkvisiblestatus('CostumerID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Costumer[Profile.Language]} name="CostumerID" options={Definedcostumeroption} formtype='dropdown' modal={addModal(<DefinedcostumersCreate />)} />
+                            <FormInput isFormvisible={this.Checkvisiblestatus('CompanyID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Company[Profile.Language]} name="CompanyID" search={this.customSearch} options={Definedcompanyoption} formtype='dropdown' modal={addModal(<DefinedcompaniesCreate />)} />
+                            <FormInput isFormvisible={this.Checkvisiblestatus('CostumerID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Costumer[Profile.Language]} name="CostumerID" search={this.customSearch} options={Definedcostumeroption} formtype='dropdown' modal={addModal(<DefinedcostumersCreate />)} />
                           </Form.Group>
                           <Form.Group widths={'equal'}>
                             <FormInput isFormvisible={this.Checkvisiblestatus('Registerdate')} page={this.PAGE_NAME} placeholder={Literals.Columns.Registerdate[Profile.Language]} name="Registerdate" type='date' />
@@ -297,10 +298,10 @@ export default class OrdersEdit extends Component {
                             <FormInput isFormvisible={this.Checkvisiblestatus('Calculatedprice')} page={this.PAGE_NAME} placeholder={Literals.Columns.Calculatedprice[Profile.Language]} name="Calculatedprice" type='number' step='0.01' display='try' />
                           </Form.Group>
                           <Form.Group widths={'equal'}>
-                            <FormInput isFormvisible={this.Checkvisiblestatus('TranslatorID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Translator[Profile.Language]} name="TranslatorID" options={Translatoroption} formtype='dropdown' modal={addModal(<TranslatorsCreate />)} />
-                            <FormInput isFormvisible={this.Checkvisiblestatus('KdvID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Kdv[Profile.Language]} name="KdvID" options={Kdvoption} formtype='dropdown' modal={addModal(<KdvsCreate />)} />
-                            <FormInput isFormvisible={this.Checkvisiblestatus('PaymentID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Payment[Profile.Language]} name="PaymentID" options={Paymentoption} formtype='dropdown' modal={addModal(<PaymentsCreate />)} />
-                            <FormInput isFormvisible={this.Checkvisiblestatus('CaseID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Case[Profile.Language]} name="CaseID" options={Caseoption} formtype='dropdown' modal={addModal(<CasesCreate />)} />
+                            <FormInput isFormvisible={this.Checkvisiblestatus('TranslatorID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Translator[Profile.Language]} name="TranslatorID" options={Translatoroption} search={this.customSearch} formtype='dropdown' modal={addModal(<TranslatorsCreate />)} />
+                            <FormInput isFormvisible={this.Checkvisiblestatus('KdvID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Kdv[Profile.Language]} name="KdvID" options={Kdvoption} search={this.customSearch} formtype='dropdown' modal={addModal(<KdvsCreate />)} />
+                            <FormInput isFormvisible={this.Checkvisiblestatus('PaymentID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Payment[Profile.Language]} name="PaymentID" options={Paymentoption} search={this.customSearch} formtype='dropdown' modal={addModal(<PaymentsCreate />)} />
+                            <FormInput isFormvisible={this.Checkvisiblestatus('CaseID')} page={this.PAGE_NAME} placeholder={Literals.Columns.Case[Profile.Language]} name="CaseID" options={Caseoption} search={this.customSearch} formtype='dropdown' modal={addModal(<CasesCreate />)} />
                           </Form.Group>
                         </div>
                       </React.Fragment>
@@ -598,8 +599,9 @@ export default class OrdersEdit extends Component {
 
   AddNewJob = () => {
 
-    const { Documents, Languages, Cases } = this.props
-
+    const { Documents, Languages, Cases,Orders,Recordtypes } = this.props
+    const recordType = Recordtypes.list.find(u => u.Uuid === Orders.selected_record?.Uuid)?.Uuid ? Recordtypes.list.find(u => u.Uuid === Orders.selected_record?.Uuid) : null
+    const recotdTypeprice = recordType ? recordType.Ishaveprice ? recordType.Price : null : null
     const defaultDocument = (Documents.list || []).find(u => u.Isdefaultdocument)
     const defaultTargetlanguage = (Languages.list || []).find(u => u.Isdefaulttarget)
     const defaultSourcelanguage = (Languages.list || []).find(u => u.Isdefaultsource)
@@ -611,11 +613,11 @@ export default class OrdersEdit extends Component {
       {
         OrderID: '',
         Jobno: '',
-        SourcelanguageID: defaultTargetlanguage ? defaultTargetlanguage.Uuid : '',
-        TargetlanguageID: defaultSourcelanguage ? defaultSourcelanguage.Uuid : '',
+        TargetlanguageID: defaultTargetlanguage ? defaultTargetlanguage.Uuid : '',
+        SourcelanguageID: defaultSourcelanguage ? defaultSourcelanguage.Uuid : '',
         DocumentID: defaultDocument ? defaultDocument.Uuid : '',
         Amount: 1,
-        Price: language ? language.Price : 0,
+        Price: recotdTypeprice ? recotdTypeprice : (language ? language.Price : 0),
         CaseID: defaultPassivecase ? defaultPassivecase.Uuid : '',
         Info: '',
         key: Math.random(),
@@ -647,7 +649,9 @@ export default class OrdersEdit extends Component {
   }
 
   selectedJobChangeHandler = (key, property, value) => {
-    const { Languages } = this.props
+    const { Languages, Recordtypes, Orders } = this.props
+    const recordType = Recordtypes.list.find(u => u.Uuid === Orders.selected_record?.RecotdtypeID)?.Uuid ? Recordtypes.list.find(u => u.Uuid === Orders.selected_record?.RecotdtypeID) : null
+    const recotdTypeprice = recordType ? recordType.Ishaveprice ? recordType.Price : null : null
     this.setState(prevState => {
       const jobRoutes = prevState.selectedJobs.map(jobRoute => ({ ...jobRoute }));
       const index = jobRoutes.findIndex(jobRoute => jobRoute.key === key);
@@ -661,11 +665,11 @@ export default class OrdersEdit extends Component {
       jobRoutes[index][property] = value;
       if (property === 'TargetlanguageID') {
         const language = (Languages.list || []).find(u => u.Uuid === jobRoutes[index][property])
-        language && (jobRoutes[index]["Price"] = language.Price * jobRoutes[index]["Amount"])
+        language && (jobRoutes[index]["Price"] = recotdTypeprice ? recotdTypeprice * jobRoutes[index]["Amount"] : language.Price * jobRoutes[index]["Amount"])
       }
       if (property === 'Amount') {
         const language = (Languages.list || []).find(u => u.Uuid === jobRoutes[index]['TargetlanguageID'])
-        language && (jobRoutes[index]["Price"] = language.Price * jobRoutes[index]["Amount"])
+        language && (jobRoutes[index]["Price"] = recotdTypeprice ? recotdTypeprice * jobRoutes[index]["Amount"] : language.Price * jobRoutes[index]["Amount"])
       }
       return { selectedJobs: jobRoutes };
     })

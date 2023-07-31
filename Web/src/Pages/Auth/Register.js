@@ -27,7 +27,7 @@ export class Register extends Component {
                             </div>
                             <Header as='h3' color='blue' textAlign='center'>
                                 <br />
-                                <p>Translator Dil Takip Sistemi</p>
+                                <p>StarNote Tercüme Takip</p>
                             </Header>
                             <Form size='large' className='p-4' onSubmit={this.RegisterHandler}>
                                 <Form.Input transparent placeholder="Kullanıcı Adı" name="Username" fluid icon='user' iconPosition='left' />

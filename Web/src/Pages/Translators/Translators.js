@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Divider, Icon } from 'semantic-ui-react'
+import { Divider, Icon, Loader } from 'semantic-ui-react'
 import { Breadcrumb, Button, Grid, GridColumn } from 'semantic-ui-react'
 import ColumnChooser from '../../Containers/Utils/ColumnChooser'
 import DataTable from '../../Utils/DataTable'
@@ -35,8 +35,8 @@ export default class Translators extends Component {
         const Columns = [
             { Header: Literals.Columns.Id[Profile.Language], accessor: 'Id', sortable: true, canGroupBy: true, canFilter: true, },
             { Header: Literals.Columns.Uuid[Profile.Language], accessor: 'Uuid', sortable: true, canGroupBy: true, canFilter: true, },
-            { Header: Literals.Columns.Name[Profile.Language], accessor: 'Name', sortable: true, canGroupBy: true, canFilter: true },
-            { Header: Literals.Columns.UserName[Profile.Language], accessor: 'User.Username', sortable: true, canGroupBy: true, canFilter: true },
+            { Header: Literals.Columns.Name[Profile.Language], accessor: 'Name', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.nameCellhandler(col) },
+            { Header: Literals.Columns.UserName[Profile.Language], accessor: 'UserID', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.userCellhandler(col) },
             { Header: Literals.Columns.Isdefaulttranslator[Profile.Language], accessor: 'Isdefaulttranslator', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.boolCellhandler(col) },
             { Header: Literals.Columns.Createduser[Profile.Language], accessor: 'Createduser', sortable: true, canGroupBy: true, canFilter: true, },
             { Header: Literals.Columns.Updateduser[Profile.Language], accessor: 'Updateduser', sortable: true, canGroupBy: true, canFilter: true, },
@@ -92,7 +92,7 @@ export default class Translators extends Component {
                                     </Link>
                                     <ColumnChooser meta={Profile.tablemeta} columns={Columns} metaKey={metaKey} />
                                     <ExcelImport columns={Columns} addData={AddRecordTranslators} />
-                                    <ExcelExport data={list} name={metaKey} Config={initialConfig} />
+                                    <ExcelExport columns={Columns} data={list} name={metaKey} Config={initialConfig} />
                                 </GridColumn>
                             </Grid>
                         </Headerwrapper>
@@ -111,5 +111,23 @@ export default class Translators extends Component {
     boolCellhandler = (col) => {
         const { Profile } = this.props
         return col.value !== null && (col.value ? Literals.Messages.Yes[Profile.Language] : Literals.Messages.No[Profile.Language])
+    }
+
+    userCellhandler = (col) => {
+        const { Users } = this.props
+        if (Users.isLoading) {
+            return <Loader size='small' active inline='centered' ></Loader>
+        } else {
+            return (Users.list || []).find(u => u.Uuid === col.value)?.Username
+        }
+    }
+    nameCellhandler = (col) => {
+        if (col.value) {
+            return <div className='group flex flex-row justify-center items-center text-center'>
+                <p className='m-0 p-0'>{col.value}</p>
+                <Icon style={{ color: col.value }} className="ml-2 invisible group-hover:visible delay-1000 transition-all duration-500" name='circle' />
+            </div>
+        }
+        return null
     }
 }

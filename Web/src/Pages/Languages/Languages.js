@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Divider, Icon } from 'semantic-ui-react'
+import { Divider, Icon, Loader } from 'semantic-ui-react'
 import { Breadcrumb, Button, Grid, GridColumn } from 'semantic-ui-react'
 import ColumnChooser from '../../Containers/Utils/ColumnChooser'
 import DataTable from '../../Utils/DataTable'
@@ -45,9 +45,9 @@ export default class Languages extends Component {
             { Header: Literals.Columns.Id[Profile.Language], accessor: 'Id', sortable: true, canGroupBy: true, canFilter: true, },
             { Header: Literals.Columns.Uuid[Profile.Language], accessor: 'Uuid', sortable: true, canGroupBy: true, canFilter: true, },
             { Header: Literals.Columns.Name[Profile.Language], accessor: 'Name', sortable: true, canGroupBy: true, canFilter: true },
-            { Header: Literals.Columns.Price[Profile.Language], accessor: 'Price', sortable: true, canGroupBy: true, canFilter: true, Cell: col => { return col.value + ' ₺' } },
-            { Header: Literals.Columns.KdvPercent[Profile.Language], accessor: 'Kdv.Name', sortable: true, canGroupBy: true, canFilter: true },
-            { Header: Literals.Columns.Discount[Profile.Language], accessor: 'Discount', sortable: true, canGroupBy: true, canFilter: true, Cell: col => { return col.value + ' ₺' } },
+            { Header: Literals.Columns.Price[Profile.Language], accessor: 'Price', sortable: true, canGroupBy: true, canFilter: true, Cell: col => { return col.value && (col.value + ' ₺') } },
+            { Header: Literals.Columns.KdvPercent[Profile.Language], accessor: 'KdvID', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.kdvCellhandler(col) },
+            { Header: Literals.Columns.Discount[Profile.Language], accessor: 'Discount', sortable: true, canGroupBy: true, canFilter: true, Cell: col => { return col.value && (col.value + ' ₺') } },
             { Header: Literals.Columns.Isdefaultsource[Profile.Language], accessor: 'Isdefaultsource', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.boolCellhandler(col) },
             { Header: Literals.Columns.Isdefaulttarget[Profile.Language], accessor: 'Isdefaulttarget', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.boolCellhandler(col) },
             { Header: Literals.Columns.Createduser[Profile.Language], accessor: 'Createduser', sortable: true, canGroupBy: true, canFilter: true, },
@@ -104,7 +104,7 @@ export default class Languages extends Component {
                                     </Link>
                                     <ColumnChooser meta={Profile.tablemeta} columns={Columns} metaKey={metaKey} />
                                     <ExcelImport columns={Columns} addData={AddRecordLanguages} />
-                                    <ExcelExport data={list} name={metaKey} Config={initialConfig} />
+                                    <ExcelExport columns={Columns} data={list} name={metaKey} Config={initialConfig} />
                                     <Button color='facebook' floated='right' onClick={() => {
                                         GetLanguageconfig()
                                         this.setState({ isConfigopen: !this.state.isConfigopen })
@@ -135,5 +135,14 @@ export default class Languages extends Component {
     boolCellhandler = (col) => {
         const { Profile } = this.props
         return col.value !== null && (col.value ? Literals.Messages.Yes[Profile.Language] : Literals.Messages.No[Profile.Language])
+    }
+
+    kdvCellhandler = (col) => {
+        const { Kdvs } = this.props
+        if (Kdvs.isLoading) {
+            return <Loader size='small' active inline='centered' ></Loader>
+        } else {
+            return (Kdvs.list || []).find(u => u.Uuid === col.value)?.Name
+        }
     }
 }

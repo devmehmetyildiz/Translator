@@ -27,7 +27,12 @@ class ExcelExport extends Component {
 
 
   exportToExcel = () => {
-    const { data, name, Config } = this.props
+    const { data, name, Config, columns } = this.props
+    const isHavedata = Array.isArray(data) && data.length > 0
+    let decoratedColumns = {}
+    columns.forEach(element => {
+      decoratedColumns[element.accessor] = element.accessor
+    });
     const decoratedData = data.map(row => {
       let obj = {}
       Object.keys(row).forEach(cell => {
@@ -37,7 +42,7 @@ class ExcelExport extends Component {
       })
       return obj
     })
-    const headers = Object.keys(decoratedData[0])
+    const headers = Object.keys(isHavedata ? decoratedData[0] : decoratedColumns)
       .map(key => {
         if (!(((Config.hiddenColumns).concat(['edit', 'delete', 'Isactive', 'Deleteduser', 'Deletetime']) || []).includes(key))) { return key; } return '';
       })
@@ -59,9 +64,9 @@ class ExcelExport extends Component {
     const excelBuffer = write(workbook, { bookType: 'xlsx', type: 'array' });
     const excelBlob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
     saveAs(excelBlob, `${name}.xlsx`);
-  };
+  }
+};
 
-}
 
 
 export default ExcelExport

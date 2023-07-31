@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Divider, Dropdown, Icon, Loader, Modal } from 'semantic-ui-react'
+import { Divider, Dropdown, Icon, Loader, Modal, Tab } from 'semantic-ui-react'
 import { Breadcrumb, Button, Grid, GridColumn } from 'semantic-ui-react'
 import ColumnChooser from '../../Containers/Utils/ColumnChooser'
 import LoadingPage from '../../Utils/LoadingPage'
@@ -17,6 +17,7 @@ import jsPDF from 'jspdf';
 import InnerHTML from '../../Utils/DangerouslySetHtmlContent'
 import PrintBodyReplacer from "../../Utils/PrintBodyReplacer"
 import myTurkishFont from '../../Assets/fonts/AbhayaLibre-Medium.ttf';
+import Contentwrapper from '../../Common/Wrappers/Contentwrapper'
 
 export default class Orders extends Component {
 
@@ -31,7 +32,7 @@ export default class Orders extends Component {
   }
 
   componentDidMount() {
-    const { GetOrders, GetJobs, GetDefinedcompanies,GetFiles,
+    const { GetOrders, GetJobs, GetDefinedcompanies, GetFiles,
       GetCourthauses, GetCourts, GetDefinedcostumers, GetPrinttemplates,
       GetPayments, GetKdvs, GetTranslators, GetCases, GetRecordtypes, GetLanguages, GetDocuments } = this.props
     GetOrders()
@@ -155,6 +156,9 @@ export default class Orders extends Component {
       }) : [],
     };
 
+    const listCases = [...new Set(['General'].concat([...Orders.list.map(u => {
+      return u.CaseID
+    })]))]
     const list = ((recordType ? Orders.list.filter(u => u.RecordtypeID === recordType) : Orders.list) || []).map(order => {
       const item = {
         ...order,
@@ -214,22 +218,38 @@ export default class Orders extends Component {
               </Grid>
             </Headerwrapper>
             <Pagedivider />
-            {list.length > 0 ?
-              <div className='w-full mx-auto'>
-                <OrdersList
-                  Data={list}
-                  Columns={Columns}
-                  initialConfig={initialConfig}
-                  Profile={Profile}
-                  Jobs={Jobs}
-                  Files={Files}
-                  setselectedRow={this.setselectedRow}
-                  Documents={Documents}
-                  Languages={Languages}
-                  Cases={Cases}
-                />
-              </div> : <NoDataScreen message={Literals.Messages.Nodatafind[Profile.Language]} />
-            }
+            <Contentwrapper>
+            <Tab className='station-tab '
+              panes={listCases.map(listcase => {
+                console.log('listcase: ', listcase);
+                return {
+                  menuItem: validator.isUUID(listcase) ? Cases.list.find(u => u.Uuid === listcase)?.Name : Literals.Columns.General[Profile.Language],
+                  pane: {
+                    key: listcase,
+                    content: <React.Fragment>
+                      {list.length > 0 ?
+                        <div className='w-full mx-auto'>
+                          <OrdersList
+                            Data={validator.isUUID(listcase) ? list.filter(u => u.CaseID === listcase) : list}
+                            Columns={Columns}
+                            initialConfig={initialConfig}
+                            Profile={Profile}
+                            Jobs={Jobs}
+                            Files={Files}
+                            setselectedRow={this.setselectedRow}
+                            Documents={Documents}
+                            Languages={Languages}
+                            Cases={Cases}
+                          />
+                        </div> : <NoDataScreen message={Literals.Messages.Nodatafind[Profile.Language]} />
+                      }
+                    </React.Fragment>
+                  }
+                }
+              })}
+              renderActiveOnly={false} />
+            </Contentwrapper>
+
           </Pagewrapper>
           <OrdersDelete />
           <Modal

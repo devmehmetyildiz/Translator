@@ -8,6 +8,12 @@ const Routes = [
     { method: 'delete', path: '/Jobs/:jobId', controller: 'Job', action: 'DeleteJobs' },
 
     { method: 'get', path: '/Orders/GetCount', controller: 'Order', action: 'GetOrderscount' },
+    { method: 'get', path: '/Orders/GetPricenet', controller: 'Order', action: 'GetPricenet' },
+    { method: 'get', path: '/Orders/GetPricepotancial', controller: 'Order', action: 'GetPricepotancial' },
+    { method: 'get', path: '/Orders/GetPricereal', controller: 'Order', action: 'GetPricereal' },
+    { method: 'get', path: '/Orders/GetPriceexpence', controller: 'Order', action: 'GetPriceexpence' },
+    { method: 'get', path: '/Orders/GetOrdercountbydate', controller: 'Order', action: 'GetOrdercountbydate' },
+    { method: 'get', path: '/Orders/GetOrdercountwithjob', controller: 'Order', action: 'GetOrdercountwithjob' },
     { method: 'get', path: '/Orders/:orderId', controller: 'Order', action: 'GetOrder' },
     { method: 'get', path: '/Orders', controller: 'Order', action: 'GetOrders' },
     { method: 'post', path: '/Orders', controller: 'Order', action: 'AddOrders' },

@@ -91,7 +91,7 @@ export default class Goals extends Component {
                                     </Link>
                                     <ColumnChooser meta={Profile.tablemeta} columns={Columns} metaKey={metaKey} />
                                     <ExcelImport columns={Columns} addData={AddRecordGoals} />
-                                    <ExcelExport data={list} name={metaKey} Config={initialConfig} />
+                                    <ExcelExport columns={Columns} data={list} name={metaKey} Config={initialConfig} />
                                 </GridColumn>
                             </Grid>
                         </Headerwrapper>

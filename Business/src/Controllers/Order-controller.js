@@ -1,3 +1,4 @@
+const { Op } = require("sequelize")
 const config = require("../Config")
 const messages = require("../Constants/Messages")
 const { sequelizeErrorCatcher, createAccessDenied, requestErrorCatcher } = require("../Utilities/Error")
@@ -13,6 +14,156 @@ async function GetOrders(req, res, next) {
     try {
         const orders = await db.orderModel.findAll({ where: { Isactive: true } })
         res.status(200).json(orders)
+    } catch (error) {
+        return next(sequelizeErrorCatcher(error))
+    }
+}
+
+async function GetOrderswithdate(req, res, next) {
+    let validationErrors = []
+    if (!req.query.Startdate || !validator.isISODate(req.query.Startdate)) {
+        validationErrors.push(messages.VALIDATION_ERROR.STARTDATE_REQUIRED)
+    }
+    if (!req.query.Enddate || !validator.isISODate(req.query.Enddate)) {
+        validationErrors.push(messages.VALIDATION_ERROR.ENDDATE_REQUIRED)
+    }
+    if (validationErrors.length > 0) {
+        return next(createValidationError(validationErrors, req.language))
+    }
+
+    const startDate = req.query.Startdate
+    const endDate = req.query.Enddate
+
+    const orders = await db.orderModel.findAll({ where: { Deliverydate: { [Op.between]: [startDate, endDate] }, Isactive: true } })
+    res.status(200).json(orders)
+
+}
+
+async function GetPricenet(req, res, next) {
+    try {
+        let validationErrors = []
+        if (!req.query.Startdate || !validator.isISODate(req.query.Startdate)) {
+            validationErrors.push(messages.VALIDATION_ERROR.STARTDATE_REQUIRED)
+        }
+        if (!req.query.Enddate || !validator.isISODate(req.query.Enddate)) {
+            validationErrors.push(messages.VALIDATION_ERROR.ENDDATE_REQUIRED)
+        }
+        if (validationErrors.length > 0) {
+            return next(createValidationError(validationErrors, req.language))
+        }
+
+        const startDate = req.query.Startdate
+        const endDate = req.query.Enddate
+
+        let whereClause = {
+            Deliverydate: {
+                [Op.between]: [startDate, endDate],
+            },
+        };
+
+        if (req.query.RecordtypeID || validator.isUUID(req.query.RecordtypeID)) {
+            whereClause.RecordtypeID = req.query.RecordtypeID;
+        }
+
+        const price = await db.orderModel.sum('Netprice', {
+            where: whereClause
+        })
+        res.status(200).json(price ? price : 0)
+    } catch (error) {
+        return next(sequelizeErrorCatcher(error))
+    }
+}
+
+async function GetPricepotancial(req, res, next) {
+    try {
+        let validationErrors = []
+        if (!req.query.Startdate || !validator.isISODate(req.query.Startdate)) {
+            validationErrors.push(messages.VALIDATION_ERROR.STARTDATE_REQUIRED)
+        }
+        if (!req.query.Enddate || !validator.isISODate(req.query.Enddate)) {
+            validationErrors.push(messages.VALIDATION_ERROR.ENDDATE_REQUIRED)
+        }
+        if (validationErrors.length > 0) {
+            return next(createValidationError(validationErrors, req.language))
+        }
+
+        const startDate = req.query.Startdate
+        const endDate = req.query.Enddate
+
+        let whereClause = {
+            Deliverydate: {
+                [Op.between]: [startDate, endDate],
+            },
+        };
+
+        if (req.query.RecordtypeID || validator.isUUID(req.query.RecordtypeID)) {
+            whereClause.RecordtypeID = req.query.RecordtypeID;
+        }
+
+        const price = await db.orderModel.sum('Calculatedprice', {
+            where: whereClause
+        })
+        res.status(200).json(price ? price : 0)
+    } catch (error) {
+        return next(sequelizeErrorCatcher(error))
+    }
+}
+
+async function GetPricereal(req, res, next) {
+
+}
+async function GetPriceexpence(req, res, next) {
+
+}
+
+async function GetOrdercountbydate(req, res, next) {
+    try {
+        let validationErrors = []
+        if (!req.query.Startdate || !validator.isISODate(req.query.Startdate)) {
+            validationErrors.push(messages.VALIDATION_ERROR.STARTDATE_REQUIRED)
+        }
+        if (!req.query.Enddate || !validator.isISODate(req.query.Enddate)) {
+            validationErrors.push(messages.VALIDATION_ERROR.ENDDATE_REQUIRED)
+        }
+        if (validationErrors.length > 0) {
+            return next(createValidationError(validationErrors, req.language))
+        }
+
+        const startDate = req.query.Startdate
+        const endDate = req.query.Enddate
+
+        const orders = await db.orderModel.count({ where: { Deliverydate: { [Op.between]: [startDate, endDate] }, Isactive: true } })
+        res.status(200).json(orders)
+    } catch (error) {
+        return next(sequelizeErrorCatcher(error))
+    }
+}
+
+async function GetOrdercountwithjob(req, res, next) {
+    try {
+        let validationErrors = []
+        if (!req.query.Startdate || !validator.isISODate(req.query.Startdate)) {
+            validationErrors.push(messages.VALIDATION_ERROR.STARTDATE_REQUIRED)
+        }
+        if (!req.query.Enddate || !validator.isISODate(req.query.Enddate)) {
+            validationErrors.push(messages.VALIDATION_ERROR.ENDDATE_REQUIRED)
+        }
+        if (validationErrors.length > 0) {
+            return next(createValidationError(validationErrors, req.language))
+        }
+
+        const startDate = req.query.Startdate
+        const endDate = req.query.Enddate
+
+        const orders = await db.orderModel.findAll({ where: { Deliverydate: { [Op.between]: [startDate, endDate] }, Isactive: true } })
+        const jobs = await db.jobModel.count({
+            where: {
+                OrderID: {
+                    [Op.in]: orders.map(u => { return u.Uuid }), // Replace with the string values you want to filter
+                },
+            }
+        })
+        res.status(200).json(jobs)
     } catch (error) {
         return next(sequelizeErrorCatcher(error))
     }
@@ -378,5 +529,11 @@ module.exports = {
     AddOrders,
     UpdateOrders,
     DeleteOrders,
-    GetOrderscount
+    GetOrderscount,
+    GetPricenet,
+    GetPricepotancial,
+    GetPricereal,
+    GetPriceexpence,
+    GetOrdercountbydate,
+    GetOrdercountwithjob
 }

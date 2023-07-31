@@ -47,6 +47,10 @@ const Literals = {
             tr: 'Sil',
             en: 'Delete'
         },
+        copied: {
+            tr: 'Kopyalandı',
+            en: 'Copied'
+        }
     },
     Page: {
         Pageheader: {

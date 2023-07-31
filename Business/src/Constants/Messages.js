@@ -27,6 +27,18 @@ const messages = {
 
   },
   VALIDATION_ERROR: {
+    STARTDATE_REQUIRED: {
+      code: 'STARTDATE_REQUIRED', description: {
+        en: 'The start Date required',
+        tr: 'Bu işlem için başlangıç tarihi gerekli',
+      }
+    },
+    ENDDATE_REQUIRED: {
+      code: 'STARTDATE_REQUIRED', description: {
+        en: 'The end Date required',
+        tr: 'Bu işlem için bitiş tarihi gerekli',
+      }
+    },
     ORDERID_REQUIRED: {
       code: 'ORDERID_REQUIRED', description: {
         en: 'The order Id required',

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Divider, Icon } from 'semantic-ui-react'
+import { Divider, Icon, Loader } from 'semantic-ui-react'
 import { Breadcrumb, Button, Grid, GridColumn } from 'semantic-ui-react'
 import ColumnChooser from '../../Containers/Utils/ColumnChooser'
 import DataTable from '../../Utils/DataTable'
@@ -40,7 +40,7 @@ export default class Recordtypes extends Component {
             { Header: Literals.Columns.Uuid[Profile.Language], accessor: 'Uuid', sortable: true, canGroupBy: true, canFilter: true, },
             { Header: Literals.Columns.Name[Profile.Language], accessor: 'Name', sortable: true, canGroupBy: true, canFilter: true },
             { Header: Literals.Columns.Ishaveprice[Profile.Language], accessor: 'Ishaveprice', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.boolCellhandler(col) },
-            { Header: Literals.Columns.Price[Profile.Language], accessor: 'Price', sortable: true, canGroupBy: true, canFilter: true, Cell: col => { return col.value ? col.value : 0 + ' ₺' } },
+            { Header: Literals.Columns.Price[Profile.Language], accessor: 'Price', sortable: true, canGroupBy: true, canFilter: true, Cell: col => { return col.value ? col.value + ' ₺' : 0 + ' ₺' } },
             { Header: Literals.Columns.Pricetype[Profile.Language], accessor: 'Pricetype', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.pricetypeCellhandler(col) },
             { Header: Literals.Columns.Goal[Profile.Language], accessor: 'GoalID', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.goalCellhandler(col) },
             { Header: Literals.Columns.Createduser[Profile.Language], accessor: 'Createduser', sortable: true, canGroupBy: true, canFilter: true, },
@@ -97,7 +97,7 @@ export default class Recordtypes extends Component {
                                     </Link>
                                     <ColumnChooser meta={Profile.tablemeta} columns={Columns} metaKey={metaKey} />
                                     <ExcelImport columns={Columns} addData={AddRecordRecordtypes} />
-                                    <ExcelExport data={list} name={metaKey} Config={initialConfig} />
+                                    <ExcelExport columns={Columns} data={list} name={metaKey} Config={initialConfig} />
                                 </GridColumn>
                             </Grid>
                         </Headerwrapper>

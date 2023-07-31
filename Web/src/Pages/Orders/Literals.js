@@ -242,7 +242,11 @@ const Literals = {
         Fileuuid: {
             tr: 'Dosya Unik No',
             en: 'File Unique No'
-        }
+        },
+        General: {
+            tr: 'Genel',
+            en: 'General'
+        },
     },
     Page: {
         Pageheader: {
