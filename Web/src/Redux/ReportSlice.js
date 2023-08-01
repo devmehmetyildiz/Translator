@@ -32,7 +32,7 @@ const Literals = {
 }
 
 export const GetUserscount = createAsyncThunk(
-    'Recordtypes/GetUserscount',
+    'ReportsSlice/GetUserscount',
     async (_, { dispatch }) => {
         try {
             const response = await instanse.get(config.services.Userrole, `${ROUTES.USER}/GetCount`);
@@ -46,7 +46,7 @@ export const GetUserscount = createAsyncThunk(
 );
 
 export const GetRolescount = createAsyncThunk(
-    'Recordtypes/GetRolescount',
+    'ReportsSlice/GetRolescount',
     async (_, { dispatch }) => {
         try {
             const response = await instanse.get(config.services.Userrole, `${ROUTES.ROLE}/GetCount`);
@@ -60,7 +60,7 @@ export const GetRolescount = createAsyncThunk(
 );
 
 export const GetCasescount = createAsyncThunk(
-    'Recordtypes/GetCasescount',
+    'ReportsSlice/GetCasescount',
     async (_, { dispatch }) => {
         try {
             const response = await instanse.get(config.services.Setting, `${ROUTES.CASE}/GetCount`);
@@ -74,7 +74,7 @@ export const GetCasescount = createAsyncThunk(
 );
 
 export const GetCourtcount = createAsyncThunk(
-    'Recordtypes/GetCourtcount',
+    'ReportsSlice/GetCourtcount',
     async (_, { dispatch }) => {
         try {
             const response = await instanse.get(config.services.Setting, `${ROUTES.COURT}/GetCount`);
@@ -88,7 +88,7 @@ export const GetCourtcount = createAsyncThunk(
 );
 
 export const GetCourthausecount = createAsyncThunk(
-    'Recordtypes/GetCourthausecount',
+    'ReportsSlice/GetCourthausecount',
     async (_, { dispatch }) => {
         try {
             const response = await instanse.get(config.services.Setting, `${ROUTES.COURTHAUSE}/GetCount`);
@@ -102,7 +102,7 @@ export const GetCourthausecount = createAsyncThunk(
 );
 
 export const GetCompanycount = createAsyncThunk(
-    'Recordtypes/GetCompanycount',
+    'ReportsSlice/GetCompanycount',
     async (_, { dispatch }) => {
         try {
             const response = await instanse.get(config.services.Setting, `${ROUTES.DEFINEDCOMPANY}/GetCount`);
@@ -116,7 +116,7 @@ export const GetCompanycount = createAsyncThunk(
 );
 
 export const GetCostumercount = createAsyncThunk(
-    'Recordtypes/GetCostumercount',
+    'ReportsSlice/GetCostumercount',
     async (_, { dispatch }) => {
         try {
             const response = await instanse.get(config.services.Setting, `${ROUTES.DEFINEDCOSTUMER}/GetCount`);
@@ -130,7 +130,7 @@ export const GetCostumercount = createAsyncThunk(
 );
 
 export const GetDocumentcount = createAsyncThunk(
-    'Recordtypes/GetDocumentcount',
+    'ReportsSlice/GetDocumentcount',
     async (_, { dispatch }) => {
         try {
             const response = await instanse.get(config.services.Setting, `${ROUTES.DOCUMENT}/GetCount`);
@@ -144,7 +144,7 @@ export const GetDocumentcount = createAsyncThunk(
 );
 
 export const GetGoalcount = createAsyncThunk(
-    'Recordtypes/GetGoalcount',
+    'ReportsSlice/GetGoalcount',
     async (_, { dispatch }) => {
         try {
             const response = await instanse.get(config.services.Setting, `${ROUTES.GOAL}/GetCount`);
@@ -158,7 +158,7 @@ export const GetGoalcount = createAsyncThunk(
 );
 
 export const GetKdvcount = createAsyncThunk(
-    'Recordtypes/GetKdvcount',
+    'ReportsSlice/GetKdvcount',
     async (_, { dispatch }) => {
         try {
             const response = await instanse.get(config.services.Setting, `${ROUTES.KDV}/GetCount`);
@@ -172,7 +172,7 @@ export const GetKdvcount = createAsyncThunk(
 );
 
 export const GetLanguagecount = createAsyncThunk(
-    'Recordtypes/GetLanguagecount',
+    'ReportsSlice/GetLanguagecount',
     async (_, { dispatch }) => {
         try {
             const response = await instanse.get(config.services.Setting, `${ROUTES.LANGUAGE}/GetCount`);
@@ -186,7 +186,7 @@ export const GetLanguagecount = createAsyncThunk(
 );
 
 export const GetPaymentcount = createAsyncThunk(
-    'Recordtypes/GetPaymentcount',
+    'ReportsSlice/GetPaymentcount',
     async (_, { dispatch }) => {
         try {
             const response = await instanse.get(config.services.Setting, `${ROUTES.PAYMENT}/GetCount`);
@@ -200,7 +200,7 @@ export const GetPaymentcount = createAsyncThunk(
 );
 
 export const GetRecordtypecount = createAsyncThunk(
-    'Recordtypes/GetRecordtypecount',
+    'ReportsSlice/GetRecordtypecount',
     async (_, { dispatch }) => {
         try {
             const response = await instanse.get(config.services.Setting, `${ROUTES.RECORDTYPE}/GetCount`);
@@ -214,7 +214,7 @@ export const GetRecordtypecount = createAsyncThunk(
 );
 
 export const GetTranslatorcount = createAsyncThunk(
-    'Recordtypes/GetTranslatorcount',
+    'ReportsSlice/GetTranslatorcount',
     async (_, { dispatch }) => {
         try {
             const response = await instanse.get(config.services.Setting, `${ROUTES.TRANSLATOR}/GetCount`);
@@ -228,7 +228,7 @@ export const GetTranslatorcount = createAsyncThunk(
 );
 
 export const GetJobcount = createAsyncThunk(
-    'Recordtypes/GetJobcount',
+    'ReportsSlice/GetJobcount',
     async (_, { dispatch }) => {
         try {
             const response = await instanse.get(config.services.Business, `${ROUTES.JOB}/GetCount`);
@@ -242,7 +242,7 @@ export const GetJobcount = createAsyncThunk(
 );
 
 export const GetOrdercount = createAsyncThunk(
-    'Recordtypes/GetOrdercount',
+    'ReportsSlice/GetOrdercount',
     async (_, { dispatch }) => {
         try {
             const response = await instanse.get(config.services.Business, `${ROUTES.ORDER}/GetCount`);
@@ -256,7 +256,7 @@ export const GetOrdercount = createAsyncThunk(
 );
 
 export const GetRulecount = createAsyncThunk(
-    'Recordtypes/GetRulecount',
+    'ReportsSlice/GetRulecount',
     async (_, { dispatch }) => {
         try {
             const response = await instanse.get(config.services.System, `${ROUTES.RULE}/GetCount`);
@@ -270,7 +270,7 @@ export const GetRulecount = createAsyncThunk(
 );
 
 export const GetMailsettingcount = createAsyncThunk(
-    'Recordtypes/GetMailsettingcount',
+    'ReportsSlice/GetMailsettingcount',
     async (_, { dispatch }) => {
         try {
             const response = await instanse.get(config.services.System, `${ROUTES.MAILSETTING}/GetCount`);
@@ -284,7 +284,7 @@ export const GetMailsettingcount = createAsyncThunk(
 );
 
 export const GetPrinttemplatecount = createAsyncThunk(
-    'Recordtypes/GetPrinttemplatecount',
+    'ReportsSlice/GetPrinttemplatecount',
     async (_, { dispatch }) => {
         try {
             const response = await instanse.get(config.services.System, `${ROUTES.PRINTTEMPLATE}/GetCount`);
@@ -298,7 +298,7 @@ export const GetPrinttemplatecount = createAsyncThunk(
 );
 
 export const GetLogs = createAsyncThunk(
-    'Recordtypes/GetLogs',
+    'ReportsSlice/GetLogs',
     async (_, { dispatch }) => {
         try {
             const response = await instanse.get(config.services.Log, `${ROUTES.LOG}`);
@@ -340,12 +340,6 @@ export const ReportsSlice = createSlice({
         logs: [],
         isLoading: false,
         isDispatching: false,
-        Pricepotancial: 0,
-        Pricenet: 0,
-        Pricereal: 0,
-        Pricereal: 0,
-        Priceexpence: 0
-
     },
     reducers: {
         fillReportnotification: (state, action) => {

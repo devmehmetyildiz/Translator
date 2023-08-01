@@ -7,6 +7,8 @@ const Routes = [
     { method: 'put', path: '/Jobs', controller: 'Job', action: 'UpdateJobs' },
     { method: 'delete', path: '/Jobs/:jobId', controller: 'Job', action: 'DeleteJobs' },
 
+    { method: 'get', path: '/Orders/GetOrderswithdate', controller: 'Order', action: 'GetOrderswithdate' },
+    { method: 'get', path: '/Orders/GetOrdersforchart', controller: 'Order', action: 'GetOrdersforchart' },
     { method: 'get', path: '/Orders/GetCount', controller: 'Order', action: 'GetOrderscount' },
     { method: 'get', path: '/Orders/GetPricenet', controller: 'Order', action: 'GetPricenet' },
     { method: 'get', path: '/Orders/GetPricepotancial', controller: 'Order', action: 'GetPricepotancial' },

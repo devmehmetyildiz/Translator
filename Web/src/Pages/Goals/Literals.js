@@ -19,6 +19,10 @@ const Literals = {
             tr: 'Hedef',
             en: 'Goal'
         },
+        Isgeneralgoal: {
+            tr: 'Genel Hedef mi?',
+            en: 'Is general goal?'
+        },
         Createduser: {
             tr: 'Oluşturan Kullanıcı',
             en: 'Created User'
@@ -105,6 +109,14 @@ const Literals = {
             tr: "Hedef Gerekli",
             en: "Goal Required"
         },
+        Yes: {
+            tr: "EVET",
+            en: "YES"
+        },
+        No: {
+            tr: "HAYIR",
+            en: "NO"
+        }
     }
 }
 

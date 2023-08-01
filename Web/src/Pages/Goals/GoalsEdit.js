@@ -68,6 +68,9 @@ export default class GoalsEdit extends Component {
                                 <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
                                 <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Goal[Profile.Language]} name="Goal" type='number' step='0.01' display='try' />
                             </Form.Group>
+                            <Form.Group widths={'equal'}>
+                                <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Isgeneralgoal[Profile.Language]} name="Isgeneralgoal" formtype='checkbox' />
+                            </Form.Group>
                             <Footerwrapper>
                                 <Form.Group widths={'equal'}>
                                     <Link to="/Goals">
@@ -90,7 +93,7 @@ export default class GoalsEdit extends Component {
         const { EditGoals, history, fillGoalnotification, Goals, Profile } = this.props
         const data = formToObject(e.target)
         data.Goal = parseFloat(data.Goal)
-
+        data.Isgeneralgoal = this.context.formstates[`${this.PAGE_NAME}/Isgeneralgoal`]
         let errors = []
         if (!validator.isString(data.Name)) {
             errors.push({ type: 'Error', code: Literals.Page.Pageheader[Profile.Language], description: Literals.Messages.Namerequired[Profile.Language] })

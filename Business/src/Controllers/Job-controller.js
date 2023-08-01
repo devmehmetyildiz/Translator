@@ -1,3 +1,4 @@
+const { Op } = require("sequelize")
 const config = require("../Config")
 const messages = require("../Constants/Messages")
 const { sequelizeErrorCatcher, createAccessDenied, requestErrorCatcher } = require("../Utilities/Error")
@@ -37,6 +38,72 @@ async function GetJobs(req, res, next) {
             job.Order = await db.orderModel.findOne({ where: { Uuid: job.OrderID } })
         }
         res.status(200).json(jobs)
+    } catch (error) {
+        return next(sequelizeErrorCatcher(error))
+    }
+}
+
+async function Getjobpricewithdocumentlanguage(req, res, next) {
+    try {
+        let validationErrors = []
+        if (!req.query.Startdate || !validator.isISODate(req.query.Startdate)) {
+            validationErrors.push(messages.VALIDATION_ERROR.STARTDATE_REQUIRED)
+        }
+        if (!req.query.Enddate || !validator.isISODate(req.query.Enddate)) {
+            validationErrors.push(messages.VALIDATION_ERROR.ENDDATE_REQUIRED)
+        }
+        if (validationErrors.length > 0) {
+            return next(createValidationError(validationErrors, req.language))
+        }
+
+        const startDate = req.query.Startdate
+        const endDate = req.query.Enddate
+
+        let whereClause = {
+            Deliverydate: {
+                [Op.between]: [startDate, endDate],
+            },
+        };
+
+        let documents = []
+        let languages = []
+        let orders = []
+        let jobs = []
+        if (req.query.RecordtypeID && validator.isUUID(req.query.RecordtypeID)) {
+            whereClause.RecordtypeID = req.query.RecordtypeID;
+        }
+        orders = await db.orderModel.findAll({
+            where: whereClause,
+        })
+        jobs = await db.jobModel.findAll({
+            where: {
+                [Op.in]: orders.map(u => { return u.Uuid })
+            }
+        })
+
+        try {
+            languages = await http('GET', config.services.Setting + `Languages`)
+            documents = await http('GET', config.services.Setting + `Documents`)
+        } catch (error) {
+            return next(requestErrorCatcher(error, 'Setting'))
+        }
+        let finalOrder = createPriceAndDateArray(startDate, endDate);
+        (orders || []).forEach(data => {
+            let Pricetype = recordtypes.find(u => u.Uuid === data.RecordtypeID)?.Pricetype
+            let priceinfinalorder = finalOrder.find(u => u.Deliverydate === data.Deliverydate)
+            if (priceinfinalorder) {
+                priceinfinalorder.Calculatedprice += (Pricetype ? Pricetype : 0) * data.Calculatedprice
+                priceinfinalorder.Netprice += (Pricetype ? Pricetype : 0) * data.Netprice
+            } else {
+                finalOrder.push({
+                    Deliverydate: data.Deliverydate,
+                    Calculatedprice: (Pricetype ? Pricetype : 0) * data.Calculatedprice,
+                    Netprice: (Pricetype ? Pricetype : 0) * data.Netprice
+                })
+            }
+        });
+
+        res.status(200).json(finalOrder)
     } catch (error) {
         return next(sequelizeErrorCatcher(error))
     }

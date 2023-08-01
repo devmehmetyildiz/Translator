@@ -19,6 +19,92 @@ async function GetOrders(req, res, next) {
     }
 }
 
+async function GetOrdersforchart(req, res, next) {
+    try {
+        let validationErrors = []
+        if (!req.query.Startdate || !validator.isISODate(req.query.Startdate)) {
+            validationErrors.push(messages.VALIDATION_ERROR.STARTDATE_REQUIRED)
+        }
+        if (!req.query.Enddate || !validator.isISODate(req.query.Enddate)) {
+            validationErrors.push(messages.VALIDATION_ERROR.ENDDATE_REQUIRED)
+        }
+        if (validationErrors.length > 0) {
+            return next(createValidationError(validationErrors, req.language))
+        }
+
+        const startDate = req.query.Startdate
+        const endDate = req.query.Enddate
+
+        let whereClause = {
+            Deliverydate: {
+                [Op.between]: [startDate, endDate],
+            },
+        };
+
+        let recordtypes = []
+        let orders = []
+        if (req.query.RecordtypeID && validator.isUUID(req.query.RecordtypeID)) {
+            whereClause.RecordtypeID = req.query.RecordtypeID;
+        }
+        orders = await db.orderModel.findAll({
+            where: whereClause,
+            attributes: [
+                'RecordtypeID',
+                'Deliverydate',
+                [db.orderModel.sequelize.fn('SUM', db.orderModel.sequelize.col('Calculatedprice')), 'Calculatedprice'],
+                [db.orderModel.sequelize.fn('SUM', db.orderModel.sequelize.col('Netprice')), 'Netprice'],
+            ],
+            group: ['Deliverydate', 'RecordtypeID'],
+        })
+        try {
+            recordtypes = await http('GET', config.services.Setting + `Recordtypes`)
+        } catch (error) {
+            return next(requestErrorCatcher(error, 'Setting'))
+        }
+        let finalOrder = createPriceAndDateArray(startDate, endDate);
+        (orders || []).forEach(data => {
+            let Pricetype = recordtypes.find(u => u.Uuid === data.RecordtypeID)?.Pricetype
+            let priceinfinalorder = finalOrder.find(u => u.Deliverydate === data.Deliverydate)
+            if (priceinfinalorder) {
+                priceinfinalorder.Calculatedprice += (Pricetype ? Pricetype : 0) * data.Calculatedprice
+                priceinfinalorder.Netprice += (Pricetype ? Pricetype : 0) * data.Netprice
+            } else {
+                finalOrder.push({
+                    Deliverydate: data.Deliverydate,
+                    Calculatedprice: (Pricetype ? Pricetype : 0) * data.Calculatedprice,
+                    Netprice: (Pricetype ? Pricetype : 0) * data.Netprice
+                })
+            }
+        });
+
+        res.status(200).json(finalOrder)
+    } catch (error) {
+        return next(sequelizeErrorCatcher(error))
+    }
+
+}
+
+function createPriceAndDateArray(startDate, endDate) {
+    const priceAndDateArray = [];
+    const currentDate = new Date(startDate);
+    while (currentDate <= new Date(endDate)) {
+        priceAndDateArray.push({
+            Deliverydate: formatDate(currentDate),
+            Calculatedprice: 0,
+            Netprice: 0,
+        });
+        currentDate.setDate(currentDate.getDate() + 1);
+    }
+    return priceAndDateArray;
+}
+
+function formatDate(date) {
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${year}-${month}-${day}`;
+}
+
 async function GetOrderswithdate(req, res, next) {
     let validationErrors = []
     if (!req.query.Startdate || !validator.isISODate(req.query.Startdate)) {
@@ -61,14 +147,34 @@ async function GetPricenet(req, res, next) {
             },
         };
 
-        if (req.query.RecordtypeID || validator.isUUID(req.query.RecordtypeID)) {
+        let recordtypes = []
+        let finalprice = 0
+        if (req.query.RecordtypeID && validator.isUUID(req.query.RecordtypeID)) {
             whereClause.RecordtypeID = req.query.RecordtypeID;
+            finalprice = await db.orderModel.sum('Netprice', {
+                where: whereClause
+            })
+        } else {
+            try {
+                recordtypes = await http('GET', config.services.Setting + `Recordtypes`)
+            } catch (error) {
+                return next(requestErrorCatcher(error, 'Setting'))
+            }
+            whereClause.RecordtypeID = {
+                [Op.in]: recordtypes.filter(u => u.Pricetype === 1).map(u => { return u.Uuid })
+            }
+            const plusprice = await db.orderModel.sum('Netprice', {
+                where: whereClause
+            })
+            whereClause.RecordtypeID = {
+                [Op.in]: recordtypes.filter(u => u.Pricetype === -1).map(u => { return u.Uuid })
+            }
+            const minusprice = await db.orderModel.sum('Netprice', {
+                where: whereClause
+            })
+            finalprice = (plusprice ? plusprice : 0) - (minusprice ? minusprice : 0)
         }
-
-        const price = await db.orderModel.sum('Netprice', {
-            where: whereClause
-        })
-        res.status(200).json(price ? price : 0)
+        res.status(200).json(finalprice ? finalprice : 0)
     } catch (error) {
         return next(sequelizeErrorCatcher(error))
     }
@@ -96,24 +202,136 @@ async function GetPricepotancial(req, res, next) {
             },
         };
 
-        if (req.query.RecordtypeID || validator.isUUID(req.query.RecordtypeID)) {
+        let recordtypes = []
+        let finalprice = 0
+        if (req.query.RecordtypeID && validator.isUUID(req.query.RecordtypeID)) {
             whereClause.RecordtypeID = req.query.RecordtypeID;
+            finalprice = await db.orderModel.sum('Calculatedprice', {
+                where: whereClause
+            })
+        } else {
+            try {
+                recordtypes = await http('GET', config.services.Setting + `Recordtypes`)
+            } catch (error) {
+                return next(requestErrorCatcher(error, 'Setting'))
+            }
+            whereClause.RecordtypeID = {
+                [Op.in]: recordtypes.filter(u => u.Pricetype === 1).map(u => { return u.Uuid })
+            }
+            const plusprice = await db.orderModel.sum('Calculatedprice', {
+                where: whereClause
+            })
+            whereClause.RecordtypeID = {
+                [Op.in]: recordtypes.filter(u => u.Pricetype === -1).map(u => { return u.Uuid })
+            }
+            const minusprice = await db.orderModel.sum('Calculatedprice', {
+                where: whereClause
+            })
+            finalprice = (plusprice ? plusprice : 0) - (minusprice ? minusprice : 0)
         }
-
-        const price = await db.orderModel.sum('Calculatedprice', {
-            where: whereClause
-        })
-        res.status(200).json(price ? price : 0)
+        res.status(200).json(finalprice ? finalprice : 0)
     } catch (error) {
         return next(sequelizeErrorCatcher(error))
     }
 }
 
 async function GetPricereal(req, res, next) {
+    try {
+        let validationErrors = []
+        if (!req.query.Startdate || !validator.isISODate(req.query.Startdate)) {
+            validationErrors.push(messages.VALIDATION_ERROR.STARTDATE_REQUIRED)
+        }
+        if (!req.query.Enddate || !validator.isISODate(req.query.Enddate)) {
+            validationErrors.push(messages.VALIDATION_ERROR.ENDDATE_REQUIRED)
+        }
+        if (validationErrors.length > 0) {
+            return next(createValidationError(validationErrors, req.language))
+        }
 
+        const startDate = req.query.Startdate
+        const endDate = req.query.Enddate
+
+        let whereClause = {
+            Deliverydate: {
+                [Op.between]: [startDate, endDate],
+            },
+        };
+
+        let recordtypes = []
+        let finalprice = 0
+        try {
+            recordtypes = await http('GET', config.services.Setting + `Recordtypes`)
+        } catch (error) {
+            return next(requestErrorCatcher(error, 'Setting'))
+        }
+        if (req.query.RecordtypeID && validator.isUUID(req.query.RecordtypeID)) {
+            recordtypes.find(u => u.Uuid === RecordtypeID)?.Pricetype === 1 && (whereClause.RecordtypeID = req.query.RecordtypeID)
+            finalprice = await db.orderModel.sum('Netprice', {
+                where: whereClause
+            })
+        } else {
+            whereClause.RecordtypeID = {
+                [Op.in]: recordtypes.filter(u => u.Pricetype === 1).map(u => { return u.Uuid })
+            }
+            const plusprice = await db.orderModel.sum('Netprice', {
+                where: whereClause
+            })
+            finalprice = (plusprice ? plusprice : 0)
+        }
+        res.status(200).json(finalprice ? finalprice : 0)
+    } catch (error) {
+        return next(sequelizeErrorCatcher(error))
+    }
 }
-async function GetPriceexpence(req, res, next) {
 
+async function GetPriceexpence(req, res, next) {
+    try {
+        let validationErrors = []
+        if (!req.query.Startdate || !validator.isISODate(req.query.Startdate)) {
+            validationErrors.push(messages.VALIDATION_ERROR.STARTDATE_REQUIRED)
+        }
+        if (!req.query.Enddate || !validator.isISODate(req.query.Enddate)) {
+            validationErrors.push(messages.VALIDATION_ERROR.ENDDATE_REQUIRED)
+        }
+        if (validationErrors.length > 0) {
+            return next(createValidationError(validationErrors, req.language))
+        }
+
+        const startDate = req.query.Startdate
+        const endDate = req.query.Enddate
+
+        let whereClause = {
+            Deliverydate: {
+                [Op.between]: [startDate, endDate],
+            },
+        };
+
+        let finalprice = 0
+        let recordtypes = []
+        try {
+            recordtypes = await http('GET', config.services.Setting + `Recordtypes`)
+        } catch (error) {
+            return next(requestErrorCatcher(error, 'Setting'))
+        }
+        if (req.query.RecordtypeID && validator.isUUID(req.query.RecordtypeID)) {
+            recordtypes.find(u => u.Uuid === RecordtypeID)?.Pricetype === -1 && (whereClause.RecordtypeID = req.query.RecordtypeID)
+            finalprice = await db.orderModel.sum('Netprice', {
+                where: whereClause
+            })
+        } else {
+            whereClause.RecordtypeID = {
+                [Op.in]: recordtypes.filter(u => u.Pricetype === -1).map(u => { return u.Uuid })
+            }
+            const minusprice = await db.orderModel.sum('Netprice', {
+                where: whereClause
+            })
+            finalprice = (minusprice ? minusprice : 0)
+        }
+        console.log('finalprice: ', finalprice);
+        res.status(200).json(finalprice)
+    } catch (error) {
+        return next(sequelizeErrorCatcher(error))
+    }
 }
 
 async function GetOrdercountbydate(req, res, next) {
@@ -132,7 +350,19 @@ async function GetOrdercountbydate(req, res, next) {
         const startDate = req.query.Startdate
         const endDate = req.query.Enddate
 
-        const orders = await db.orderModel.count({ where: { Deliverydate: { [Op.between]: [startDate, endDate] }, Isactive: true } })
+        let whereClause = {
+            Deliverydate: {
+                [Op.between]: [startDate, endDate],
+            },
+            Isactive: true
+        };
+        let orders = []
+        if (req.query.RecordtypeID && validator.isUUID(req.query.RecordtypeID)) {
+            whereClause.RecordtypeID = req.query.RecordtypeID;
+        }
+        orders = await db.orderModel.count({
+            where: whereClause
+        })
         res.status(200).json(orders)
     } catch (error) {
         return next(sequelizeErrorCatcher(error))
@@ -155,11 +385,23 @@ async function GetOrdercountwithjob(req, res, next) {
         const startDate = req.query.Startdate
         const endDate = req.query.Enddate
 
-        const orders = await db.orderModel.findAll({ where: { Deliverydate: { [Op.between]: [startDate, endDate] }, Isactive: true } })
+        let whereClause = {
+            Deliverydate: {
+                [Op.between]: [startDate, endDate],
+            },
+            Isactive: true
+        };
+        let orders = []
+        if (req.query.RecordtypeID && validator.isUUID(req.query.RecordtypeID)) {
+            whereClause.RecordtypeID = req.query.RecordtypeID;
+        }
+        orders = await db.orderModel.findAll({
+            where: whereClause
+        })
         const jobs = await db.jobModel.count({
             where: {
                 OrderID: {
-                    [Op.in]: orders.map(u => { return u.Uuid }), // Replace with the string values you want to filter
+                    [Op.in]: orders.map(u => { return u.Uuid })
                 },
             }
         })
@@ -535,5 +777,7 @@ module.exports = {
     GetPricereal,
     GetPriceexpence,
     GetOrdercountbydate,
-    GetOrdercountwithjob
+    GetOrdercountwithjob,
+    GetOrderswithdate,
+    GetOrdersforchart
 }

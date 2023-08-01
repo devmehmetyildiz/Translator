@@ -4,6 +4,7 @@ import JobSlice from "./JobSlice";
 import OrderSlice from "./OrderSlice";
 
 import ReportSlice from "./ReportSlice";
+import FlowSlice from "./FlowSlice";
 
 import ProfileSlice from "./ProfileSlice";
 import RoleSlice from "./RoleSlice";
@@ -50,7 +51,8 @@ const Slices = combineReducers({
     Translators: TranslatorSlice,
     Orders: OrderSlice,
     Jobs: JobSlice,
-    Reports: ReportSlice
+    Reports: ReportSlice,
+    Flows: FlowSlice
 });
 
 export default Slices;

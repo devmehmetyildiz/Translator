@@ -4,8 +4,16 @@ const Literals = {
     },
     Columns: {
         General: {
+            tr: "Genel",
+            en: "General"
+        },
+        Generalpage: {
             tr: "Genel Rapor",
             en: "General Reports"
+        },
+        Chartpage: {
+            tr: "Çizelge",
+            en: "Chart"
         },
         Startdate: {
             tr: "Başlangıç Tarihi",

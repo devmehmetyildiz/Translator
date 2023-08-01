@@ -13,6 +13,9 @@ module.exports = sequelize.define('goalModel', {
     Goal: {
         type: Sequelize.FLOAT
     },
+    Isgeneralgoal: {
+        type: Sequelize.BOOLEAN
+    },
     Createduser: {
         type: Sequelize.STRING
     },

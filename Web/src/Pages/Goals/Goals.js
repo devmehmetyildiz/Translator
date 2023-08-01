@@ -29,7 +29,7 @@ export default class Goals extends Component {
 
     render() {
 
-        const { Goals, Profile, handleSelectedGoal, handleDeletemodal,AddRecordGoals } = this.props
+        const { Goals, Profile, handleSelectedGoal, handleDeletemodal, AddRecordGoals } = this.props
         const { isLoading, isDispatching } = Goals
 
         const Columns = [
@@ -37,6 +37,7 @@ export default class Goals extends Component {
             { Header: Literals.Columns.Uuid[Profile.Language], accessor: 'Uuid', sortable: true, canGroupBy: true, canFilter: true, },
             { Header: Literals.Columns.Name[Profile.Language], accessor: 'Name', sortable: true, canGroupBy: true, canFilter: true },
             { Header: Literals.Columns.Goal[Profile.Language], accessor: 'Goal', sortable: true, canGroupBy: true, canFilter: true, Cell: col => col.value + ' ₺' },
+            { Header: Literals.Columns.Isgeneralgoal[Profile.Language], accessor: 'Isgeneralgoal', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.boolCellhandler(col) },
             { Header: Literals.Columns.Createduser[Profile.Language], accessor: 'Createduser', sortable: true, canGroupBy: true, canFilter: true, },
             { Header: Literals.Columns.Updateduser[Profile.Language], accessor: 'Updateduser', sortable: true, canGroupBy: true, canFilter: true, },
             { Header: Literals.Columns.Createtime[Profile.Language], accessor: 'Createtime', sortable: true, canGroupBy: true, canFilter: true, },
@@ -54,9 +55,9 @@ export default class Goals extends Component {
                 return item.key
             }) : [],
             groupBy: tableMeta ? JSON.parse(tableMeta.Config).filter(u => u.isGroup === true).map(item => {
-              return item.key
+                return item.key
             }) : [],
-          };
+        };
 
         const list = (Goals.list || []).map(item => {
 
@@ -105,5 +106,9 @@ export default class Goals extends Component {
                     <GoalsDelete />
                 </React.Fragment >
         )
+    }
+    boolCellhandler = (col) => {
+        const { Profile } = this.props
+        return col.value !== null && (col.value ? Literals.Messages.Yes[Profile.Language] : Literals.Messages.No[Profile.Language])
     }
 }

@@ -58,7 +58,8 @@ async function AddGoal(req, res, next) {
     let validationErrors = []
     const {
         Name,
-        Goal
+        Goal,
+        Isgeneralgoal,
     } = req.body
 
     if (!validator.isString(Name)) {
@@ -77,6 +78,19 @@ async function AddGoal(req, res, next) {
     const t = await db.sequelize.transaction();
 
     try {
+
+        if (Isgeneralgoal) {
+            const goals = await db.goalModel.findAll({ where: { Isactive: true } })
+            for (const goal of goals) {
+                await db.goalModel.update({
+                    ...goal,
+                    Isgeneralgoal: Isgeneralgoal ? false : goal.Isgeneralgoal,
+                    Updateduser: "System",
+                    Updatetime: new Date(),
+                }, { where: { Uuid: goal.Uuid } }, { transaction: t })
+            }
+        }
+
         await db.goalModel.create({
             ...req.body,
             Uuid: goaluuid,
@@ -100,7 +114,8 @@ async function AddArrayGoal(req, res, next) {
             for (const data of req.body) {
                 const {
                     Name,
-                    Goal
+                    Goal,
+                    Isgeneralgoal
                 } = data
 
                 if (!validator.isString(Name)) {
@@ -112,6 +127,18 @@ async function AddArrayGoal(req, res, next) {
 
                 if (validationErrors.length > 0) {
                     return next(createValidationError(validationErrors, req.language))
+                }
+
+                if (Isgeneralgoal) {
+                    const goals = await db.goalModel.findAll({ where: { Isactive: true } })
+                    for (const goal of goals) {
+                        await db.goalModel.update({
+                            ...goal,
+                            Isgeneralgoal: Isgeneralgoal ? false : goal.Isgeneralgoal,
+                            Updateduser: "System",
+                            Updatetime: new Date(),
+                        }, { where: { Uuid: goal.Uuid } }, { transaction: t })
+                    }
                 }
 
                 let goaluuid = uuid()
@@ -140,7 +167,8 @@ async function UpdateGoal(req, res, next) {
     const {
         Name,
         Goal,
-        Uuid
+        Uuid,
+        Isgeneralgoal
     } = req.body
 
     if (!validator.isString(Name)) {
@@ -161,12 +189,24 @@ async function UpdateGoal(req, res, next) {
 
     const t = await db.sequelize.transaction();
     try {
+
         const goal = db.goalModel.findOne({ where: { Uuid: Uuid } })
         if (!goal) {
             return next(createNotfounderror([messages.ERROR.GOAL_NOT_FOUND], req.language))
         }
         if (goal.Isactive === false) {
             return next(createAccessDenied([messages.ERROR.GOAL_NOT_ACTIVE], req.language))
+        }
+        if (Isgeneralgoal) {
+            const allgoals = await db.goalModel.findAll({ where: { Isactive: true } })
+            for (const goaldata of allgoals) {
+                await db.goalModel.update({
+                    ...goaldata,
+                    Isgeneralgoal: Isgeneralgoal ? false : goaldata.Isgeneralgoal,
+                    Updateduser: "System",
+                    Updatetime: new Date(),
+                }, { where: { Uuid: goaldata.Uuid } }, { transaction: t })
+            }
         }
 
         await db.goalModel.update({
