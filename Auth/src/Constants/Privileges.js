@@ -40,6 +40,8 @@ const Priveleges = [
     { code: 'ruledelete', text: 'Rules Delete', group: ['Rules'], required: [] },
     { code: 'rulemanageview', text: 'Rules Manage View', group: ['Rules'], required: [] },
     { code: 'rulegetreport', text: 'Rules Get Report', group: ['Rules'], required: [] },
+    { code: 'canclearrulelog', text: 'Rules Can Clear Logs', group: ['Rules'], required: [] },
+    { code: 'canstoprule', text: 'Rules Can Stop Rule', group: ['Rules'], required: [] },
 
     { code: 'kdvscreen', text: 'Kdvs Screen', group: ['Kdvs'], required: [] },
     { code: 'kdvadd', text: 'Kdvs Add', group: ['Kdvs'], required: [] },
