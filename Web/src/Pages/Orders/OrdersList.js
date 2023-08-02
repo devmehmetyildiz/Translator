@@ -38,7 +38,7 @@ export default function OrdersList({ Data, Columns, initialConfig, Profile, Jobs
                     { Header: Literals.Columns.Jobno[Profile.Language], accessor: 'Jobno', sortable: true, canGroupBy: true, canFilter: true },
                     { Header: Literals.Columns.Sourcelanguage[Profile.Language], accessor: 'SourcelanguageID', sortable: true, canGroupBy: true, canFilter: true, Cell: col => languageCellhandler(col) },
                     { Header: Literals.Columns.Targetlanguage[Profile.Language], accessor: 'TargetlanguageID', sortable: true, canGroupBy: true, canFilter: true, Cell: col => languageCellhandler(col) },
-                    { Header: Literals.Columns.Document[Profile.Language], accessor: 'Document.Name', sortable: true, canGroupBy: true, canFilter: true, Cell: col => documentCellhandler(col) },
+                    { Header: Literals.Columns.Document[Profile.Language], accessor: 'DocumentID', sortable: true, canGroupBy: true, canFilter: true, Cell: col => documentCellhandler(col) },
                     { Header: Literals.Columns.Amount[Profile.Language], accessor: 'Amount', sortable: true, canGroupBy: true, canFilter: true },
                     { Header: Literals.Columns.Price[Profile.Language], accessor: 'Price', sortable: true, canGroupBy: true, canFilter: true },
                     { Header: Literals.Columns.Case[Profile.Language], accessor: 'CaseID', sortable: true, canGroupBy: true, canFilter: true, Cell: col => caseCellhandler(col) },

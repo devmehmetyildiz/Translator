@@ -118,6 +118,22 @@ export const GetOrdersforchart = createAsyncThunk(
     }
 );
 
+export const Getjobpricewithdocumentlanguage = createAsyncThunk(
+    'Flow/Getjobpricewithdocumentlanguage',
+    async ({ Startdate, Enddate, RecordtypeID }, { dispatch }) => {
+        try {
+            const response = await instanse.get(
+                config.services.Business,
+                `${ROUTES.JOB}/Getjobpricewithdocumentlanguage?${Startdate && `Startdate=${Startdate}&`}${Enddate && `Enddate=${Enddate}&`}${RecordtypeID && `RecordtypeID=${RecordtypeID}`}`);
+            return response.data;
+        } catch (error) {
+            const errorPayload = AxiosErrorHelper(error);
+            dispatch(fillFlownotification(errorPayload));
+            throw errorPayload;
+        }
+    }
+);
+
 
 export const FlowSlice = createSlice({
     name: 'Flow',
@@ -133,7 +149,11 @@ export const FlowSlice = createSlice({
         Pricereal: 0,
         Ordercount: 0,
         Jobcount: 0,
-        Chartdatas: []
+        Chartdatas: [],
+        Demanddatas: {
+            Documents: {},
+            Languages: {}
+        }
     },
     reducers: {
         fillFlownotification: (state, action) => {
@@ -235,6 +255,22 @@ export const FlowSlice = createSlice({
                 state.Chartdatas = action.payload;
             })
             .addCase(GetOrdersforchart.rejected, (state, action) => {
+                state.isLoading = false;
+                state.errMsg = action.error.message;
+            })
+            .addCase(Getjobpricewithdocumentlanguage.pending, (state) => {
+                state.isLoading = true;
+                state.errMsg = null;
+                state.Demanddatas = {
+                    Documents: {},
+                    Languages: {}
+                };
+            })
+            .addCase(Getjobpricewithdocumentlanguage.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.Demanddatas = action.payload;
+            })
+            .addCase(Getjobpricewithdocumentlanguage.rejected, (state, action) => {
                 state.isLoading = false;
                 state.errMsg = action.error.message;
             })

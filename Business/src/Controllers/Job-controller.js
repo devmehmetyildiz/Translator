@@ -75,38 +75,61 @@ async function Getjobpricewithdocumentlanguage(req, res, next) {
         orders = await db.orderModel.findAll({
             where: whereClause,
         })
-        jobs = await db.jobModel.findAll({
-            where: {
-                [Op.in]: orders.map(u => { return u.Uuid })
-            }
+        const orderUuids = orders.map(u => `'${u.Uuid}'`).join(',');
+        console.log('orders: ', orders);
+        console.log('orderUuids: ', orderUuids);
+        jobs = orders.length > 0 ? await db.sequelize.query(
+            `SELECT j.OrderID,j.Price ,j.DocumentID, j.TargetlanguageID, o.Deliverydate FROM jobs j LEFT JOIN orders o ON j.OrderID = o.Uuid WHERE j.OrderID IN(${orderUuids})`,
+            { type: db.sequelize.QueryTypes.SELECT }
+        ) : []
+        console.log('jobs: ', jobs);
+        let documentArray = {};
+        [...new Set(jobs.map(u => { return u.DocumentID }))].forEach(u => {
+            documentArray[u] = createvalueAndDateArray(startDate, endDate)
+        })
+        let languageArray = {};
+        [...new Set(jobs.map(u => { return u.TargetlanguageID }))].forEach(u => {
+            languageArray[u] = createvalueAndDateArray(startDate, endDate)
         })
 
-        try {
-            languages = await http('GET', config.services.Setting + `Languages`)
-            documents = await http('GET', config.services.Setting + `Documents`)
-        } catch (error) {
-            return next(requestErrorCatcher(error, 'Setting'))
-        }
-        let finalOrder = createPriceAndDateArray(startDate, endDate);
-        (orders || []).forEach(data => {
-            let Pricetype = recordtypes.find(u => u.Uuid === data.RecordtypeID)?.Pricetype
-            let priceinfinalorder = finalOrder.find(u => u.Deliverydate === data.Deliverydate)
-            if (priceinfinalorder) {
-                priceinfinalorder.Calculatedprice += (Pricetype ? Pricetype : 0) * data.Calculatedprice
-                priceinfinalorder.Netprice += (Pricetype ? Pricetype : 0) * data.Netprice
-            } else {
-                finalOrder.push({
-                    Deliverydate: data.Deliverydate,
-                    Calculatedprice: (Pricetype ? Pricetype : 0) * data.Calculatedprice,
-                    Netprice: (Pricetype ? Pricetype : 0) * data.Netprice
-                })
+        jobs.forEach(job => {
+            let findeddocument = documentArray[job.DocumentID].find(u => u.Deliverydate === job.Deliverydate)
+            if (findeddocument) {
+                findeddocument.Count++;
+                findeddocument.Price += job.Price
+            }
+            let findedlanguage = languageArray[job.TargetlanguageID].find(u => u.Deliverydate === job.Deliverydate)
+            if (findedlanguage) {
+                findedlanguage.Count++;
+                findedlanguage.Price += job.Price
             }
         });
 
-        res.status(200).json(finalOrder)
+        res.status(200).json({ Documents: documentArray, Languages: languageArray })
     } catch (error) {
         return next(sequelizeErrorCatcher(error))
     }
+}
+
+function createvalueAndDateArray(startDate, endDate) {
+    const priceAndDateArray = [];
+    const currentDate = new Date(startDate);
+    while (currentDate <= new Date(endDate)) {
+        priceAndDateArray.push({
+            Deliverydate: formatDate(currentDate),
+            Price: 0,
+            Count: 0,
+        });
+        currentDate.setDate(currentDate.getDate() + 1);
+    }
+    return priceAndDateArray;
+}
+
+function formatDate(date) {
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${year}-${month}-${day}`;
 }
 
 async function GetJobscount(req, res, next) {
@@ -315,5 +338,6 @@ module.exports = {
     UpdateJobs,
     DeleteJobs,
     GetbyorderID,
-    GetJobscount
+    GetJobscount,
+    Getjobpricewithdocumentlanguage
 }

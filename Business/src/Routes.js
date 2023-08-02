@@ -1,5 +1,6 @@
 const Routes = [
     { method: 'get', path: '/Jobs/GetCount', controller: 'Job', action: 'GetJobscount' },
+    { method: 'get', path: '/Jobs/Getjobpricewithdocumentlanguage', controller: 'Job', action: 'Getjobpricewithdocumentlanguage' },
     { method: 'get', path: '/Jobs/GetbyorderID/:orderId', controller: 'Job', action: 'GetbyorderID' },
     { method: 'get', path: '/Jobs/:jobId', controller: 'Job', action: 'GetJob' },
     { method: 'get', path: '/Jobs', controller: 'Job', action: 'GetJobs' },

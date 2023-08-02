@@ -13,6 +13,8 @@ import RoundProgressBar from '../../Utils/RoundProgressBar'
 import validator from '../../Utils/Validator'
 import { Collapse } from 'react-collapse'
 import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io'
+import DataTable from '../../Utils/DataTable'
+import NoDataScreen from './../../Utils/NoDataScreen';
 export default class Demandreports extends Component {
 
   constructor(props) {
@@ -30,13 +32,14 @@ export default class Demandreports extends Component {
       startDate: formattedstartDate,
       endDate: formattedendDate,
       isSearchopened: true,
-      recordtypeID: ''
+      recordtypeID: '',
+      selectedLanguage: '',
+      selectedDocument: ''
     }
   }
 
   componentDidMount() {
-    const { GetOrdersforchart, GetRecordtypes, GetGoals, location, GetOrdercountbydate, GetOrdercountwithjob, GetPriceexpence, GetPricenet,
-      GetPricepotancial, GetPricereal } = this.props
+    const { Getjobpricewithdocumentlanguage, GetRecordtypes, location, GetLanguages, GetDocuments } = this.props
     const search = new URLSearchParams(location.search)
     const recordTypeUuid = search.get('recordType') ? search.get('recordType') : ''
     let params = {
@@ -45,20 +48,14 @@ export default class Demandreports extends Component {
     }
     validator.isUUID(recordTypeUuid) && (params.RecordtypeID = recordTypeUuid)
     GetRecordtypes()
-    GetGoals()
-    GetOrdercountbydate(params)
-    GetOrdercountwithjob(params)
-    GetPriceexpence(params)
-    GetPricenet(params)
-    GetPricepotancial(params)
-    GetPricereal(params)
-    GetOrdersforchart(params)
+    GetLanguages()
+    GetDocuments()
+    Getjobpricewithdocumentlanguage(params)
     this.setState({ recordtypeID: recordTypeUuid })
   }
 
   componentDidUpdate(_, prevStates) {
-    const { location, GetOrdercountbydate, GetOrdercountwithjob, GetPriceexpence, GetPricenet,
-      GetPricepotancial, GetOrdersforchart, GetPricereal } = this.props
+    const { location, Getjobpricewithdocumentlanguage } = this.props
     const search = new URLSearchParams(location.search)
     const recordTypeUuid = search.get('recordType') ? search.get('recordType') : ''
     if ((prevStates.startDate !== this.state.startDate) ||
@@ -69,62 +66,48 @@ export default class Demandreports extends Component {
         Enddate: this.state.endDate
       }
       validator.isUUID(recordTypeUuid) && (params.RecordtypeID = recordTypeUuid)
-      GetOrdercountbydate(params)
-      GetOrdercountwithjob(params)
-      GetPriceexpence(params)
-      GetPricenet(params)
-      GetPricepotancial(params)
-      GetPricereal(params)
-      GetOrdersforchart(params)
+      Getjobpricewithdocumentlanguage(params)
       this.setState({ recordtypeID: recordTypeUuid })
     }
   }
 
   render() {
 
-    const { Profile, Recordtypes, location, history, Flows, Goals } = this.props
+    const { Profile, Recordtypes, location, history, Flows, Languages, Documents } = this.props
 
     const search = new URLSearchParams(location.search)
     const recordTypeUuid = search.get('recordType') ? search.get('recordType') : ''
 
-    const { Chartdatas, Pricenet, Pricepotancial, Priceexpence, Pricereal, Ordercount, Jobcount } = Flows
-    const labels = [
-      [
-        { name: "Potansiyel ", value: `${Pricepotancial} ₺` },
-        { name: "Net ", value: `${Pricenet} ₺` },
-      ],
-      [
-        { name: "Gerçek ", value: `${Pricereal} ₺` },
-        { name: "Toplam Gider", value: `${Priceexpence} ₺` },
-      ],
-      [
-        { name: "Müşteri Sayısı", value: `${Ordercount}` },
-        { name: "Dosya Sayısı", value: `${Jobcount}` },
-      ],
+    const { Demanddatas } = Flows
+    const Recordtypeslist = [{ name: Literals.Columns.General[Profile.Language], Uuid: '' }].concat((Recordtypes.list || []).map(u => { return { name: u.Name, Uuid: u.Uuid } }))
+
+    const Columns = [
+      { Header: Literals.Columns.Name[Profile.Language], accessor: 'Name', sortable: true, canGroupBy: false, canFilter: true, },
+      { Header: Literals.Columns.Price[Profile.Language], accessor: 'Price', sortable: true, canGroupBy: false, canFilter: true, },
+      { Header: Literals.Columns.Count[Profile.Language], accessor: 'Count', sortable: true, canGroupBy: false, canFilter: true },
     ]
 
-    const Recordtypeslist = [{ name: Literals.Columns.General[Profile.Language], Uuid: '' }].concat((Recordtypes.list || []).map(u => { return { name: u.Name, Uuid: u.Uuid } }))
-    let Goal;
+    const LanguageHeaders = Object.keys(Demanddatas.Languages).map(u => { return Languages.list.find(key => key.Uuid === u) })
+    const DocumentHeaders = Object.keys(Demanddatas.Documents).map(u => { return Documents.list.find(key => key.Uuid === u) })
+    let Languagegriddata = []
+    Object.keys(Demanddatas.Languages).forEach(data => {
+      Languagegriddata.push({
+        Name: Languages.list.find(u => u.Uuid === data)?.Name,
+        Price: (Demanddatas.Languages[data] || []).filter(u => u.Count > 0).map(u => { return u.Price }).reduce((total, num) => { return (total + num) }),
+        Count: (Demanddatas.Languages[data] || []).filter(u => u.Count > 0).map(u => { return u.Count }).reduce((total, num) => { return (total + num) })
+      })
+    })
+    let Documentgriddata = []
+    Object.keys(Demanddatas.Documents).forEach(data => {
+      Documentgriddata.push({
+        Name: Documents.list.find(u => u.Uuid === data)?.Name,
+        Price: (Demanddatas.Documents[data] || []).filter(u => u.Count > 0).map(u => { return u.Price }).reduce((total, num) => { return (total + num) }),
+        Count: (Demanddatas.Documents[data] || []).filter(u => u.Count > 0).map(u => { return u.Count }).reduce((total, num) => { return (total + num) })
+      })
+    })
 
-    (Recordtypes.list || []).forEach(element => {
-      if (validator.isUUID(recordTypeUuid) && recordTypeUuid === element.Uuid) {
-        Goal = (Goals.list || []).find(u => u.Uuid === element.GoalID)
-      }
-    });
-    if (!Goal) {
-      Goal = (Goals.list || []).find(u => u.Isgeneralgoal)
-    }
-
-    let percentage = 0
-    if (Goal && validator.isNumber(Goal.Goal) && validator.isNumber(Pricepotancial)) {
-      percentage = Pricepotancial >= Goal.Goal ? 100 : ((Pricepotancial / Goal.Goal) * 100)
-      percentage = (Math.round(percentage * 100) / 100).toFixed(2);
-    }
-
-    const categories = (Chartdatas || []).map(u => { return u.Deliverydate })
-    const calculatedprices = (Chartdatas || []).map(u => { return u.Calculatedprice })
-    const netprices = (Chartdatas || []).map(u => { return u.Netprice })
-    const options = {
+    const categories = this.createDateArray(this.state.startDate, this.state.endDate)
+    const Languagechartoptions = {
       chart: {
         type: 'line',
       },
@@ -139,17 +122,40 @@ export default class Demandreports extends Component {
           text: 'Değerler',
         },
       },
-      series: [
-        {
-          name: 'Potansiyel Kazançlar',
-          data: calculatedprices,
-        },
-        {
-          name: 'Net Kazançlar',
-          data: netprices,
-        },
-      ],
+      series: Object.keys(Demanddatas.Languages).map(languagechartdata => {
+        return {
+          name: (Languages.list || []).find(u => u.Uuid === languagechartdata)?.Name,
+          data: (Demanddatas.Languages[languagechartdata] || []).map(languagedata => {
+            return languagedata.Price
+          })
+        }
+      })
     };
+    const Documentchartoptions = {
+      chart: {
+        type: 'line',
+      },
+      title: {
+        text: 'Kazanç Grafiği',
+      },
+      xAxis: {
+        categories: categories,
+      },
+      yAxis: {
+        title: {
+          text: 'Değerler',
+        },
+      },
+      series: Object.keys(Demanddatas.Documents).map(documentchartdata => {
+        return {
+          name: (Documents.list || []).find(u => u.Uuid === documentchartdata)?.Name,
+          data: (Demanddatas.Documents[documentchartdata] || []).map(documentdata => {
+            return documentdata.Price
+          })
+        }
+      })
+    };
+    console.log('Demanddatas: ', Demanddatas);
 
     return (
       Recordtypes.isLoading ? <LoadingPage /> :
@@ -159,7 +165,7 @@ export default class Demandreports extends Component {
               <Grid columns='2' >
                 <GridColumn width={8}>
                   <Breadcrumb size='big'>
-                    <Link to={"/Flowreports"} >
+                    <Link to={"/Demandreports"} >
                       <Breadcrumb.Section>{Literals.Page.Pageheader[Profile.Language]}</Breadcrumb.Section>
                     </Link>
                   </Breadcrumb>
@@ -184,7 +190,7 @@ export default class Demandreports extends Component {
                           return <Label key={index}
                             color={validator.isString(recordTypeUuid) ? ((recordtype.Uuid === recordTypeUuid) ? 'blue' : 'grey') : (validator.isString(recordtype.Uuid) ? 'grey' : 'blue')}
                             className='cursor-pointer'
-                            onClick={() => { validator.isUUID(recordtype.Uuid) ? history.push(`/Flowreports?recordType=${recordtype.Uuid}`) : history.push('/Flowreports') }}> {recordtype.name}
+                            onClick={() => { validator.isUUID(recordtype.Uuid) ? history.push(`/Demandreports?recordType=${recordtype.Uuid}`) : history.push('/Demandreports') }}> {recordtype.name}
                           </Label>
                         })}
                       </div>
@@ -205,45 +211,38 @@ export default class Demandreports extends Component {
             </Contentwrapper>
             <Pagedivider />
             <Contentwrapper>
-              <Tab className='station-tab h-auto'
+              <Tab className='station-tab h-[58vh]'
                 panes={[
                   {
-                    menuItem: Literals.Columns.Generalpage[Profile.Language],
+                    menuItem: Literals.Columns.Documentpage[Profile.Language],
                     pane: {
                       key: 'general',
-                      content: <Grid stackable columns={4}>
-                        <GridColumn>
-                          <RoundProgressBar title={'Aylık Hedef'} percentage={percentage} />
-                        </GridColumn>
-                        {labels.map(segmentvalues => {
-                          return <GridColumn key={Math.random()}>
-                            <div className='h-full flex justify-between flex-col '>
-                              {segmentvalues.map(segmentvalue => {
-                                return <div className='my-auto' key={Math.random()}>
-                                  <Segment>
-                                    <div className=' flex-wrap flex flex-row justify-between items-center'>
-                                      <Header icon>
-                                        <Icon name='world' />
-                                        {segmentvalue.name}
-                                      </Header>
-                                      <div className='flex justify-center items-center h-full'>
-                                        <Label size='huge' color='blue'>  {segmentvalue.value}</Label>
-                                      </div>
-                                    </div>
-                                  </Segment>
-                                </div>
-                              })}
-                            </div>
+                      content: Object.keys(Demanddatas.Documents).length > 0 ? <div className=' h-[52vh]'>
+                        <Grid columns={2} divided>
+                          <GridColumn>
+                            <HighchartsReact highcharts={Highcharts} options={Documentchartoptions} />
                           </GridColumn>
-                        })}
-                      </Grid>
+                          <GridColumn>
+                            <DataTable Columns={Columns} Data={Documentgriddata.sort((a, b) => b.Price - a.Price)} />
+                          </GridColumn>
+                        </Grid>
+                      </div> : <NoDataScreen message={Literals.Messages.Nodocumentfind[Profile.Language]} style={{ height: '50vh' }} />
                     }
                   },
                   {
-                    menuItem: Literals.Columns.Chartpage[Profile.Language],
+                    menuItem: Literals.Columns.Languagepage[Profile.Language],
                     pane: {
                       key: 'chart',
-                      content: <HighchartsReact highcharts={Highcharts} options={options} />
+                      content: Object.keys(Demanddatas.Documents).length > 0 ? <div className=' h-[52vh]'>
+                        <Grid columns={2} divided>
+                          <GridColumn>
+                            <HighchartsReact highcharts={Highcharts} options={Languagechartoptions} />
+                          </GridColumn>
+                          <GridColumn>
+                            <DataTable Columns={Columns} Data={Languagegriddata.sort((a, b) => b.Price - a.Price)} />
+                          </GridColumn>
+                        </Grid>
+                      </div> : <NoDataScreen message={Literals.Messages.Nolanguagefind[Profile.Language]} style={{ height: '50vh' }} />
                     }
                   },]}
                 renderActiveOnly={false} />
@@ -252,5 +251,24 @@ export default class Demandreports extends Component {
           </Pagewrapper >
         </React.Fragment >
     )
+  }
+
+  createDateArray = (startDate, endDate) => {
+    const priceAndDateArray = [];
+    const currentDate = new Date(startDate);
+    while (currentDate <= new Date(endDate)) {
+      priceAndDateArray.push(
+        this.formatDate(currentDate),
+      );
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+    return priceAndDateArray;
+  }
+
+  formatDate = (date) => {
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${year}-${month}-${day}`;
   }
 }
