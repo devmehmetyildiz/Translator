@@ -110,6 +110,7 @@ export default class Demandreports extends Component {
     const Languagechartoptions = {
       chart: {
         type: 'line',
+        zoomType: 'x'
       },
       title: {
         text: 'Kazanç Grafiği',
@@ -134,6 +135,7 @@ export default class Demandreports extends Component {
     const Documentchartoptions = {
       chart: {
         type: 'line',
+        zoomType: 'x'
       },
       title: {
         text: 'Kazanç Grafiği',

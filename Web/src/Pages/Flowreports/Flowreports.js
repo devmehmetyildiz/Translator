@@ -127,6 +127,7 @@ export default class Flowreports extends Component {
     const options = {
       chart: {
         type: 'line',
+        zoomType: 'x'
       },
       title: {
         text: 'Kazanç Grafiği',

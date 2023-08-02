@@ -159,6 +159,7 @@ export default class Appreports extends Component {
         const lineoptions = {
             chart: {
                 type: 'line',
+                zoomType: 'x'
             },
             title: {
                 text: 'Uygulama Girişleri',
