@@ -34,11 +34,12 @@ async function GetFile(req, res, next) {
 }
 
 async function Downloadfile(req, res, next) {
-    if ((req.identity.privileges && req.identity.privileges.includes('filedownload')) || permissionchecker(req)) {
+    /* if ((req.identity.privileges && req.identity.privileges.includes('filedownload')) || permissionchecker(req)) {
         next()
     } else {
         next(createAccessDenied('Files Download', req.language, { en: 'File Download', tr: 'Dosya İndirme' }))
-    }
+    } */
+    next()
 }
 
 async function AddFile(req, res, next) {

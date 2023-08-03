@@ -9,6 +9,16 @@ import Literals from "../Utils/Literalregistrar"
 export function Sidebar(props) {
 
     const { iconOnly, isMobile, Profile } = props
+    const { roles } = Profile
+
+    const checkAuth = (authname) => {
+        let isAvailable = false
+        if (roles.includes('admin') || roles.includes(authname)) {
+            isAvailable = true
+        }
+        return isAvailable
+    }
+
     const Sidebarliterals = {
         Setting: {
             en: "Settings",
@@ -30,11 +40,11 @@ export function Sidebar(props) {
 
     const Jobitems = [
         ...[
-            { id: 1, subtitle: Literals.Orders.Page.Pageheader[Profile.Language], url: "/Orders" },
-            { id: 2, subtitle: Literals.Jobs.Page.Pageheader[Profile.Language], url: "/Jobs" },
+            { id: 1, subtitle: Literals.Orders.Page.Pageheader[Profile.Language], url: "/Orders", permission: checkAuth('orderscreen') },
+            { id: 2, subtitle: Literals.Jobs.Page.Pageheader[Profile.Language], url: "/Jobs", permission: checkAuth('jobscreen') },
         ],
         ...(Profile.recordtypes.map((type, index) => {
-            return { id: index + 3, subtitle: `${type.Name} ${Literals.Orders.Page.Pageheader[Profile.Language]}`, url: `/Orders?recordType=${type.Uuid}` }
+            return { id: index + 3, subtitle: `${type.Name} ${Literals.Orders.Page.Pageheader[Profile.Language]}`, url: `/Orders?recordType=${type.Uuid}`, permission: checkAuth('orderscreen') }
         }))
     ]
 
@@ -50,9 +60,9 @@ export function Sidebar(props) {
             title: Sidebarliterals.Reports[Profile.Language],
             icon: <TbActivity className=' text-yellow-700' />,
             items: [
-                { id: 1, subtitle: Literals.Appreports.Page.Pageheader[Profile.Language], url: "/Appreports" },
-                { id: 2, subtitle: Literals.Flowreports.Page.Pageheader[Profile.Language], url: "/Flowreports" },
-                { id: 3, subtitle: Literals.Demandreports.Page.Pageheader[Profile.Language], url: "/Demandreports" },
+                { id: 1, subtitle: Literals.Appreports.Page.Pageheader[Profile.Language], url: "/Appreports", permission: checkAuth('appreportscreen') },
+                { id: 2, subtitle: Literals.Flowreports.Page.Pageheader[Profile.Language], url: "/Flowreports", permission: checkAuth('flowreportscreen') },
+                { id: 3, subtitle: Literals.Demandreports.Page.Pageheader[Profile.Language], url: "/Demandreports", permission: checkAuth('demandreportscreen') },
             ]
         },
         {
@@ -61,9 +71,9 @@ export function Sidebar(props) {
             isOpened: false,
             icon: <TbGauge className='text-purple-400' />,
             items: [
-                { id: 1, subtitle: Literals.Rules.Page.Pageheader[Profile.Language], url: "/Rules" },
-                { id: 2, subtitle: Literals.Mailsettings.Page.Pageheader[Profile.Language], url: "/Mailsettings" },
-                { id: 3, subtitle: Literals.Printtemplates.Page.Pageheader[Profile.Language], url: "/Printtemplates" },
+                { id: 1, subtitle: Literals.Rules.Page.Pageheader[Profile.Language], url: "/Rules", permission: checkAuth('rulescreen') },
+                { id: 2, subtitle: Literals.Mailsettings.Page.Pageheader[Profile.Language], url: "/Mailsettings", permission: checkAuth('mailsettingscreen') },
+                { id: 3, subtitle: Literals.Printtemplates.Page.Pageheader[Profile.Language], url: "/Printtemplates", permission: checkAuth('printtemplatescreen') },
             ]
         },
         {
@@ -72,22 +82,21 @@ export function Sidebar(props) {
             isOpened: false,
             icon: <MdSettings className='text-green-800' />,
             items: [
-                { id: 1, subtitle: Literals.Roles.Page.Pageheader[Profile.Language], url: "/Roles" },
-                { id: 2, subtitle: Literals.Users.Page.Pageheader[Profile.Language], url: "/Users" },
-                { id: 3, subtitle: Literals.Cases.Page.Pageheader[Profile.Language], url: "/Cases" },
-                { id: 4, subtitle: Literals.Users.Page.Pageheader[Profile.Language], url: "/Users" },
-                { id: 5, subtitle: Literals.Files.Page.Pageheader[Profile.Language], url: "/Files" },
-                { id: 6, subtitle: Literals.Courthauses.Page.Pageheader[Profile.Language], url: "/Courthauses" },
-                { id: 7, subtitle: Literals.Courts.Page.Pageheader[Profile.Language], url: "/Courts" },
-                { id: 8, subtitle: Literals.Definedcompanies.Page.Pageheader[Profile.Language], url: "/Definedcompanies" },
-                { id: 9, subtitle: Literals.Definedcostumers.Page.Pageheader[Profile.Language], url: "/Definedcostumers" },
-                { id: 10, subtitle: Literals.Documents.Page.Pageheader[Profile.Language], url: "/Documents" },
-                { id: 11, subtitle: Literals.Goals.Page.Pageheader[Profile.Language], url: "/Goals" },
-                { id: 12, subtitle: Literals.Kdvs.Page.Pageheader[Profile.Language], url: "/Kdvs" },
-                { id: 13, subtitle: Literals.Languages.Page.Pageheader[Profile.Language], url: "/Languages" },
-                { id: 14, subtitle: Literals.Payments.Page.Pageheader[Profile.Language], url: "/Payments" },
-                { id: 15, subtitle: Literals.Recordtypes.Page.Pageheader[Profile.Language], url: "/Recordtypes" },
-                { id: 16, subtitle: Literals.Translators.Page.Pageheader[Profile.Language], url: "/Translators" },
+                { id: 1, subtitle: Literals.Roles.Page.Pageheader[Profile.Language], url: "/Roles", permission: checkAuth('rolescreen') },
+                { id: 2, subtitle: Literals.Users.Page.Pageheader[Profile.Language], url: "/Users", permission: checkAuth('userscreen') },
+                { id: 3, subtitle: Literals.Cases.Page.Pageheader[Profile.Language], url: "/Cases", permission: checkAuth('casescreen') },
+                { id: 5, subtitle: Literals.Files.Page.Pageheader[Profile.Language], url: "/Files", permission: checkAuth('filescreen') },
+                { id: 6, subtitle: Literals.Courthauses.Page.Pageheader[Profile.Language], url: "/Courthauses", permission: checkAuth('courthausescreen') },
+                { id: 7, subtitle: Literals.Courts.Page.Pageheader[Profile.Language], url: "/Courts", permission: checkAuth('courtscreen') },
+                { id: 8, subtitle: Literals.Definedcompanies.Page.Pageheader[Profile.Language], url: "/Definedcompanies", permission: checkAuth('definedcompanyscreen') },
+                { id: 9, subtitle: Literals.Definedcostumers.Page.Pageheader[Profile.Language], url: "/Definedcostumers", permission: checkAuth('definedcostumerscreen') },
+                { id: 10, subtitle: Literals.Documents.Page.Pageheader[Profile.Language], url: "/Documents", permission: checkAuth('documentscreen') },
+                { id: 11, subtitle: Literals.Goals.Page.Pageheader[Profile.Language], url: "/Goals", permission: checkAuth('goalscreen') },
+                { id: 12, subtitle: Literals.Kdvs.Page.Pageheader[Profile.Language], url: "/Kdvs", permission: checkAuth('kdvscreen') },
+                { id: 13, subtitle: Literals.Languages.Page.Pageheader[Profile.Language], url: "/Languages", permission: checkAuth('languagescreen') },
+                { id: 14, subtitle: Literals.Payments.Page.Pageheader[Profile.Language], url: "/Payments", permission: checkAuth('paymenttypesscreen') },
+                { id: 15, subtitle: Literals.Recordtypes.Page.Pageheader[Profile.Language], url: "/Recordtypes", permission: checkAuth('recordtypescreen') },
+                { id: 16, subtitle: Literals.Translators.Page.Pageheader[Profile.Language], url: "/Translators", permission: checkAuth('translatorscreen') },
             ]
         },
     ]
@@ -122,13 +131,20 @@ export function Sidebar(props) {
 
     useEffect(() => {
         setPages(defaultpages)
-    }, [Profile.Language])
+    }, [Profile.Language,roles])
+
+ 
 
     return (
         <div className={`${iconOnly ? 'w-[50px] ' : 'w-[250px] overflow-x-hidden overflow-y-auto'} relative flex flex-col z-40 justify-start items-start mt-[58.61px]  h-[calc(100vh-58.61px)] bg-white dark:bg-Contentfg  transition-all ease-in-out duration-500`}>
             {Pages.map((item, index) => {
-
-                return <div key={index} className='w-full flex items-start flex-col relative'
+                let willshow = false
+                item.items.forEach(subitem => {
+                    if (subitem.permission) {
+                        willshow = true
+                    }
+                })
+                return willshow ? <div key={index} className='w-full flex items-start flex-col relative'
                     onMouseEnter={() => { iconOnly && openCollapse(item.id) }}
                     onMouseLeave={() => { iconOnly && closeCollapse() }}
                 >
@@ -147,7 +163,7 @@ export function Sidebar(props) {
                     {!iconOnly ?
                         <Collapse isOpened={item.isOpened ? item.isOpened : false}>
                             {(item.items || []).map((subitem, index) => {
-                                return <h1 key={index + index} onAuxClick={() => { window.open(subitem.url, "_blank") }} onClick={() => { props.history.push(subitem.url) }} className=' m-0 cursor-pointer hover:text-[#2b7694] whitespace-nowrap dark:hover:text-white text-TextColor text-sm w-full px-8 py-1' > {subitem.subtitle}</h1>
+                                return subitem.permission ? <h1 key={index + index} onAuxClick={() => { window.open(subitem.url, "_blank") }} onClick={() => { props.history.push(subitem.url) }} className=' m-0 cursor-pointer hover:text-[#2b7694] whitespace-nowrap dark:hover:text-white text-TextColor text-sm w-full px-8 py-1' > {subitem.subtitle}</h1> : null
                             })}
                         </Collapse>
                         : <div className={`${settedPage === item.id ? 'visible' : (item.isOpened && settedPage === -1) ? 'visible' : 'hidden'} transition-all ease-in-out p-4 whitespace-nowrap duration-500 max-h-[calc(100vh-${(index + 1) * 50}px-10px)] overflow-y-auto
@@ -159,7 +175,7 @@ export function Sidebar(props) {
                             <div className='h-full overflow-auto'>
                                 <Collapse isOpened={settedPage === item.id ? true : (item.isOpened ? item.isOpened : false)}>
                                     {(item.items || []).map((subitem, index) => {
-                                        return <h1
+                                        return subitem.permission ? <h1
                                             key={index + index + index}
                                             onAuxClick={() => {
                                                 setsettedPage(-1)
@@ -170,12 +186,12 @@ export function Sidebar(props) {
                                                 setsettedPage(-1)
                                                 closeCollapse()
                                                 props.history.push(subitem.url)
-                                            }} className='hover:text-[#2b7694] m-0 whitespace-nowrap dark:hover:text-white text-TextColor text-sm w-full px-2 py-1'>{subitem.subtitle}</h1>
+                                            }} className='hover:text-[#2b7694] m-0 whitespace-nowrap dark:hover:text-white text-TextColor text-sm w-full px-2 py-1'>{subitem.subtitle}</h1> : null
                                     })}
                                 </Collapse>
                             </div>
                         </div>}
-                </div>
+                </div> : null
             })}
         </div >
     )

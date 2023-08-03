@@ -114,13 +114,6 @@ const Priveleges = [
     { code: 'documentmanageview', text: 'Documents Manage View', group: ['Documents'], required: [] },
     { code: 'documentgetreport', text: 'Documents Get Report', group: ['Documents'], required: [] },
 
-    { code: 'documentscreen', text: 'Documents Screen', group: ['Documents'], required: [] },
-    { code: 'documentadd', text: 'Documents Add', group: ['Documents'], required: [] },
-    { code: 'documentupdate', text: 'Documents Update', group: ['Documents'], required: [] },
-    { code: 'documentdelete', text: 'Documents Delete', group: ['Documents'], required: [] },
-    { code: 'documentmanageview', text: 'Documents Manage View', group: ['Documents'], required: [] },
-    { code: 'documentgetreport', text: 'Documents Get Report', group: ['Documents'], required: [] },
-
     { code: 'goalscreen', text: 'Goals Screen', group: ['Goals'], required: [] },
     { code: 'goaladd', text: 'Goals Add', group: ['Goals'], required: [] },
     { code: 'goalupdate', text: 'Goals Update', group: ['Goals'], required: [] },

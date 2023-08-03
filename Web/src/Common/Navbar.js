@@ -55,9 +55,10 @@ export class Navbar extends Component {
         <div className={`h-[58.61px] text-white mx-4 my-auto transition-all ease-in-out duration-500  text-center flex flex-col justify-center items-center `}>
           <p className='m-0 text-sm font-semibold tracking-wider font-Common '>{Profile.username}</p>
           <p className='m-0 text-xs text-white dark:text-TextColor  '>
-            {Profile.roles.map((role, index) => {
+            {/*  {Profile.roles.map((role, index) => {
               return <span key={index + role} className='mr-[2px]'>{role}</span>
-            })}
+            })} */}
+            <span className='mr-[2px]'>{Profile?.meta?.Roles?.length > 0 && Profile?.meta?.Roles[0]?.Name}</span>
           </p>
         </div>
       </div>
@@ -74,7 +75,7 @@ export class Navbar extends Component {
         < div className='p-2 w-[250px] flex justify-center items-center' >
           <div className='flex flex-row justify-center items-center w-full'>
             <p className='select-none m-0 font-Common font-bold text-[1.84em] line-none text-white dark:text-TextColor'> STAR </p>
-            <img className='text-[10px] w-[50px] h-[50px]'  src={img.translatoricon} alt="" />
+            <img className='text-[10px] w-[50px] h-[50px]' src={img.translatoricon} alt="" />
             <p className='select-none m-0 font-Common font-bold text-[1.84em] line-none text-[#7eabc5] dark:text-TextColor'> NOTE </p>
           </div>
         </div >

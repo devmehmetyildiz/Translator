@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import AppRoutes from '../../Routes'
+import Routes from '../../Routes'
 import Navbar from '../../Common/Navbar'
 import { Sidebar } from '../../Common/Sidebar'
 import notification from '../../Utils/Notification'
@@ -48,7 +48,7 @@ export default class Layout extends Component {
             <Sidebar history={history} iconOnly={isMobile ? true : iconOnly} seticonOnly={seticonOnly} Profile={Profile} isMobile={isMobile} />
             <div className={`mt-[58.61px] p-4 w-full min-w-[0px] contentWrapper`}>
               <div className='w-full '>
-                <AppRoutes />
+                <Routes Profile={Profile}/>
               </div>
             </div>
           </div>

@@ -94,111 +94,117 @@ const ProfileEdit = lazy(() => import('./Containers/Auth/ProfileEdit'));
 const PasswordChange = lazy(() => import('./Containers/Auth/PasswordChange'));
 const Passwordforget = lazy(() => import('./Containers/Auth/Passwordforget'));
 const Home = lazy(() => import('./Pages/Home'));
+const Notfoundpage = lazy(() => import('./Utils/Notfoundpage'));
 
 
 class Routes extends Component {
   render() {
 
+    const { Profile } = this.props
+
+    const { roles } = Profile
+
     const routes = [
       { exact: true, path: "/Login", auth: false, component: Login },
       { exact: true, path: "/Register", auth: false, component: Register },
-      { exact: true, path: "/Home", auth: true, component: Home },
-      { exact: true, path: "/", auth: true, component: Home },
+      { exact: true, path: "/Home", auth: true, component: Home, permission: '' },
+      { exact: true, path: "/", auth: true, component: Home, permission: '' },
 
-      { exact: true, path: "/Roles", auth: true, component: Roles },
-      { exact: true, path: "/Roles/Create", auth: true, component: RolesCreate },
-      { exact: true, path: "/Roles/:RoleID/Edit", auth: true, component: RolesEdit },
+      { exact: true, path: "/Roles", auth: true, component: Roles, permission: 'rolescreen' },
+      { exact: true, path: "/Roles/Create", auth: true, component: RolesCreate, permission: 'rolescreen' },
+      { exact: true, path: "/Roles/:RoleID/Edit", auth: true, component: RolesEdit, permission: 'rolescreen' },
 
-      { exact: true, path: "/Cases", auth: true, component: Cases },
-      { exact: true, path: "/Cases/Create", auth: true, component: CasesCreate },
-      { exact: true, path: "/Cases/:CaseID/Edit", auth: true, component: CasesEdit },
+      { exact: true, path: "/Cases", auth: true, component: Cases, permission: 'casescreen' },
+      { exact: true, path: "/Cases/Create", auth: true, component: CasesCreate, permission: 'casescreen' },
+      { exact: true, path: "/Cases/:CaseID/Edit", auth: true, component: CasesEdit, permission: 'casescreen' },
 
-      { exact: true, path: "/Users", auth: true, component: Users },
-      { exact: true, path: "/Users/Create", auth: true, component: UsersCreate },
-      { exact: true, path: "/Users/:UserID/Edit", auth: true, component: UsersEdit },
+      { exact: true, path: "/Users", auth: true, component: Users, permission: 'userscreen' },
+      { exact: true, path: "/Users/Create", auth: true, component: UsersCreate, permission: 'userscreen' },
+      { exact: true, path: "/Users/:UserID/Edit", auth: true, component: UsersEdit, permission: 'userscreen' },
 
-      { exact: true, path: "/Files", auth: true, component: Files },
-      { exact: true, path: "/Files/Create", auth: true, component: FilesCreate },
-      { exact: true, path: "/Files/:FileID/Edit", auth: true, component: FilesEdit },
+      { exact: true, path: "/Files", auth: true, component: Files, permission: 'filescreen' },
+      { exact: true, path: "/Files/Create", auth: true, component: FilesCreate, permission: 'filescreen' },
+      { exact: true, path: "/Files/:FileID/Edit", auth: true, component: FilesEdit, permission: 'filescreen' },
 
-      { exact: true, path: "/Mailsettings", auth: true, component: Mailsettings },
-      { exact: true, path: "/Mailsettings/Create", auth: true, component: MailsettingsCreate },
-      { exact: true, path: "/Mailsettings/:MailsettingID/Edit", auth: true, component: MailsettingsEdit },
+      { exact: true, path: "/Mailsettings", auth: true, component: Mailsettings, permission: 'mailsettingscreen' },
+      { exact: true, path: "/Mailsettings/Create", auth: true, component: MailsettingsCreate, permission: 'mailsettingscreen' },
+      { exact: true, path: "/Mailsettings/:MailsettingID/Edit", auth: true, component: MailsettingsEdit, permission: 'mailsettingscreen' },
 
-      { exact: true, path: "/Printtemplates", auth: true, component: Printtemplates },
-      { exact: true, path: "/Printtemplates/Create", auth: true, component: PrinttemplatesCreate },
-      { exact: true, path: "/Printtemplates/:PrinttemplateID/Edit", auth: true, component: PrinttemplatesEdit },
+      { exact: true, path: "/Printtemplates", auth: true, component: Printtemplates, permission: 'printtemplatescreen' },
+      { exact: true, path: "/Printtemplates/Create", auth: true, component: PrinttemplatesCreate, permission: 'printtemplatescreen' },
+      { exact: true, path: "/Printtemplates/:PrinttemplateID/Edit", auth: true, component: PrinttemplatesEdit, permission: 'printtemplatescreen' },
 
-      { exact: true, path: "/Courthauses", auth: true, component: Courthauses },
-      { exact: true, path: "/Courthauses/Create", auth: true, component: CourthausesCreate },
-      { exact: true, path: "/Courthauses/:CourthauseID/Edit", auth: true, component: CourthausesEdit },
+      { exact: true, path: "/Courthauses", auth: true, component: Courthauses, permission: 'courthausescreen' },
+      { exact: true, path: "/Courthauses/Create", auth: true, component: CourthausesCreate, permission: 'courthausescreen' },
+      { exact: true, path: "/Courthauses/:CourthauseID/Edit", auth: true, component: CourthausesEdit, permission: 'courthausescreen' },
 
-      { exact: true, path: "/Courts", auth: true, component: Courts },
-      { exact: true, path: "/Courts/Create", auth: true, component: CourtsCreate },
-      { exact: true, path: "/Courts/:CourtID/Edit", auth: true, component: CourtsEdit },
+      { exact: true, path: "/Courts", auth: true, component: Courts, permission: 'courtscreen' },
+      { exact: true, path: "/Courts/Create", auth: true, component: CourtsCreate, permission: 'courtscreen' },
+      { exact: true, path: "/Courts/:CourtID/Edit", auth: true, component: CourtsEdit, permission: 'courtscreen' },
 
-      { exact: true, path: "/Definedcompanies", auth: true, component: Definedcompanies },
-      { exact: true, path: "/Definedcompanies/Create", auth: true, component: DefinedcompaniesCreate },
-      { exact: true, path: "/Definedcompanies/:DefinedcompanyID/Edit", auth: true, component: DefinedcompaniesEdit },
+      { exact: true, path: "/Definedcompanies", auth: true, component: Definedcompanies, permission: 'definedcompanyscreen' },
+      { exact: true, path: "/Definedcompanies/Create", auth: true, component: DefinedcompaniesCreate, permission: 'definedcompanyscreen' },
+      { exact: true, path: "/Definedcompanies/:DefinedcompanyID/Edit", auth: true, component: DefinedcompaniesEdit, permission: 'definedcompanyscreen' },
 
-      { exact: true, path: "/Definedcostumers", auth: true, component: Definedcostumers },
-      { exact: true, path: "/Definedcostumers/Create", auth: true, component: DefinedcostumersCreate },
-      { exact: true, path: "/Definedcostumers/:DefinedcostumerID/Edit", auth: true, component: DefinedcostumersEdit },
+      { exact: true, path: "/Definedcostumers", auth: true, component: Definedcostumers, permission: 'definedcostumerscreen' },
+      { exact: true, path: "/Definedcostumers/Create", auth: true, component: DefinedcostumersCreate, permission: 'definedcostumerscreen' },
+      { exact: true, path: "/Definedcostumers/:DefinedcostumerID/Edit", auth: true, component: DefinedcostumersEdit, permission: 'definedcostumerscreen' },
 
-      { exact: true, path: "/Documents", auth: true, component: Documents },
-      { exact: true, path: "/Documents/Create", auth: true, component: DocumentsCreate },
-      { exact: true, path: "/Documents/:DocumentID/Edit", auth: true, component: DocumentsEdit },
+      { exact: true, path: "/Documents", auth: true, component: Documents, permission: 'documentscreen' },
+      { exact: true, path: "/Documents/Create", auth: true, component: DocumentsCreate, permission: 'documentscreen' },
+      { exact: true, path: "/Documents/:DocumentID/Edit", auth: true, component: DocumentsEdit, permission: 'documentscreen' },
 
-      { exact: true, path: "/Goals", auth: true, component: Goals },
-      { exact: true, path: "/Goals/Create", auth: true, component: GoalsCreate },
-      { exact: true, path: "/Goals/:GoalID/Edit", auth: true, component: GoalsEdit },
+      { exact: true, path: "/Goals", auth: true, component: Goals, permission: 'goalscreen' },
+      { exact: true, path: "/Goals/Create", auth: true, component: GoalsCreate, permission: 'goalscreen' },
+      { exact: true, path: "/Goals/:GoalID/Edit", auth: true, component: GoalsEdit, permission: 'goalscreen' },
 
-      { exact: true, path: "/Kdvs", auth: true, component: Kdvs },
-      { exact: true, path: "/Kdvs/Create", auth: true, component: KdvsCreate },
-      { exact: true, path: "/Kdvs/:KdvID/Edit", auth: true, component: KdvsEdit },
+      { exact: true, path: "/Kdvs", auth: true, component: Kdvs, permission: 'kdvscreen' },
+      { exact: true, path: "/Kdvs/Create", auth: true, component: KdvsCreate, permission: 'kdvscreen' },
+      { exact: true, path: "/Kdvs/:KdvID/Edit", auth: true, component: KdvsEdit, permission: 'kdvscreen' },
 
-      { exact: true, path: "/Languages", auth: true, component: Languages },
-      { exact: true, path: "/Languages/Create", auth: true, component: LanguagesCreate },
-      { exact: true, path: "/Languages/:LanguageID/Edit", auth: true, component: LanguagesEdit },
+      { exact: true, path: "/Languages", auth: true, component: Languages, permission: 'languagescreen' },
+      { exact: true, path: "/Languages/Create", auth: true, component: LanguagesCreate, permission: 'languagescreen' },
+      { exact: true, path: "/Languages/:LanguageID/Edit", auth: true, component: LanguagesEdit, permission: 'languagescreen' },
 
-      { exact: true, path: "/Payments", auth: true, component: Payments },
-      { exact: true, path: "/Payments/Create", auth: true, component: PaymentsCreate },
-      { exact: true, path: "/Payments/:PaymentID/Edit", auth: true, component: PaymentsEdit },
+      { exact: true, path: "/Payments", auth: true, component: Payments, permission: 'paymenttypesscreen' },
+      { exact: true, path: "/Payments/Create", auth: true, component: PaymentsCreate, permission: 'paymenttypesscreen' },
+      { exact: true, path: "/Payments/:PaymentID/Edit", auth: true, component: PaymentsEdit, permission: 'paymenttypesscreen' },
 
-      { exact: true, path: "/Recordtypes", auth: true, component: Recordtypes },
-      { exact: true, path: "/Recordtypes/Create", auth: true, component: RecordtypesCreate },
-      { exact: true, path: "/Recordtypes/:RecordtypeID/Edit", auth: true, component: RecordtypesEdit },
+      { exact: true, path: "/Recordtypes", auth: true, component: Recordtypes, permission: 'recordtypescreen' },
+      { exact: true, path: "/Recordtypes/Create", auth: true, component: RecordtypesCreate, permission: 'recordtypescreen' },
+      { exact: true, path: "/Recordtypes/:RecordtypeID/Edit", auth: true, component: RecordtypesEdit, permission: 'recordtypescreen' },
 
-      { exact: true, path: "/Translators", auth: true, component: Translators },
-      { exact: true, path: "/Translators/Create", auth: true, component: TranslatorsCreate },
-      { exact: true, path: "/Translators/:TranslatorID/Edit", auth: true, component: TranslatorsEdit },
+      { exact: true, path: "/Translators", auth: true, component: Translators, permission: 'translatorscreen' },
+      { exact: true, path: "/Translators/Create", auth: true, component: TranslatorsCreate, permission: 'translatorscreen' },
+      { exact: true, path: "/Translators/:TranslatorID/Edit", auth: true, component: TranslatorsEdit, permission: 'translatorscreen' },
 
-      { exact: true, path: "/Orders", auth: true, component: Orders },
-      { exact: true, path: "/Orders/Create", auth: true, component: OrdersCreate },
-      { exact: true, path: "/Orders/:OrderID/Edit", auth: true, component: OrdersEdit },
+      { exact: true, path: "/Orders", auth: true, component: Orders, permission: 'orderscreen' },
+      { exact: true, path: "/Orders/Create", auth: true, component: OrdersCreate, permission: 'orderscreen' },
+      { exact: true, path: "/Orders/:OrderID/Edit", auth: true, component: OrdersEdit, permission: 'orderscreen' },
 
-      { exact: true, path: "/Jobs", auth: true, component: Jobs },
-      { exact: true, path: "/Jobs/Create", auth: true, component: JobsCreate },
-      { exact: true, path: "/Jobs/:JobID/Edit", auth: true, component: JobsEdit },
+      { exact: true, path: "/Jobs", auth: true, component: Jobs, permission: 'jobscreen' },
+      { exact: true, path: "/Jobs/Create", auth: true, component: JobsCreate, permission: 'jobscreen' },
+      { exact: true, path: "/Jobs/:JobID/Edit", auth: true, component: JobsEdit, permission: 'jobscreen' },
 
-      { exact: true, path: "/Rules", auth: true, component: Rules },
-      { exact: true, path: "/Rules/Create", auth: true, component: RulesCreate },
-      { exact: true, path: "/Rules/:RuleID/Edit", auth: true, component: RulesEdit },
+      { exact: true, path: "/Rules", auth: true, component: Rules, permission: 'rulescreen' },
+      { exact: true, path: "/Rules/Create", auth: true, component: RulesCreate, permission: 'rulescreen' },
+      { exact: true, path: "/Rules/:RuleID/Edit", auth: true, component: RulesEdit, permission: 'rulescreen' },
 
-      { exact: true, path: "/Demandreports", auth: true, component: Demandreports },
-      { exact: true, path: "/Appreports", auth: true, component: Appreports },
-      { exact: true, path: "/Flowreports", auth: true, component: Flowreports },
+      { exact: true, path: "/Demandreports", auth: true, component: Demandreports, permission: 'demandreportscreen' },
+      { exact: true, path: "/Appreports", auth: true, component: Appreports, permission: 'appreportscreen' },
+      { exact: true, path: "/Flowreports", auth: true, component: Flowreports, permission: 'flowreportscreen' },
 
-      { exact: true, path: "/Profile/Edit", auth: true, component: ProfileEdit },
-      { exact: true, path: "/Profile/Change-Password", auth: true, component: PasswordChange },
-      { exact: true, path: "/Forgetpassword", auth: false, component: Passwordforget }
+      { exact: true, path: "/Profile/Edit", auth: true, component: ProfileEdit, permission: 'basic' },
+      { exact: true, path: "/Profile/Change-Password", auth: true, component: PasswordChange, permission: 'basic' },
+      { exact: true, path: "/Forgetpassword", auth: false, component: Passwordforget },
+      { exact: false, path: "*", auth: false, component: Notfoundpage },
     ]
 
     return (
       <Suspense fallback={<Spinner />}>
         <Switch>
           {routes.map((route, index) => {
-            return route.auth ? <ProtectedRoute key={index} exact={route.exact} path={route.path} component={route.component} /> :
+            return route.auth ? ((roles.includes('admin') || roles.includes(route.permission)) ? <ProtectedRoute key={index} exact={route.exact} path={route.path} component={route.component} /> : null) :
               <Route key={index} exact={route.exact} path={route.path} component={route.component} />
           })}
         </Switch>
