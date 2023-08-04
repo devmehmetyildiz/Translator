@@ -60,7 +60,7 @@ export default class Courts extends Component {
       }) : [],
     };
 
-    const list = (Courts.list || []).map(item => {
+    const list = (Courts.list || []).filter(u=>u.Isactive).map(item => {
 
       return {
         ...item,

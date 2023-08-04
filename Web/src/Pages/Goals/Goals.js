@@ -59,7 +59,7 @@ export default class Goals extends Component {
             }) : [],
         };
 
-        const list = (Goals.list || []).map(item => {
+        const list = (Goals.list || []).filter(u=>u.Isactive).map(item => {
 
             return {
                 ...item,

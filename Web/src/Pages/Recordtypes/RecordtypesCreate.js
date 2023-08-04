@@ -67,7 +67,7 @@ export default class RecordtypesCreate extends Component {
             { key: 3, text: 'PASİF', value: 0 },
         ]
 
-        const Goaloptions = Goals.list.map(goal => {
+        const Goaloptions = Goals.list.filter(u=>u.Isactive).map(goal => {
             return { key: goal.Uuid, text: `${goal.Name} (${goal.Goal})`, value: goal.Uuid }
         })
 

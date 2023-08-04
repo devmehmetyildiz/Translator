@@ -8,7 +8,7 @@ const uuid = require('uuid').v4
 
 async function GetCourts(req, res, next) {
     try {
-        const courts = await db.courtModel.findAll({ where: { Isactive: true } })
+        const courts = await db.courtModel.findAll()
         res.status(200).json(courts)
     } catch (error) {
         return next(sequelizeErrorCatcher(error))
@@ -241,7 +241,12 @@ async function DeleteCourt(req, res, next) {
             return next(createAccessDenied([messages.ERROR.COURT_NOT_ACTIVE], req.language))
         }
 
-        await db.courtModel.destroy({ where: { Uuid: Uuid }, transaction: t });
+        // await db.courtModel.destroy({ where: { Uuid: Uuid }, transaction: t });
+        await db.courtModel.update({
+            Updateduser: "System",
+            Updatetime: new Date(),
+            Isactive: false
+        }, { where: { Uuid: Uuid } }, { transaction: t })
         await t.commit();
     } catch (error) {
         await t.rollback();

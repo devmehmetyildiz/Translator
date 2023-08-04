@@ -111,7 +111,7 @@ async function Register(req, res, next) {
 
 async function GetUsers(req, res, next) {
     try {
-        const users = await db.userModel.findAll({ where: { Isactive: true } })
+        const users = await db.userModel.findAll()
         if (users && users.length > 0) {
             for (const user of users) {
                 let rolesuuids = await db.userroleModel.findAll({
@@ -525,9 +525,14 @@ async function DeleteUser(req, res, next) {
         }
         const t = await db.sequelize.transaction();
 
-        await db.userModel.destroy({ where: { uuid: Uuid }, transaction: t });
-        await db.usersaltModel.destroy({ where: { Userid: Uuid }, transaction: t });
-        await db.userroleModel.destroy({ where: { UserID: Uuid }, transaction: t });
+        //await db.userModel.destroy({ where: { uuid: Uuid }, transaction: t });
+        //await db.usersaltModel.destroy({ where: { Userid: Uuid }, transaction: t });
+        //await db.userroleModel.destroy({ where: { UserID: Uuid }, transaction: t });
+        await db.userModel.update({
+            Updateduser: "System",
+            Updatetime: new Date(),
+            Isactive: false
+        }, { where: { Uuid: Uuid } }, { transaction: t })
         await t.commit();
     } catch (error) {
         await t.rollback();

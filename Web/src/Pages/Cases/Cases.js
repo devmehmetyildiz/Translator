@@ -83,7 +83,7 @@ export default class Cases extends Component {
       }) : [],
     };
 
-    const list = (Cases.list || []).map(item => {
+    const list = (Cases.list || []).filter(u=>u.Isactive).map(item => {
 
       return {
         ...item,

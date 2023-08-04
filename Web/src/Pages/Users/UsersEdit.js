@@ -62,7 +62,7 @@ export default class UsersEdit extends Component {
 
     const { Users, Roles, Profile, history } = this.props
 
-    const Roleoptions = Roles.list.map(roles => {
+    const Roleoptions = Roles.list.filter(u=>u.Isactive).map(roles => {
       return { key: roles.Uuid, text: roles.Name, value: roles.Uuid }
     })
     const Languageoptions = [

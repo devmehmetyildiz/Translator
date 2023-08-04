@@ -59,7 +59,7 @@ export default class Kdvs extends Component {
             }) : [],
         };
 
-        const list = (Kdvs.list || []).map(item => {
+        const list = (Kdvs.list || []).filter(u=>u.Isactive).map(item => {
 
             return {
                 ...item,

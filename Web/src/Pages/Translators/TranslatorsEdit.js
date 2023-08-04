@@ -54,7 +54,7 @@ export default class TranslatorsEdit extends Component {
     render() {
         const { Translators, Users, Profile, history } = this.props
 
-        const Useroptions = Users.list.map(user => {
+        const Useroptions = Users.list.filter(u=>u.Isactive).map(user => {
             return { key: user.Uuid, text: user.Username, value: user.Uuid }
         })
 

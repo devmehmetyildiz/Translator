@@ -9,7 +9,7 @@ const axios = require('axios')
 
 async function GetTranslators(req, res, next) {
     try {
-        const translators = await db.translatorModel.findAll({ where: { Isactive: true } })
+        const translators = await db.translatorModel.findAll()
         for (const translator of translators) {
             const userresponse = await axios({
                 method: 'GET',
@@ -253,7 +253,12 @@ async function DeleteTranslator(req, res, next) {
             return next(createAccessDenied([messages.ERROR.TRANSLATOR_NOT_ACTIVE], req.language))
         }
 
-        await db.translatorModel.destroy({ where: { Uuid: Uuid }, transaction: t });
+        // await db.translatorModel.destroy({ where: { Uuid: Uuid }, transaction: t });
+        await db.translatorModel.update({
+            Updateduser: "System",
+            Updatetime: new Date(),
+            Isactive: false
+        }, { where: { Uuid: Uuid } }, { transaction: t })
         await t.commit();
     } catch (error) {
         await t.rollback();

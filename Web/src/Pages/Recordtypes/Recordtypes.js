@@ -64,7 +64,7 @@ export default class Recordtypes extends Component {
             }) : [],
         };
 
-        const list = (Recordtypes.list || []).map(item => {
+        const list = (Recordtypes.list || []).filter(u=>u.Isactive).map(item => {
 
             return {
                 ...item,

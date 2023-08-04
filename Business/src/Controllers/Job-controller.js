@@ -33,7 +33,7 @@ async function GetbyorderID(req, res, next) {
 
 async function GetJobs(req, res, next) {
     try {
-        const jobs = await db.jobModel.findAll({ where: { Isactive: true } })
+        const jobs = await db.jobModel.findAll()
         for (const job of jobs) {
             job.Order = await db.orderModel.findOne({ where: { Uuid: job.OrderID } })
         }
@@ -322,7 +322,12 @@ async function DeleteJobs(req, res, next) {
             return next(createAccessDenied([messages.ERROR.JOB_NOT_ACTIVE], req.language))
         }
 
-        await db.jobModel.destroy({ where: { Uuid: Uuid }, transaction: t });
+        //await db.jobModel.destroy({ where: { Uuid: Uuid }, transaction: t });
+        await db.jobModel.update({
+            Updateduser: "System",
+            Updatetime: new Date(),
+            Isactive: false
+        }, { where: { Uuid: Uuid } }, { transaction: t })
         await t.commit();
     } catch (error) {
         await t.rollback();

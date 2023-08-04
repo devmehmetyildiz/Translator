@@ -9,7 +9,7 @@ const Priveleges = require("../Constants/Privileges")
 
 async function GetRoles(req, res, next) {
     try {
-        const roles = await db.roleModel.findAll({ where: { Isactive: true } })
+        const roles = await db.roleModel.findAll()
         for (const role of roles) {
             role.Privileges = []
             let privileges = await db.roleprivilegeModel.findAll({
@@ -262,8 +262,13 @@ async function DeleteRole(req, res, next) {
             return next(createNotfounderror([messages.ERROR.ROLE_NOT_ACTIVE], req.language))
         }
 
-        await db.roleprivilegeModel.destroy({ where: { RoleID: Uuid }, transaction: t });
-        await db.roleModel.destroy({ where: { Uuid: Uuid }, transaction: t });
+        //await db.roleprivilegeModel.destroy({ where: { RoleID: Uuid }, transaction: t });
+        //await db.roleModel.destroy({ where: { Uuid: Uuid }, transaction: t });
+        await db.roleModel.update({
+            Updateduser: "System",
+            Updatetime: new Date(),
+            Isactive: false
+        }, { where: { Uuid: Uuid } }, { transaction: t })
         await t.commit();
     } catch (error) {
         await t.rollback();

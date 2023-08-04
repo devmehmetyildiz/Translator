@@ -8,7 +8,7 @@ const uuid = require('uuid').v4
 
 async function GetDocuments(req, res, next) {
     try {
-        const documents = await db.documentModel.findAll({ where: { Isactive: true } })
+        const documents = await db.documentModel.findAll()
         res.status(200).json(documents)
     } catch (error) {
         return next(sequelizeErrorCatcher(error))
@@ -235,7 +235,12 @@ async function DeleteDocument(req, res, next) {
             return next(createAccessDenied([messages.ERROR.DOCUMENT_NOT_ACTIVE], req.language))
         }
 
-        await db.documentModel.destroy({ where: { Uuid: Uuid }, transaction: t });
+        //await db.documentModel.destroy({ where: { Uuid: Uuid }, transaction: t });
+        await db.documentModel.update({
+            Updateduser: "System",
+            Updatetime: new Date(),
+            Isactive: false
+        }, { where: { Uuid: Uuid } }, { transaction: t })
         await t.commit();
     } catch (error) {
         await t.rollback();

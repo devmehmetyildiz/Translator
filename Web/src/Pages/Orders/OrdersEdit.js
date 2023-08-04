@@ -191,37 +191,37 @@ export default class OrdersEdit extends Component {
       </div>
     }
 
-    const Recordtypeoption = (Recordtypes.list || []).map(recordtype => {
+    const Recordtypeoption = (Recordtypes.list || []).filter(u=>u.Isactive).map(recordtype => {
       return { key: recordtype.Uuid, text: optionContainer(recordtype.Name, <RecordtypesEdit RecordtypeID={recordtype.Uuid} />), value: recordtype.Uuid }
     })
-    const Courthauseoption = (Courthauses.list || []).map(courthause => {
+    const Courthauseoption = (Courthauses.list || []).filter(u=>u.Isactive).map(courthause => {
       return { key: courthause.Uuid, text: optionContainer(courthause.Name, <CourthausesEdit CourthauseID={courthause.Uuid} />), value: courthause.Uuid }
     })
-    const Courtoption = (Courts.list || []).map(court => {
+    const Courtoption = (Courts.list || []).filter(u=>u.Isactive).map(court => {
       return { key: court.Uuid, text: optionContainer(court.Name, <CourtsEdit CourtID={court.Uuid} />), value: court.Uuid }
     })
-    const Definedcompanyoption = (Definedcompanies.list || []).map(definecompany => {
+    const Definedcompanyoption = (Definedcompanies.list || []).filter(u=>u.Isactive).map(definecompany => {
       return { key: definecompany.Uuid, text: optionContainer(definecompany.Name, <DefinedcompaniesEdit DefinedcompanyID={definecompany.Uuid} />), value: definecompany.Uuid }
     })
-    const Definedcostumeroption = (Definedcostumers.list || []).map(definedcostumer => {
+    const Definedcostumeroption = (Definedcostumers.list || []).filter(u=>u.Isactive).map(definedcostumer => {
       return { key: definedcostumer.Uuid, text: optionContainer(`${definedcostumer.Name} - ${definedcostumer.CountryID}`, <DefinedcostumersEdit DefinedcostumerID={definedcostumer.Uuid} />), value: definedcostumer.Uuid }
     })
-    const Translatoroption = (Translators.list || []).map(translator => {
+    const Translatoroption = (Translators.list || []).filter(u=>u.Isactive).map(translator => {
       return { key: translator.Uuid, text: optionContainer(translator.Name, <TranslatorsEdit TranslatorID={translator.Uuid} />), value: translator.Uuid }
     })
-    const Kdvoption = (Kdvs.list || []).map(kdv => {
+    const Kdvoption = (Kdvs.list || []).filter(u=>u.Isactive).map(kdv => {
       return { key: kdv.Uuid, text: optionContainer(kdv.Name, <KdvsEdit PaymentID={kdv.Uuid} />), value: kdv.Uuid }
     })
-    const Paymentoption = (Payments.list || []).map(payment => {
+    const Paymentoption = (Payments.list || []).filter(u=>u.Isactive).map(payment => {
       return { key: payment.Uuid, text: optionContainer(payment.Name, <PaymentsEdit PaymentID={payment.Uuid} />), value: payment.Uuid }
     })
-    const Languageoption = (Languages.list || []).map(language => {
+    const Languageoption = (Languages.list || []).filter(u=>u.Isactive).map(language => {
       return { key: language.Uuid, text: optionContainer(language.Name, <LanguagesEdit LanguageID={language.Uuid} />), value: language.Uuid }
     })
-    const Documentoption = (Documents.list || []).map(document => {
+    const Documentoption = (Documents.list || []).filter(u=>u.Isactive).map(document => {
       return { key: document.Uuid, text: optionContainer(document.Name, <DocumentsEdit DocumentID={document.Uuid} />), value: document.Uuid }
     })
-    const Caseoption = (Cases.list || []).map(cases => {
+    const Caseoption = (Cases.list || []).filter(u=>u.Isactive).map(cases => {
       return { key: cases.Uuid, text: optionContainer(cases.Name, <CasesEdit CaseID={cases.Uuid} />), value: cases.Uuid }
     })
 

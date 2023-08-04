@@ -8,7 +8,7 @@ const uuid = require('uuid').v4
 
 async function GetPayments(req, res, next) {
     try {
-        const payments = await db.paymentModel.findAll({ where: { Isactive: true } })
+        const payments = await db.paymentModel.findAll()
         res.status(200).json(payments)
     } catch (error) {
         return next(sequelizeErrorCatcher(error))
@@ -235,7 +235,12 @@ async function DeletePayment(req, res, next) {
             return next(createAccessDenied([messages.ERROR.PAYMENT_NOT_ACTIVE], req.language))
         }
 
-        await db.paymentModel.destroy({ where: { Uuid: Uuid }, transaction: t });
+        //await db.paymentModel.destroy({ where: { Uuid: Uuid }, transaction: t });
+        await db.paymentModel.update({
+            Updateduser: "System",
+            Updatetime: new Date(),
+            Isactive: false
+        }, { where: { Uuid: Uuid } }, { transaction: t })
         await t.commit();
     } catch (error) {
         await t.rollback();

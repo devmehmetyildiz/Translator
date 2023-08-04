@@ -8,7 +8,7 @@ const uuid = require('uuid').v4
 
 async function GetDefinedcompanies(req, res, next) {
     try {
-        const definedcompanies = await db.definedcompanyModel.findAll({ where: { Isactive: true } })
+        const definedcompanies = await db.definedcompanyModel.findAll()
         res.status(200).json(definedcompanies)
     } catch (error) {
         return next(sequelizeErrorCatcher(error))
@@ -58,7 +58,7 @@ async function AddDefinedcompany(req, res, next) {
     let validationErrors = []
     const {
         Name,
-       
+
     } = req.body
 
     if (!validator.isString(Name)) {
@@ -196,7 +196,12 @@ async function DeleteDefinedcompany(req, res, next) {
             return next(createAccessDenied([messages.ERROR.DEFINEDCOMPANY_NOT_ACTIVE], req.language))
         }
 
-        await db.definedcompanyModel.destroy({ where: { Uuid: Uuid }, transaction: t });
+        //  await db.definedcompanyModel.destroy({ where: { Uuid: Uuid }, transaction: t });
+        await db.definedcompanyModel.update({
+            Updateduser: "System",
+            Updatetime: new Date(),
+            Isactive: false
+        }, { where: { Uuid: Uuid } }, { transaction: t })
         await t.commit();
     } catch (error) {
         await t.rollback();

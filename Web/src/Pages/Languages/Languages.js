@@ -71,7 +71,7 @@ export default class Languages extends Component {
             }) : [],
         };
 
-        const list = (Languages.list || []).map(item => {
+        const list = (Languages.list || []).filter(u=>u.Isactive).map(item => {
 
             return {
                 ...item,

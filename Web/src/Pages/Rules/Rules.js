@@ -57,7 +57,7 @@ export class Rules extends Component {
       }) : [],
     };
 
-    const list = (Rules.list || []).map(item => {
+    const list = (Rules.list || []).filter(u=>u.Isactive).map(item => {
       return {
         ...item,
         Stop: item.Status === 1 ? <Icon link size='large' color='red' name='hand paper' onClick={() => {

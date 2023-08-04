@@ -8,7 +8,7 @@ const uuid = require('uuid').v4
 
 async function GetCases(req, res, next) {
     try {
-        const cases = await db.caseModel.findAll({ where: { Isactive: true } })
+        const cases = await db.caseModel.findAll()
         res.status(200).json(cases)
     } catch (error) {
         return next(sequelizeErrorCatcher(error))
@@ -315,7 +315,12 @@ async function DeleteCase(req, res, next) {
             return next(createAccessDenied([messages.ERROR.CASE_NOT_ACTIVE], req.language))
         }
 
-        await db.caseModel.destroy({ where: { Uuid: Uuid }, transaction: t });
+        // await db.caseModel.destroy({ where: { Uuid: Uuid }, transaction: t });
+        await db.caseModel.update({
+            Updateduser: "System",
+            Updatetime: new Date(),
+            Isactive: false
+        }, { where: { Uuid: Uuid } }, { transaction: t })
         await t.commit();
     } catch (error) {
         await t.rollback();

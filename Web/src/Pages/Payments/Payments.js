@@ -58,7 +58,7 @@ export default class Payments extends Component {
             }) : [],
         };
 
-        const list = (Payments.list || []).map(item => {
+        const list = (Payments.list || []).filter(u=>u.Isactive).map(item => {
 
             return {
                 ...item,

@@ -8,7 +8,7 @@ const uuid = require('uuid').v4
 
 async function GetRecordtypes(req, res, next) {
     try {
-        const recordtypes = await db.recordtypeModel.findAll({ where: { Isactive: true } })
+        const recordtypes = await db.recordtypeModel.findAll()
         res.status(200).json(recordtypes)
     } catch (error) {
         return next(sequelizeErrorCatcher(error))
@@ -195,7 +195,12 @@ async function DeleteRecordtype(req, res, next) {
             return next(createAccessDenied([messages.ERROR.RECORDTYPE_NOT_ACTIVE], req.language))
         }
 
-        await db.recordtypeModel.destroy({ where: { Uuid: Uuid }, transaction: t });
+        // await db.recordtypeModel.destroy({ where: { Uuid: Uuid }, transaction: t });
+        await db.recordtypeModel.update({
+            Updateduser: "System",
+            Updatetime: new Date(),
+            Isactive: false
+        }, { where: { Uuid: Uuid } }, { transaction: t })
         await t.commit();
     } catch (error) {
         await t.rollback();

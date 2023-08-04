@@ -62,7 +62,7 @@ export class Roles extends Component {
       }) : [],
     };
 
-    const list = (Roles.list || []).map(item => {
+    const list = (Roles.list || []).filter(u=>u.Isactive).map(item => {
       var text = item.Privileges.map((privilege) => {
         return privilege.text;
       }).join(", ")

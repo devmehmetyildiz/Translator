@@ -8,7 +8,7 @@ const uuid = require('uuid').v4
 
 async function GetLanguages(req, res, next) {
     try {
-        const languages = await db.languageModel.findAll({ where: { Isactive: true } })
+        const languages = await db.languageModel.findAll()
         for (const language of languages) {
             language.Kdv = await db.kdvModel.findOne({ where: { Uuid: language.KdvID } })
         }
@@ -350,7 +350,12 @@ async function DeleteLanguage(req, res, next) {
             return next(createAccessDenied([messages.ERROR.LANGUAGE_NOT_ACTIVE], req.language))
         }
 
-        await db.languageModel.destroy({ where: { Uuid: Uuid }, transaction: t });
+        //await db.languageModel.destroy({ where: { Uuid: Uuid }, transaction: t });
+        await db.languageModel.update({
+            Updateduser: "System",
+            Updatetime: new Date(),
+            Isactive: false
+        }, { where: { Uuid: Uuid } }, { transaction: t })
         await t.commit();
     } catch (error) {
         await t.rollback();

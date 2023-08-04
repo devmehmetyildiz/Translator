@@ -12,7 +12,7 @@ const axios = require('axios')
 
 async function GetOrders(req, res, next) {
     try {
-        const orders = await db.orderModel.findAll({ where: { Isactive: true } })
+        const orders = await db.orderModel.findAll()
         res.status(200).json(orders)
     } catch (error) {
         return next(sequelizeErrorCatcher(error))
@@ -39,6 +39,7 @@ async function GetOrdersforchart(req, res, next) {
             Deliverydate: {
                 [Op.between]: [startDate, endDate],
             },
+            Isactive: true
         };
 
         let recordtypes = []
@@ -120,7 +121,7 @@ async function GetOrderswithdate(req, res, next) {
     const startDate = req.query.Startdate
     const endDate = req.query.Enddate
 
-    const orders = await db.orderModel.findAll({ where: { Deliverydate: { [Op.between]: [startDate, endDate] }, Isactive: true } })
+    const orders = await db.orderModel.findAll({ where: { Deliverydate: { [Op.between]: [startDate, endDate] } } })
     res.status(200).json(orders)
 
 }
@@ -145,6 +146,7 @@ async function GetPricenet(req, res, next) {
             Deliverydate: {
                 [Op.between]: [startDate, endDate],
             },
+            Isactive: true
         };
 
         let recordtypes = []
@@ -200,6 +202,7 @@ async function GetPricepotancial(req, res, next) {
             Deliverydate: {
                 [Op.between]: [startDate, endDate],
             },
+            Isactive: true
         };
 
         let recordtypes = []
@@ -255,6 +258,7 @@ async function GetPricereal(req, res, next) {
             Deliverydate: {
                 [Op.between]: [startDate, endDate],
             },
+            Isactive: true
         };
 
         let recordtypes = []
@@ -304,6 +308,7 @@ async function GetPriceexpence(req, res, next) {
             Deliverydate: {
                 [Op.between]: [startDate, endDate],
             },
+            Isactive: true
         };
 
         let finalprice = 0
@@ -327,7 +332,6 @@ async function GetPriceexpence(req, res, next) {
             })
             finalprice = (minusprice ? minusprice : 0)
         }
-        console.log('finalprice: ', finalprice);
         res.status(200).json(finalprice)
     } catch (error) {
         return next(sequelizeErrorCatcher(error))
@@ -480,7 +484,7 @@ async function GetOrder(req, res, next) {
         }
         order.Case = Cases.find(u => u.Uuid === order.CaseID)
 
-        const jobs = await db.jobModel.findAll({ where: { OrderID: order.Uuid } })
+        const jobs = await db.jobModel.findAll({ where: { OrderID: order.Uuid, Isactive: true } })
         for (const job of jobs) {
             job.Sourcelanguage = Languages.find(u => u.Uuid === job.SourcelanguageID)
             job.Targetlanguage = Languages.find(u => u.Uuid === job.TargetlanguageID)
@@ -755,8 +759,18 @@ async function DeleteOrders(req, res, next) {
             return next(createAccessDenied([messages.ERROR.ORDER_NOT_ACTIVE], req.language))
         }
 
-        await db.orderModel.destroy({ where: { Uuid: Uuid }, transaction: t });
-        await db.jobModel.destroy({ where: { OrderID: Uuid }, transaction: t });
+        //await db.orderModel.destroy({ where: { Uuid: Uuid }, transaction: t });
+        await db.orderModel.update({
+            Updateduser: "System",
+            Updatetime: new Date(),
+            Isactive: false
+        }, { where: { Uuid: Uuid } }, { transaction: t })
+        //await db.jobModel.destroy({ where: { OrderID: Uuid }, transaction: t });
+        await db.jobModel.update({
+            Updateduser: "System",
+            Updatetime: new Date(),
+            Isactive: false
+        }, { where: { OrderID: Uuid } }, { transaction: t })
         await t.commit();
     } catch (error) {
         await t.rollback();

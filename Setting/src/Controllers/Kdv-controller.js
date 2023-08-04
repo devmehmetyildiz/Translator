@@ -8,7 +8,7 @@ const uuid = require('uuid').v4
 
 async function GetKdvs(req, res, next) {
     try {
-        const kdvs = await db.kdvModel.findAll({ where: { Isactive: true } })
+        const kdvs = await db.kdvModel.findAll()
         res.status(200).json(kdvs)
     } catch (error) {
         return next(sequelizeErrorCatcher(error))
@@ -247,7 +247,12 @@ async function DeleteKdv(req, res, next) {
             return next(createAccessDenied([messages.ERROR.KDV_NOT_ACTIVE], req.language))
         }
 
-        await db.kdvModel.destroy({ where: { Uuid: Uuid }, transaction: t });
+        //await db.kdvModel.destroy({ where: { Uuid: Uuid }, transaction: t });
+        await db.kdvModel.update({
+            Updateduser: "System",
+            Updatetime: new Date(),
+            Isactive: false
+        }, { where: { Uuid: Uuid } }, { transaction: t })
         await t.commit();
     } catch (error) {
         await t.rollback();

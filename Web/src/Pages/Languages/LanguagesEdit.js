@@ -54,7 +54,7 @@ export default class LanguagesEdit extends Component {
     render() {
         const { Languages, Kdvs, Profile, history } = this.props
 
-        const Kdvoptions = Kdvs.list.map(kdv => {
+        const Kdvoptions = Kdvs.list.filter(u=>u.Isactive).map(kdv => {
             return { key: kdv.Uuid, text: kdv.Name, value: kdv.Uuid }
         })
 

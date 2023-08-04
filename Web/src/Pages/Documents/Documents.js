@@ -58,7 +58,7 @@ export default class Documents extends Component {
             }) : [],
         };
 
-        const list = (Documents.list || []).map(item => {
+        const list = (Documents.list || []).filter(u=>u.Isactive).map(item => {
 
             return {
                 ...item,

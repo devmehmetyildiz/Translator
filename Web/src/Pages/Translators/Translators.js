@@ -59,7 +59,7 @@ export default class Translators extends Component {
             }) : [],
         };
 
-        const list = (Translators.list || []).map(item => {
+        const list = (Translators.list || []).filter(u=>u.Isactive).map(item => {
 
             return {
                 ...item,

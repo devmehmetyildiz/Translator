@@ -63,7 +63,7 @@ export default class Definedcostumers extends Component {
             }) : [],
           };
 
-        const list = (Definedcostumers.list || []).map(item => {
+        const list = (Definedcostumers.list || []).filter(u=>u.Isactive).map(item => {
 
             return {
                 ...item,

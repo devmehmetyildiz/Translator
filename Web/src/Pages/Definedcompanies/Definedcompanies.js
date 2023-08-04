@@ -61,7 +61,7 @@ export default class Definedcompanies extends Component {
             }) : [],
           };
 
-        const list = (Definedcompanies.list || []).map(item => {
+        const list = (Definedcompanies.list || []).filter(u=>u.Isactive).map(item => {
 
             return {
                 ...item,

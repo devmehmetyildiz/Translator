@@ -70,7 +70,7 @@ export default class Jobs extends Component {
       }) : [],
     };
 
-    const list = (Jobs.list || []).map(item => {
+    const list = (Jobs.list || []).filter(u=>u.Isactive).map(item => {
 
       return {
         ...item,

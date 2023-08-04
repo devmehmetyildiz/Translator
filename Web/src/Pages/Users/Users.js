@@ -76,7 +76,7 @@ export default class Users extends Component {
       }) : [],
     };
 
-    const list = (Users.list || []).map(item => {
+    const list = (Users.list || []).filter(u=>u.Isactive).map(item => {
       var rolestext = (item.Roles || []).map((role) => {
         return role.Name;
       }).join(", ")

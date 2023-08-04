@@ -8,7 +8,7 @@ const uuid = require('uuid').v4
 
 async function GetGoals(req, res, next) {
     try {
-        const goals = await db.goalModel.findAll({ where: { Isactive: true } })
+        const goals = await db.goalModel.findAll()
         res.status(200).json(goals)
     } catch (error) {
         return next(sequelizeErrorCatcher(error))
@@ -247,7 +247,12 @@ async function DeleteGoal(req, res, next) {
             return next(createAccessDenied([messages.ERROR.GOAL_NOT_ACTIVE], req.language))
         }
 
-        await db.goalModel.destroy({ where: { Uuid: Uuid }, transaction: t });
+        //await db.goalModel.destroy({ where: { Uuid: Uuid }, transaction: t });
+        await db.goalModel.update({
+            Updateduser: "System",
+            Updatetime: new Date(),
+            Isactive: false
+        }, { where: { Uuid: Uuid } }, { transaction: t })
         await t.commit();
     } catch (error) {
         await t.rollback();

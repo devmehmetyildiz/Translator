@@ -9,7 +9,7 @@ const axios = require('axios')
 
 async function GetPrinttemplates(req, res, next) {
     try {
-        const printtemplates = await db.printtemplateModel.findAll({ where: { Isactive: true } })
+        const printtemplates = await db.printtemplateModel.findAll()
         res.status(200).json(printtemplates)
     } catch (error) {
         return next(sequelizeErrorCatcher(error))
@@ -175,7 +175,12 @@ async function DeletePrinttemplate(req, res, next) {
             return next(createAccessDenied([messages.ERROR.PRINTTEMPLATE_NOT_ACTIVE], req.language))
         }
 
-        await db.printtemplateModel.destroy({ where: { Uuid: Uuid }, transaction: t });
+        // await db.printtemplateModel.destroy({ where: { Uuid: Uuid }, transaction: t });
+        await db.printtemplateModel.update({
+            Updateduser: "System",
+            Updatetime: new Date(),
+            Isactive: false
+        }, { where: { Uuid: Uuid } }, { transaction: t })
         await t.commit();
     } catch (error) {
         await t.rollback();

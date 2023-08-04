@@ -159,7 +159,7 @@ export default class Orders extends Component {
     const listCases = [...new Set(['General'].concat([...Orders.list.map(u => {
       return u.CaseID
     })]))]
-    const list = ((recordType ? Orders.list.filter(u => u.RecordtypeID === recordType) : Orders.list) || []).map(order => {
+    const list = ((recordType ? Orders.list.filter(u => u.RecordtypeID === recordType) : Orders.list) || []).filter(u=>u.Isactive).map(order => {
       const item = {
         ...order,
         Jobs: Jobs.list.filter(u => u.OrderID === order.Uuid)

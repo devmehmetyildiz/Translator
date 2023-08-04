@@ -8,7 +8,7 @@ const uuid = require('uuid').v4
 
 async function GetMailsettings(req, res, next) {
     try {
-        const mailsettings = await db.mailsettingModel.findAll({ where: { Isactive: true } })
+        const mailsettings = await db.mailsettingModel.findAll()
         res.status(200).json(mailsettings)
     } catch (error) {
         return next(sequelizeErrorCatcher(error))
@@ -229,7 +229,12 @@ async function DeleteMailsetting(req, res, next) {
             return next(createAccessDenied([messages.ERROR.MAILSETTING_NOT_ACTIVE], req.language))
         }
 
-        await db.mailsettingModel.destroy({ where: { Uuid: Uuid }, transaction: t });
+        //await db.mailsettingModel.destroy({ where: { Uuid: Uuid }, transaction: t });
+        await db.mailsettingModel.update({
+            Updateduser: "System",
+            Updatetime: new Date(),
+            Isactive: false
+        }, { where: { Uuid: Uuid } }, { transaction: t })
         await t.commit();
     } catch (error) {
         await t.rollback();

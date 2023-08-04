@@ -9,7 +9,7 @@ const jobs = require('../Jobs')
 
 async function GetRules(req, res, next) {
     try {
-        const rules = await db.ruleModel.findAll({ where: { Isactive: true } })
+        const rules = await db.ruleModel.findAll()
         res.status(200).json(rules)
     } catch (error) {
         return next(sequelizeErrorCatcher(error))
@@ -222,7 +222,12 @@ async function DeleteRule(req, res, next) {
             return next(createAccessDenied([messages.ERROR.RULE_NOT_ACTIVE], req.language))
         }
 
-        await db.ruleModel.destroy({ where: { Uuid: Uuid }, transaction: t });
+        //await db.ruleModel.destroy({ where: { Uuid: Uuid }, transaction: t });
+        await db.ruleModel.update({
+            Updateduser: "System",
+            Updatetime: new Date(),
+            Isactive: false
+        }, { where: { Uuid: Uuid } }, { transaction: t })
         await t.commit();
         await jobs.stopChildProcess(Uuid)
     } catch (error) {

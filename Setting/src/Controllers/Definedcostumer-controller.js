@@ -8,7 +8,7 @@ const uuid = require('uuid').v4
 
 async function GetDefinedcostumers(req, res, next) {
     try {
-        const definedcostumers = await db.definedcostumerModel.findAll({ where: { Isactive: true } })
+        const definedcostumers = await db.definedcostumerModel.findAll()
         res.status(200).json(definedcostumers)
     } catch (error) {
         return next(sequelizeErrorCatcher(error))
@@ -195,7 +195,12 @@ async function DeleteDefinedcostumer(req, res, next) {
             return next(createAccessDenied([messages.ERROR.DEFINEDCOSTUMER_NOT_ACTIVE], req.language))
         }
 
-        await db.definedcostumerModel.destroy({ where: { Uuid: Uuid }, transaction: t });
+        //   await db.definedcostumerModel.destroy({ where: { Uuid: Uuid }, transaction: t });
+        await db.definedcostumerModel.update({
+            Updateduser: "System",
+            Updatetime: new Date(),
+            Isactive: false
+        }, { where: { Uuid: Uuid } }, { transaction: t })
         await t.commit();
     } catch (error) {
         await t.rollback();

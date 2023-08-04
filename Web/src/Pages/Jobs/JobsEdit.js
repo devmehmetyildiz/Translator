@@ -81,19 +81,19 @@ export default class JobsEdit extends Component {
   render() {
     const { Jobs, Orders, Languages, Documents, Cases, Profile } = this.props
 
-    const Documentoption = Documents.list.map(document => {
+    const Documentoption = Documents.list.filter(u=>u.Isactive).map(document => {
       return { key: document.Uuid, text: document.Name, value: document.Uuid }
     })
 
-    const Orderoption = Orders.list.map(order => {
+    const Orderoption = Orders.list.filter(u=>u.Isactive).map(order => {
       return { key: order.Uuid, text: order.Orderno, value: order.Uuid }
     })
 
-    const Languageoption = Languages.list.map(document => {
+    const Languageoption = Languages.list.filter(u=>u.Isactive).map(document => {
       return { key: document.Uuid, text: document.Name, value: document.Uuid }
     })
 
-    const Caseoption = Cases.list.map(cases => {
+    const Caseoption = Cases.list.filter(u=>u.Isactive).map(cases => {
       return { key: cases.Uuid, text: cases.Name, value: cases.Uuid }
     })
 
