@@ -207,6 +207,30 @@ const messages = {
         tr: 'E-posta zaten mevcut',
       }
     },
+    OLDPASSWORD_REQUIRED: {
+      code: 'OLDPASSWORD_REQUIRED', description: {
+        en: 'Old password required',
+        tr: 'Eski parola gerekli',
+      }
+    },
+    NEWPASSWORD_REQUIRED: {
+      code: 'NEWPASSWORD_REQUIRED', description: {
+        en: 'New password required',
+        tr: 'Yeni parola gerekli',
+      }
+    },
+    PASSWORD_DIDNT_MATCH: {
+      code: 'PASSWORD_DIDNT_MATCH', description: {
+        en: 'Passwords didnt match',
+        tr: 'Yeni parolalar eşleşmiyor',
+      }
+    },
+    OLDPASSWORD_DIDNT_MATCH: {
+      code: 'OLDPASSWORD_DIDNT_MATCH', description: {
+        en: 'Old password didnt match',
+        tr: 'Eski parola hatalı',
+      }
+    },
   }
 
 }

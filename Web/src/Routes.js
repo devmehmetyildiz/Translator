@@ -100,9 +100,10 @@ const Notfoundpage = lazy(() => import('./Utils/Notfoundpage'));
 class Routes extends Component {
   render() {
 
+    console.log('this.props: ', this.props);
     const { Profile } = this.props
 
-    const { roles } = Profile
+    const roles = Profile?.roles
 
     const routes = [
       { exact: true, path: "/Login", auth: false, component: Login },
@@ -204,7 +205,7 @@ class Routes extends Component {
       <Suspense fallback={<Spinner />}>
         <Switch>
           {routes.map((route, index) => {
-            return route.auth ? ((roles.includes('admin') || roles.includes(route.permission)) ? <ProtectedRoute key={index} exact={route.exact} path={route.path} component={route.component} /> : null) :
+            return route.auth ? (((roles || []).includes('admin') || (roles || []).includes(route.permission)) ? <ProtectedRoute key={index} exact={route.exact} path={route.path} component={route.component} /> : null) :
               <Route key={index} exact={route.exact} path={route.path} component={route.component} />
           })}
         </Switch>

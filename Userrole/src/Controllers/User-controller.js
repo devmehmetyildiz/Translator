@@ -570,6 +570,52 @@ async function Resettablemeta(req, res, next) {
     Getusertablemetaconfig(req, res, next)
 }
 
+async function Changepassword(req, res, next) {
+    let validationErrors = []
+    const {
+        OldPassword,
+        Newpassword,
+        Newpasswordre,
+    } = req.body
+
+    if (!validator.isString(Newpassword)) {
+        validationErrors.push(messages.VALIDATION_ERROR.NEWPASSWORD_REQUIRED)
+    }
+    if (!validator.isString(Newpasswordre)) {
+        validationErrors.push(messages.VALIDATION_ERROR.NEWPASSWORD_REQUIRED)
+    }
+    if (!validator.isString(OldPassword)) {
+        validationErrors.push(messages.VALIDATION_ERROR.OLDPASSWORD_REQUIRED)
+    }
+    if (validationErrors.length > 0) {
+        return next(createValidationError(validationErrors, req.language))
+    }
+    if (Newpassword !== Newpasswordre) {
+        return next(createNotfounderror([messages.VALIDATION_ERROR.PASSWORD_DIDNT_MATCH], req.language))
+    }
+
+    try {
+
+    } catch (error) {
+        return next(sequelizeErrorCatcher(error))
+    }
+
+    if (!ValidatePassword(Newpassword, req.identity?.user?.PasswordHash,)) {
+        validationErrors.push(messages.VALIDATION_ERROR.OLDPASSWORD_DIDNT_MATCH)
+    }
+
+
+    if (!req.identity.user) {
+        return next(createNotfounderror([messages.ERROR.USER_NOT_FOUND], req.language))
+    }
+    try {
+        await db.tablemetaconfigModel.destroy({ where: { Meta: key, UserID: req.identity.user.Uuid } })
+    } catch (error) {
+        return next(sequelizeErrorCatcher(error))
+    }
+    Getusertablemetaconfig(req, res, next)
+}
+
 function GetUserByEmail(next, Email, language) {
     return new Promise((resolve, reject) => {
         db.userModel.findOne({ where: { Email: Email } })
@@ -592,6 +638,18 @@ function GetUserByUsername(next, Username, language) {
     })
 }
 
+async function ValidatePassword(UserPassword, DbPassword, salt) {
+    try {
+        let hash = crypto.pbkdf2Sync(UserPassword, salt, 1000, 64, 'sha512').toString('hex');
+        if (hash === DbPassword) {
+            return true
+        } else {
+            return false
+        }
+    } catch (error) {
+        return false
+    }
+}
 
 module.exports = {
     GetUsers,
@@ -608,5 +666,6 @@ module.exports = {
     Saveusertablemetaconfig,
     Getbyemail,
     Resettablemeta,
-    GetUserscount
+    GetUserscount,
+    Changepassword
 }
