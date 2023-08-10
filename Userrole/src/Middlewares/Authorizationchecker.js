@@ -27,7 +27,6 @@ async function authorizationChecker(req, res, next) {
         let isMicroservicesreq = req.headers && req.headers.session_key && req.headers.session_key === config.session.secret
         if (!isMicroservicesreq) {
 
-            console.log(' req.originalUrl: ',  req.originalUrl);
             if (!isPublicUrlRequest(req.method, req.originalUrl)) {
                 if (!doesAuthorizationHeaderExists(req.headers)) {
                     return next(createValidationError({

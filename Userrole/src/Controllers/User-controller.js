@@ -573,7 +573,7 @@ async function Resettablemeta(req, res, next) {
 async function Changepassword(req, res, next) {
     let validationErrors = []
     const {
-        OldPassword,
+        Oldpassword,
         Newpassword,
         Newpasswordre,
     } = req.body
@@ -584,7 +584,7 @@ async function Changepassword(req, res, next) {
     if (!validator.isString(Newpasswordre)) {
         validationErrors.push(messages.VALIDATION_ERROR.NEWPASSWORD_REQUIRED)
     }
-    if (!validator.isString(OldPassword)) {
+    if (!validator.isString(Oldpassword)) {
         validationErrors.push(messages.VALIDATION_ERROR.OLDPASSWORD_REQUIRED)
     }
     if (validationErrors.length > 0) {
@@ -594,26 +594,41 @@ async function Changepassword(req, res, next) {
         return next(createNotfounderror([messages.VALIDATION_ERROR.PASSWORD_DIDNT_MATCH], req.language))
     }
 
+    let newSalt = ""
+    let usersalt = null
     try {
-
+        usersalt = await db.usersaltModel.findOne({ where: { UserID: req.identity?.user?.Uuid } })
+        if (!usersalt) {
+            return next(createNotfounderror([messages.ERROR.USERSALT_NOT_FOUND], req.language))
+        }
+        if (!ValidatePassword(Oldpassword, req.identity?.user?.PasswordHash, usersalt.Salt)) {
+            return next(createValidationError([messages.VALIDATION_ERROR.OLDPASSWORD_DIDNT_MATCH], req.language))
+        }
+        newSalt = crypto.randomBytes(16).toString('hex');
     } catch (error) {
         return next(sequelizeErrorCatcher(error))
     }
-
-    if (!ValidatePassword(Newpassword, req.identity?.user?.PasswordHash,)) {
-        validationErrors.push(messages.VALIDATION_ERROR.OLDPASSWORD_DIDNT_MATCH)
-    }
-
-
-    if (!req.identity.user) {
-        return next(createNotfounderror([messages.ERROR.USER_NOT_FOUND], req.language))
-    }
+    const t = await db.sequelize.transaction();
     try {
-        await db.tablemetaconfigModel.destroy({ where: { Meta: key, UserID: req.identity.user.Uuid } })
+        const hash = crypto.pbkdf2Sync(Newpassword, newSalt, 1000, 64, 'sha512').toString('hex');
+        await db.userModel.update({
+            ...req.identity?.user,
+            PasswordHash: hash,
+            Updateduser: "System",
+            Updatetime: new Date(),
+        }, { where: { Uuid: req.identity?.user?.Uuid } }, { transaction: t })
+        await db.usersaltModel.update({
+            ...usersalt,
+            Salt: newSalt,
+        }, { where: { UserID: req.identity?.user?.Uuid } }, { transaction: t })
+        await t.commit()
     } catch (error) {
+        await t.rollback()
         return next(sequelizeErrorCatcher(error))
     }
-    Getusertablemetaconfig(req, res, next)
+    res.status(200).json({
+        messages: "Password changed Successfully"
+    })
 }
 
 function GetUserByEmail(next, Email, language) {

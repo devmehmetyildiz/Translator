@@ -65,7 +65,7 @@ export default function FormInput(props) {
                     <>
                         <>
                             {props.formtype === 'dropdown' ?
-                                < Dropdown value={formdata[name] !== undefined ? formdata[name] : (props.multiple ? [] : '')} {...contextProp} clearable search={props.search ? props.search : true} fluid selection
+                                <Dropdown value={formdata[name] !== undefined ? formdata[name]  : (props.multiple ? [] : '')} {...contextProp} clearable search={props.search ? props.search : true} fluid selection
                                     onChange={(e, data) => {
                                         context.setFormstates({ ...formdata, [name]: data.value })
 

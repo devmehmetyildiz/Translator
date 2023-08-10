@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import PasswordChange from '../../Pages/Auth/PasswordChange'
+import PasswordChangemail from '../../Pages/Auth/PasswordChangemail'
 import { removenotification, fillnotification, Changepassword } from "../../Redux/ProfileSlice"
 import { removeUsernotification } from "../../Redux/UserSlice"
 
@@ -13,4 +13,4 @@ const mapDispatchToProps = {
     removenotification, fillnotification, Changepassword, removeUsernotification
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PasswordChange)
+export default connect(mapStateToProps, mapDispatchToProps)(PasswordChangemail)

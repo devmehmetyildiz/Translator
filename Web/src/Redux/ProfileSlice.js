@@ -48,6 +48,26 @@ export const register = createAsyncThunk(
     }
 );
 
+export const Changepassword = createAsyncThunk(
+    'Profile/password',
+    async ({ data, history }, { dispatch }) => {
+        try {
+            const response = await instanse.post(config.services.Userrole, 'Users/Changepassword', data);
+            dispatch(fillnotification({
+                type: 'Success',
+                code: 'Elder Camp',
+                description: 'Password Changed Successfully',
+            }));
+            history && history.goBack()
+            return response.data;
+        } catch (error) {
+            const errorPayload = AxiosErrorHelper(error);
+            dispatch(fillnotification(errorPayload));
+            throw errorPayload;
+        }
+    }
+);
+
 export const GetActiveUser = createAsyncThunk(
     'Profile/GetActiveUser',
     async (_, { dispatch }) => {
@@ -234,6 +254,17 @@ export const ProfileSlice = createSlice({
                 state.isLogging = false;
             })
             .addCase(register.rejected, (state, action) => {
+                state.isLogging = false;
+                state.errMsg = action.error.message;
+            })
+            .addCase(Changepassword.pending, (state) => {
+                state.isLogging = true;
+                state.errMsg = null;
+            })
+            .addCase(Changepassword.fulfilled, (state, action) => {
+                state.isLogging = false;
+            })
+            .addCase(Changepassword.rejected, (state, action) => {
                 state.isLogging = false;
                 state.errMsg = action.error.message;
             })

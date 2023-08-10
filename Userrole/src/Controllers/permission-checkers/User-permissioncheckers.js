@@ -5,6 +5,10 @@ async function Register(req, res, next) {
     next()
 }
 
+async function Changepassword(req, res, next) {
+    next()
+}
+
 async function GetUsers(req, res, next) {
     if ((req.identity.privileges && req.identity.privileges.includes('userscreen')) || permissionchecker(req)) {
         next()
@@ -133,5 +137,6 @@ module.exports = {
     Saveusertablemetaconfig,
     Getbyemail,
     Resettablemeta,
-    GetUserscount
+    GetUserscount,
+    Changepassword
 }

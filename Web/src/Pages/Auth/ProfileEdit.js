@@ -98,9 +98,12 @@ export default class ProfileEdit extends Component {
                                 </Form.Field>
                             </Form.Group>
                             <div className='flex flex-row w-full justify-between py-4  items-center'>
-                                <Link to="/Users">
+                                <div onClick={(e) => {
+                                    e.preventDefault()
+                                    this.props.history.goBack()
+                                }}>
                                     <Button floated="left" color='grey'>Geri Dön</Button>
-                                </Link>
+                                </div>
                                 <Button floated="right" type='submit' color='blue'>Güncelle</Button>
                             </div>
                         </Form>
