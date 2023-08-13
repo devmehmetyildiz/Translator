@@ -48,10 +48,12 @@ class App extends Component {
 
   onRouteChanged = () => {
     window.scrollTo(0, 0);
-    const fullPageLayoutRoutes = ['/Login', '/login', '/Register', '/register', '/Forgetpassword', '/forgetpassword'];
-    document.title = fullPageLayoutRoutes.includes(this.props.location.pathname) ? "Star Note" : this.props.location.pathname.replace('/', '')
+    const fullPageLayoutRoutes = ['/Login', '/login', '/Register', '/register', '/Forgetpassword', '/forgetpassword', 'Passwordreset'];
+    const path = this.props.location.pathname.split('/').length > 0 ? this.props.location.pathname.split('/')[1] : this.props.location.pathname.replace('/', '')
+    console.log('path: ', path);
+    document.title = fullPageLayoutRoutes.includes(path) ? "Star Note" : path
     for (let i = 0; i < fullPageLayoutRoutes.length; i++) {
-      if (this.props.location.pathname === fullPageLayoutRoutes[i]) {
+      if (path === fullPageLayoutRoutes[i]) {
         this.setState({
           isFullPageLayout: true
         })

@@ -25,6 +25,10 @@ const Literals = {
             tr: "Parola Değişikliği",
             en: "Password Change"
         },
+        Pageheaderreset: {
+            tr: "Parola Sıfırlama",
+            en: "Password Reset"
+        },
 
     },
     Button: {

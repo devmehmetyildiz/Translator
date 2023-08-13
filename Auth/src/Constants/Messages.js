@@ -79,6 +79,12 @@ const messages = {
         tr: 'Parola hatalı',
       }
     },
+    RESET_REQUEST_REJECTED: {
+      code: 'RESET_REQUEST_REJECTED', description: {
+        en: 'Reset request already used',
+        tr: 'Sıfırlama Talebi zaten kullanılmış',
+      }
+    },
   },
   VALIDATION_ERROR: {
     NAME_REQUIRED: {

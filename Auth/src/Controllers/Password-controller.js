@@ -52,7 +52,7 @@ async function Createrequest(req, res, next) {
       Uuid: requestUuid,
       UserID: user.Uuid,
       Emailsended: false,
-      Reseturl: config.services.Auth + 'Validateresetrequest/' + requestUuid,
+      Reseturl: config.services.Auth + 'Password/Validateresetrequest/' + requestUuid,
       Emailconfirmed: false,
       Newpassword: null,
       Oldpassword: null,
@@ -85,7 +85,6 @@ async function Createrequest(req, res, next) {
 
     res.status(200).json({ message: "success" })
   } catch (error) {
-    console.log('error: ', error);
     return next(sequelizeErrorCatcher(error))
   }
 }
@@ -108,12 +107,16 @@ async function Validateresetrequest(req, res, next) {
       return next(createNotfounderror([messages.ERROR.REQUEST_NOT_ACTIVE], req.language))
     }
 
-    await db.passwordrefreshrequestModel.Update({
+    if (request.Userfetchedcount >= 0 || request.Emailconfirmed >= 0) {
+      return next(createAutherror([messages.ERROR.RESET_REQUEST_REJECTED], req.language))
+    }
+
+    await db.passwordrefreshrequestModel.update({
       ...request,
       Emailconfirmed: true,
       Updateduser: 'System',
       Updatetime: new Date()
-    })
+    }, { where: { Uuid: request.Uuid } })
 
     res.redirect(config.services.Web + "Passwordreset/" + request.Uuid)
   } catch (error) {

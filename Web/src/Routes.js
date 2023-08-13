@@ -93,6 +93,7 @@ const Flowreports = lazy(() => import('./Containers/Flowreports/Flowreports'));
 const ProfileEdit = lazy(() => import('./Containers/Auth/ProfileEdit'));
 const PasswordChange = lazy(() => import('./Containers/Auth/PasswordChange'));
 const Passwordforget = lazy(() => import('./Containers/Auth/Passwordforget'));
+const Passwordreset = lazy(() => import('./Containers/Auth/Passwordreset'));
 const Home = lazy(() => import('./Pages/Home'));
 const Notfoundpage = lazy(() => import('./Utils/Notfoundpage'));
 
@@ -198,6 +199,7 @@ class Routes extends Component {
       { exact: true, path: "/Profile/Edit", auth: true, component: ProfileEdit, permission: 'basic' },
       { exact: true, path: "/Profile/Change-Password", auth: true, component: PasswordChange, permission: 'basic' },
       { exact: true, path: "/Forgetpassword", auth: false, component: Passwordforget },
+      { exact: true, path: "/Passwordreset/:PasswordID", auth: false, component: Passwordreset },
       { exact: false, path: "*", auth: false, component: Notfoundpage },
     ]
 
