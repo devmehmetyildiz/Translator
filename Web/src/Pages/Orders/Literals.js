@@ -247,6 +247,14 @@ const Literals = {
             tr: 'Genel',
             en: 'General'
         },
+        Startdate: {
+            tr: "Başlangıç Tarihi",
+            en: "Start Date"
+        },
+        Enddate: {
+            tr: "Bitiş Tarihi",
+            en: "End Date"
+        },
     },
     Page: {
         Pageheader: {

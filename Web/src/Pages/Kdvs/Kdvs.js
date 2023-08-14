@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Divider, Icon } from 'semantic-ui-react'
+import { Icon } from 'semantic-ui-react'
 import { Breadcrumb, Button, Grid, GridColumn } from 'semantic-ui-react'
 import ColumnChooser from '../../Containers/Utils/ColumnChooser'
 import DataTable from '../../Utils/DataTable'
@@ -59,7 +59,7 @@ export default class Kdvs extends Component {
             }) : [],
         };
 
-        const list = (Kdvs.list || []).filter(u=>u.Isactive).map(item => {
+        const list = (Kdvs.list || []).filter(u => u.Isactive).map(item => {
 
             return {
                 ...item,
@@ -113,7 +113,7 @@ export default class Kdvs extends Component {
         return col.value !== null && (col.value ? Literals.Messages.Yes[Profile.Language] : Literals.Messages.No[Profile.Language])
     }
     nameCellhandler = (col) => {
-        const { fillKdvnotification,Profile } = this.props
+        const { fillKdvnotification, Profile } = this.props
         if (col.value) {
             let copytext = col.row?.original?.Uuid
             return <div className='group flex flex-row justify-between items-center text-center'>

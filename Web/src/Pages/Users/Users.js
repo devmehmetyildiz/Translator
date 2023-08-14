@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Breadcrumb, Button, Divider, Grid, GridColumn, Header, Icon, Modal } from 'semantic-ui-react'
+import { Breadcrumb, Button, Grid, GridColumn, Icon } from 'semantic-ui-react'
 import ColumnChooser from '../../Containers/Utils/ColumnChooser'
 import DataTable from '../../Utils/DataTable'
 import LoadingPage from '../../Utils/LoadingPage'
@@ -76,7 +76,7 @@ export default class Users extends Component {
       }) : [],
     };
 
-    const list = (Users.list || []).filter(u=>u.Isactive).map(item => {
+    const list = (Users.list || []).filter(u => u.Isactive).map(item => {
       var rolestext = (item.Roles || []).map((role) => {
         return role.Name;
       }).join(", ")

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { TbGauge, Tb3DRotate, TbAccessPoint, TbActivity } from "react-icons/tb";
+import { TbGauge, TbActivity } from "react-icons/tb";
 import { IoIosArrowDown } from "react-icons/io";
 import { MdSettings } from "react-icons/md";
 import { Collapse } from 'react-collapse';

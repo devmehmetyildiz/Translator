@@ -4,8 +4,6 @@ import Layout from './Containers/Layout/Layout';
 import { withRouter } from 'react-router-dom';
 import { FormContext } from './Provider/FormProvider';
 
-
-
 class App extends Component {
 
   constructor(props) {
@@ -37,7 +35,6 @@ class App extends Component {
   componentDidUpdate(prevProps) {
     if (this.props.location !== prevProps.location) {
       this.onRouteChanged();
-      // this.context.setFormstates({})
     }
   }
 
@@ -48,9 +45,8 @@ class App extends Component {
 
   onRouteChanged = () => {
     window.scrollTo(0, 0);
-    const fullPageLayoutRoutes = ['/Login', '/login', '/Register', '/register', '/Forgetpassword', '/forgetpassword', 'Passwordreset'];
+    const fullPageLayoutRoutes = ['Login', 'login', 'Register', 'register', 'Forgetpassword', 'forgetpassword', 'Passwordreset'];
     const path = this.props.location.pathname.split('/').length > 0 ? this.props.location.pathname.split('/')[1] : this.props.location.pathname.replace('/', '')
-    console.log('path: ', path);
     document.title = fullPageLayoutRoutes.includes(path) ? "Star Note" : path
     for (let i = 0; i < fullPageLayoutRoutes.length; i++) {
       if (path === fullPageLayoutRoutes[i]) {

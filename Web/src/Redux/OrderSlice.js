@@ -43,9 +43,9 @@ const Literals = {
 
 export const GetOrders = createAsyncThunk(
     'Orders/GetOrders',
-    async (_, { dispatch }) => {
+    async ({ Startdate, Enddate }, { dispatch }) => {
         try {
-            const response = await instanse.get(config.services.Business, ROUTES.ORDER);
+            const response = await instanse.get(config.services.Business,`${ROUTES.ORDER}${(Startdate && Enddate)&&`?`}${Startdate&&`Startdate=${Startdate}&`}${Enddate && `Enddate=${Enddate}&`}`);
             return response.data;
         } catch (error) {
             const errorPayload = AxiosErrorHelper(error);

@@ -18,7 +18,7 @@ export const logIn = createAsyncThunk(
                 code: 'Elder Camp',
                 description: 'Elder camp giriş yapıldı',
             }));
-            redirectUrl ? window.location = (redirectUrl) : window.location = ('Home')
+            redirectUrl ? window.location = (redirectUrl) : window.location = ('Orders')
             return response.data;
         } catch (error) {
             const errorPayload = AxiosErrorHelper(error);

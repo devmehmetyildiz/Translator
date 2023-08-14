@@ -112,7 +112,7 @@ async function responseToGetTokenByGrantPassword(req, res, next) {
     try {
         await db.accesstokenModel.destroy({ where: { Userid: user.Uuid } })
         req.identity = {}
-        req.identity.user = user.Uuid
+        req.identity.user = user
         await db.accesstokenModel.create({
             Userid: user.Uuid,
             Accesstoken: accessToken.accessToken,

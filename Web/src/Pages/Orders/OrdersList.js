@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from 'react'
-import { Header, Label, Loader } from 'semantic-ui-react'
+import React from 'react'
+import { Label, Loader } from 'semantic-ui-react'
 import DataTable from '../../Utils/DataTable'
 import Literals from './Literals'
 export default function OrdersList({ Data, Columns, initialConfig, Profile, Jobs, Files, Cases, Languages, Documents }) {
-    console.log('CasesOrdersList: ', Cases);
-
 
     const caseCellhandler = (col) => {
         if (Cases.isLoading) {

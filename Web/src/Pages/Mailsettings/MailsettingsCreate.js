@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link, } from 'react-router-dom'
-import { Checkbox, Form } from 'semantic-ui-react'
+import { Form } from 'semantic-ui-react'
 import { Breadcrumb, Button } from 'semantic-ui-react'
 import formToObject from 'form-to-object'
 import LoadingPage from '../../Utils/LoadingPage'

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Icon, Button, Modal, Table, Label, Checkbox, Form, Grid } from 'semantic-ui-react'
+import { Button } from 'semantic-ui-react'
 import Literals from './Literals'
 import { utils, write } from 'xlsx';
 import { saveAs } from 'file-saver';

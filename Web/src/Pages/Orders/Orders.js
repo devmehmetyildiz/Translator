@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Divider, Dropdown, Icon, Loader, Modal, Tab } from 'semantic-ui-react'
+import { Dropdown, Form, Icon, Loader, Modal, Tab } from 'semantic-ui-react'
 import { Breadcrumb, Button, Grid, GridColumn } from 'semantic-ui-react'
 import ColumnChooser from '../../Containers/Utils/ColumnChooser'
 import LoadingPage from '../../Utils/LoadingPage'
@@ -18,16 +18,30 @@ import InnerHTML from '../../Utils/DangerouslySetHtmlContent'
 import PrintBodyReplacer from "../../Utils/PrintBodyReplacer"
 import myTurkishFont from '../../Assets/fonts/AbhayaLibre-Medium.ttf';
 import Contentwrapper from '../../Common/Wrappers/Contentwrapper'
+import { Collapse } from 'react-collapse'
+import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io'
 
 export default class Orders extends Component {
 
   constructor(props) {
     super(props)
+
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const startmonth = String(currentDate.getMonth() + 1).padStart(2, '0');
+    const endmonth = String(currentDate.getMonth() + 2).padStart(2, '0');
+    const day = String(currentDate.getDate()).padStart(2, '0');
+    const formattedstartDate = `${year}-${startmonth}-${day}`;
+    const formattedendDate = `${year}-${endmonth}-${day}`;
+
     this.state = {
+      startDate: formattedstartDate,
+      endDate: formattedendDate,
       openPrintpreview: false,
       selectedPrintdesign: {},
       decoratedBody: null,
       isPreviewloading: false,
+      isSearchopened: true,
     }
   }
 
@@ -35,7 +49,11 @@ export default class Orders extends Component {
     const { GetOrders, GetJobs, GetDefinedcompanies, GetFiles,
       GetCourthauses, GetCourts, GetDefinedcostumers, GetPrinttemplates,
       GetPayments, GetKdvs, GetTranslators, GetCases, GetRecordtypes, GetLanguages, GetDocuments } = this.props
-    GetOrders()
+    let params = {
+      Startdate: this.state.startDate,
+      Enddate: this.state.endDate
+    }
+    GetOrders(params)
     GetJobs()
     GetCourthauses()
     GetCourts()
@@ -52,8 +70,8 @@ export default class Orders extends Component {
     GetFiles()
   }
 
-  componentDidUpdate() {
-    const { removeOrdernotification, removeDefinedcompanynotification, Printtemplates, removePrinttemplatenotification, Files,
+  componentDidUpdate(_, prevStates) {
+    const { GetOrders, removeOrdernotification, removeDefinedcompanynotification, Printtemplates, removePrinttemplatenotification, Files,
       removeJobnotification, removeCourthausenotification, removeCourtnotification, removeDefinedcostumernotification, removeFilenotification,
       removePaymentnotification, removeKdvnotification, removeTranslatornotification, Orders, Jobs, Documents, removeDocumentNotification, Languages, removeLanguagenotification
       , Courthauses, Courts, Definedcompanies, Definedcostumers, Kdvs, Translators, Payments, Cases, removeCasenotification, Recordtypes, removeRecordtypenotification
@@ -79,6 +97,15 @@ export default class Orders extends Component {
         decoratedBody: PrintBodyReplacer(this.state.selectedPrintdesign?.Printtemplate, Orders.selected_record),
         isPreviewloading: false
       })
+    }
+
+    if ((prevStates.startDate !== this.state.startDate) ||
+      (prevStates.endDate !== this.state.endDate)) {
+      let params = {
+        Startdate: this.state.startDate,
+        Enddate: this.state.endDate
+      }
+      GetOrders(params)
     }
   }
 
@@ -159,7 +186,7 @@ export default class Orders extends Component {
     const listCases = [...new Set(['General'].concat([...Orders.list.map(u => {
       return u.CaseID
     })]))]
-    const list = ((recordType ? Orders.list.filter(u => u.RecordtypeID === recordType) : Orders.list) || []).filter(u=>u.Isactive).map(order => {
+    const list = ((recordType ? Orders.list.filter(u => u.RecordtypeID === recordType) : Orders.list) || []).filter(u => u.Isactive).map(order => {
       const item = {
         ...order,
         Jobs: Jobs.list.filter(u => u.OrderID === order.Uuid)
@@ -176,7 +203,6 @@ export default class Orders extends Component {
                   <div
                     onClick={() => {
                       GetOrder(item.Uuid)
-                      //   this.setState({ openPrintpreview: true, selectedPrintdesign: printdesign, isPreviewloading: true, decoratedBody: PrintBodyReplacer(printdesign.Printtemplate, item, Columns) }
                       this.setState({ openPrintpreview: true, selectedPrintdesign: printdesign, isPreviewloading: true }
                       )
                     }} className='text-[#3d3d3d] hover:text-[#3d3d3d]'><Icon className='id card ' />{printdesign.Name}</div>
@@ -193,35 +219,56 @@ export default class Orders extends Component {
       }
     })
 
+    const loadingStatus = isLoading || isDispatching || Jobs.isLoading || Jobs.isDispatching || Recordtypes.isLoading || Recordtypes.isDispatching
 
     return (
-      isLoading || isDispatching || Jobs.isLoading || Jobs.isDispatching || Recordtypes.isLoading || Recordtypes.isDispatching ? <LoadingPage /> :
-        <React.Fragment>
-          <Pagewrapper>
-            <Headerwrapper>
-              <Grid columns='2' >
-                <GridColumn width={8}>
-                  <Breadcrumb size='big'>
-                    <Link to={validator.isString(recordTypename) ? `/Orders?recordType=${recordType}` : "/Orders"}>
-                      <Breadcrumb.Section>{`${recordTypename} ${Literals.Page.Pageheader[Profile.Language]}`}</Breadcrumb.Section>
-                    </Link>
-                  </Breadcrumb>
-                </GridColumn>
-                <GridColumn width={8} >
-                  <Link to={validator.isString(recordTypename) ? `/Orders/Create?recordType=${recordType}` : "/Orders/Create"}>
-                    <Button color='blue' floated='right' className='list-right-green-button'>
-                      {Literals.Page.Pagecreateheader[Profile.Language]}
-                    </Button>
+      <React.Fragment>
+        <Pagewrapper>
+          <Headerwrapper>
+            <Grid columns='2' >
+              <GridColumn width={8}>
+                <Breadcrumb size='big'>
+                  <Link to={validator.isString(recordTypename) ? `/Orders?recordType=${recordType}` : "/Orders"}>
+                    <Breadcrumb.Section>{`${recordTypename} ${Literals.Page.Pageheader[Profile.Language]}`}</Breadcrumb.Section>
                   </Link>
-                  <ColumnChooser meta={Profile.tablemeta} columns={Columns} metaKey={metaKey} />
-                </GridColumn>
-              </Grid>
-            </Headerwrapper>
-            <Pagedivider />
-            <Contentwrapper>
-            <Tab className='station-tab '
-              panes={listCases.map(listcase => {
-                console.log('listcase: ', listcase);
+                </Breadcrumb>
+              </GridColumn>
+              <GridColumn width={8} >
+                <Link to={validator.isString(recordTypename) ? `/Orders/Create?recordType=${recordType}` : "/Orders/Create"}>
+                  <Button color='blue' floated='right' className='list-right-green-button'>
+                    {Literals.Page.Pagecreateheader[Profile.Language]}
+                  </Button>
+                </Link>
+                <ColumnChooser meta={Profile.tablemeta} columns={Columns} metaKey={metaKey} />
+              </GridColumn>
+            </Grid>
+          </Headerwrapper>
+          <Contentwrapper>
+            {!this.state.isSearchopened ?
+              <div className='w-full flex justify-end items-center'>
+                <div className='cursor-pointer' onClick={() => { this.setState({ isSearchopened: !this.state.isSearchopened }) }}>
+                  <IoIosArrowDown className='text-md  text-TextColor ' />
+                </div>
+              </div>
+              : <div className='w-full flex justify-end items-center'>
+                <div className={`cursor-pointer ${!this.state.isSearchopened && 'hidden'}`} onClick={() => { this.setState({ isSearchopened: !this.state.isSearchopened }) }}>
+                  <IoIosArrowUp className='text-md mr-4 text-TextColor ' />
+                </div>
+              </div>
+            }
+            <Collapse isOpened={this.state.isSearchopened}>
+              <Form>
+                <Form.Group widths={'equal'}>
+                  <Form.Input disabled={loadingStatus} loading={loadingStatus} label={Literals.Columns.Startdate[Profile.Language]} onChange={(e) => { this.setState({ startDate: e.target.value }) }} type='date' value={this.state.startDate} />
+                  <Form.Input disabled={loadingStatus} loading={loadingStatus} label={Literals.Columns.Enddate[Profile.Language]} onChange={(e) => { this.setState({ endDate: e.target.value }) }} type='date' value={this.state.endDate} />
+                </Form.Group>
+              </Form>
+            </Collapse>
+          </Contentwrapper>
+          <Pagedivider />
+          <Contentwrapper>
+            {loadingStatus ? <LoadingPage style={{ height: 'auto' }} /> :
+              <Tab panes={listCases.map(listcase => {
                 return {
                   menuItem: validator.isUUID(listcase) ? Cases.list.find(u => u.Uuid === listcase)?.Name : Literals.Columns.General[Profile.Language],
                   pane: {
@@ -241,45 +288,45 @@ export default class Orders extends Component {
                             Languages={Languages}
                             Cases={Cases}
                           />
-                        </div> : <NoDataScreen message={Literals.Messages.Nodatafind[Profile.Language]} />
+                        </div> : <NoDataScreen message={Literals.Messages.Nodatafind[Profile.Language]} style={{ height: 'auto' }} />
                       }
                     </React.Fragment>
                   }
                 }
               })}
-              renderActiveOnly={false} />
-            </Contentwrapper>
+                renderActiveOnly={false} />
+            }
+          </Contentwrapper>
+        </Pagewrapper>
+        <OrdersDelete />
+        <Modal
+          onClose={() => this.setState({ openPrintpreview: false })}
+          onOpen={() => this.setState({ openPrintpreview: true })}
+          open={this.state.openPrintpreview}
+        >
+          <Modal.Header as={'h1'}>Sipariş Raporu</Modal.Header>
+          <Modal.Header as={'h2'}>{`${this.state.selectedPrintdesign?.Name}`}</Modal.Header>
+          <Modal.Content image>
+            <Modal.Description>
+              <div className='p-2 shadow-lg shadow-gray-300 w-full flex justify-center items-center'>
+                <InnerHTML html={
+                  this.state.selectedPrintdesign?.Printtemplate ? this.state.decoratedBody
+                    : '<div class="print-design-preview-message">No code to show.</div>'
+                } />
+              </div>
+            </Modal.Description>
+          </Modal.Content>
+          <Modal.Actions>
+            <Button color='black' onClick={() => this.setState({ openPrintpreview: false })}>
+              Kapat
+            </Button>
+            <Button color='black' onClick={() => this.generatePDF(this.state.decoratedBody)}>
+              Yazdır
+            </Button>
 
-          </Pagewrapper>
-          <OrdersDelete />
-          <Modal
-            onClose={() => this.setState({ openPrintpreview: false })}
-            onOpen={() => this.setState({ openPrintpreview: true })}
-            open={this.state.openPrintpreview}
-          >
-            <Modal.Header as={'h1'}>Sipariş Raporu</Modal.Header>
-            <Modal.Header as={'h2'}>{`${this.state.selectedPrintdesign?.Name}`}</Modal.Header>
-            <Modal.Content image>
-              <Modal.Description>
-                <div className='p-2 shadow-lg shadow-gray-300 w-full flex justify-center items-center'>
-                  <InnerHTML html={
-                    this.state.selectedPrintdesign?.Printtemplate ? this.state.decoratedBody
-                      : '<div class="print-design-preview-message">No code to show.</div>'
-                  } />
-                </div>
-              </Modal.Description>
-            </Modal.Content>
-            <Modal.Actions>
-              <Button color='black' onClick={() => this.setState({ openPrintpreview: false })}>
-                Kapat
-              </Button>
-              <Button color='black' onClick={() => this.generatePDF(this.state.decoratedBody)}>
-                Yazdır
-              </Button>
-
-            </Modal.Actions>
-          </Modal>
-        </React.Fragment >
+          </Modal.Actions>
+        </Modal>
+      </React.Fragment >
     )
   }
 

@@ -13,6 +13,7 @@ require("./Middlewares/Databaseconnector")()
     const errorHandlers = require('./Middlewares/Errorhandlers')
     const crossDomainEnabler = require('./Middlewares/Crossdomainenabler');
     const languageHelper = require('./Middlewares/LanguageHelper')
+    const requestloghelper = require('./Middlewares/Requestloghelper')
     const whitelist = config.session.corsdomains
     const corsOptions = {
       origin: function (origin, callback) {
@@ -41,6 +42,7 @@ require("./Middlewares/Databaseconnector")()
     app.use(bodyParser.json())
     app.use(bodyParser.urlencoded({ extended: true }));
     app.use(crossDomainEnabler)
+    app.use(requestloghelper)
     router(app, routes, { controllerDirectory: `${process.cwd()}/src/Controllers/`, controllerFileSuffix: '-controller.js', logRoutesList: false })
 
     errorHandlers.init(app)

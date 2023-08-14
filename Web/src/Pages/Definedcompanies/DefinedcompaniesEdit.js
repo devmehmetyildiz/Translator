@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Breadcrumb, Button, Divider, Dropdown, Form, Header, Icon, Popup } from 'semantic-ui-react'
+import { Breadcrumb, Button, Form } from 'semantic-ui-react'
 import Notification from '../../Utils/Notification'
 import formToObject from 'form-to-object'
 import LoadingPage from '../../Utils/LoadingPage'
@@ -66,11 +66,11 @@ export default class DefinedcompaniesEdit extends Component {
                         <Form onSubmit={this.handleSubmit}>
                             <Form.Group widths={'equal'}>
                                 <FormInput page={this.PAGE_NAME} required placeholder={Literals.Columns.Name[Profile.Language]} name="Name" />
-                                <FormInput page={this.PAGE_NAME}  placeholder={Literals.Columns.Address[Profile.Language]} name="Address" />
+                                <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Address[Profile.Language]} name="Address" />
                             </Form.Group>
                             <Form.Group widths={'equal'}>
-                                <FormInput page={this.PAGE_NAME}  placeholder={Literals.Columns.Acccountcode[Profile.Language]} name="Acccountcode" />
-                                <FormInput page={this.PAGE_NAME}  placeholder={Literals.Columns.Accountname[Profile.Language]} name="Accountname" />
+                                <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Acccountcode[Profile.Language]} name="Acccountcode" />
+                                <FormInput page={this.PAGE_NAME} placeholder={Literals.Columns.Accountname[Profile.Language]} name="Accountname" />
                             </Form.Group>
                             <Footerwrapper>
                                 <Form.Group widths={'equal'}>

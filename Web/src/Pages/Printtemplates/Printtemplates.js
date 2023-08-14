@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Divider, Icon, Modal } from 'semantic-ui-react'
-import { Breadcrumb, Button, Grid, GridColumn, Header } from 'semantic-ui-react'
+import { Icon } from 'semantic-ui-react'
+import { Breadcrumb, Button, Grid, GridColumn } from 'semantic-ui-react'
 import DataTable from '../../Utils/DataTable'
 import LoadingPage from '../../Utils/LoadingPage'
 import Notification from '../../Utils/Notification'
@@ -61,7 +61,7 @@ export default class Printtemplates extends Component {
       }) : [],
     };
 
-    const list = (Printtemplates.list || []).filter(u=>u.Isactive).map(item => {
+    const list = (Printtemplates.list || []).filter(u => u.Isactive).map(item => {
       return {
         ...item,
         edit: <Link to={`/Printtemplates/${item.Uuid}/edit`} ><Icon size='large' className='row-edit' name='edit' /></Link>,

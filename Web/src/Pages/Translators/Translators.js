@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Divider, Icon, Loader } from 'semantic-ui-react'
+import { Icon, Loader } from 'semantic-ui-react'
 import { Breadcrumb, Button, Grid, GridColumn } from 'semantic-ui-react'
 import ColumnChooser from '../../Containers/Utils/ColumnChooser'
 import DataTable from '../../Utils/DataTable'
@@ -59,7 +59,7 @@ export default class Translators extends Component {
             }) : [],
         };
 
-        const list = (Translators.list || []).filter(u=>u.Isactive).map(item => {
+        const list = (Translators.list || []).filter(u => u.Isactive).map(item => {
 
             return {
                 ...item,

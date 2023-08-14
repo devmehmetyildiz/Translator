@@ -1,4 +1,4 @@
-const { Op } = require("sequelize")
+const { Op, where } = require("sequelize")
 const config = require("../Config")
 const messages = require("../Constants/Messages")
 const { sequelizeErrorCatcher, createAccessDenied, requestErrorCatcher } = require("../Utilities/Error")
@@ -12,7 +12,15 @@ const axios = require('axios')
 
 async function GetOrders(req, res, next) {
     try {
-        const orders = await db.orderModel.findAll()
+        const startDate = req.query.Startdate
+        const endDate = req.query.Enddate
+        let whereClause = {
+            Deliverydate: {
+                [Op.between]: [startDate, endDate],
+            },
+        };
+        let orders = null
+        orders = (startDate && endDate) ? await db.orderModel.findAll({ where: whereClause }) : await db.orderModel.findAll()
         res.status(200).json(orders)
     } catch (error) {
         return next(sequelizeErrorCatcher(error))

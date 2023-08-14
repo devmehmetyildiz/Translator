@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Breadcrumb, Button, Divider, Dropdown, Form, Header, Icon, Popup, Tab } from 'semantic-ui-react'
+import { Breadcrumb, Button, Form, Tab } from 'semantic-ui-react'
 import Notification from '../../Utils/Notification'
 import formToObject from 'form-to-object'
 import LoadingPage from '../../Utils/LoadingPage'
@@ -83,7 +83,7 @@ export default class RecordtypesEdit extends Component {
             { key: 3, text: 'PASİF', value: 0 },
         ]
 
-        const Goaloptions = Goals.list.filter(u=>u.Isactive).map(goal => {
+        const Goaloptions = Goals.list.filter(u => u.Isactive).map(goal => {
             return { key: goal.Uuid, text: `${goal.Name} (${goal.Goal})`, value: goal.Uuid }
         })
 
