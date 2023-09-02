@@ -31,8 +31,8 @@ async function authorizationChecker(req, res, next) {
                 if (!doesAuthorizationHeaderExists(req.headers)) {
                     return next(createValidationError({
                         code: 'AUTHORIZATION_HEADER_REQUIRED', description: {
-                            en: 'You need to provide authorization headers to access this resource',
-                            tr: 'Bu kaynağa erişmek için yetkilendirme başlıkları gerekiyor',
+                            en: 'You need to provide authorization headers to access this resource (userrole)',
+                            tr: 'Bu kaynağa erişmek için yetkilendirme başlıkları gerekiyor (userrole)',
                         }
                     }, req.language))
                 }
@@ -47,6 +47,9 @@ async function authorizationChecker(req, res, next) {
                             const accessTokenresponse = await axios(
                                 {
                                     method: 'POST',
+                                    headers: {
+                                        session_key: config.session.secret
+                                    },
                                     url: config.services.Auth + 'Oauth/ValidateToken',
                                     data: {
                                         accessToken: bearerToken
@@ -73,18 +76,6 @@ async function authorizationChecker(req, res, next) {
                             if (!user.Isactive) {
                                 return next(createNotfounderror([messages.ERROR.USER_NOT_ACTIVE], req.language))
                             }
-                            try {
-                                const fileresponse = await axios({
-                                    method: 'GET',
-                                    url: config.services.File + `Files/GetbyparentID/${user.Uuid}`,
-                                    headers: {
-                                        session_key: config.session.secret
-                                    }
-                                })
-                                user.Files = fileresponse.data
-                            } catch (error) {
-                                return next(requestErrorCatcher(error, 'File'))
-                            }
                             let rolesuuids = await db.userroleModel.findAll({
                                 where: {
                                     UserID: user.Uuid
@@ -110,7 +101,7 @@ async function authorizationChecker(req, res, next) {
                         }
                     }
                 }
-            } 
+            }
         }
         next()
     } catch (err) {

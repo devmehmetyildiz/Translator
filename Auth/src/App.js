@@ -39,8 +39,8 @@ require("./Middlewares/Databaseconnector")()
       saveUninitialized: false,
     }))
     app.use(languageHelper)
-    app.use(bodyParser.json())
-    app.use(bodyParser.urlencoded({ extended: true }));
+    app.use(bodyParser.json({ limit: '50mb', type: 'application/json' }));
+    app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
     app.use(crossDomainEnabler)
     app.use(requestloghelper)
     router(app, routes, { controllerDirectory: `${process.cwd()}/src/Controllers/`, controllerFileSuffix: '-controller.js', logRoutesList: false })

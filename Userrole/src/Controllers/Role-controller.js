@@ -4,7 +4,6 @@ const createValidationError = require("../Utilities/Error").createValidation
 const createNotfounderror = require("../Utilities/Error").createNotfounderror
 const validator = require("../Utilities/Validator")
 const uuid = require('uuid').v4
-const crypto = require('crypto')
 const Priveleges = require("../Constants/Privileges")
 
 async function GetRoles(req, res, next) {

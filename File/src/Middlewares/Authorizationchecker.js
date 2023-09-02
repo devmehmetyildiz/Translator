@@ -20,20 +20,21 @@ const PUBLIC_URLS = [
 ]
 
 async function authorizationChecker(req, res, next) {
-
     try {
+
         if (req.identity === undefined) req.identity = {}
         let accessToken = {}
 
         let isMicroservicesreq = req.headers && req.headers.session_key && req.headers.session_key === config.session.secret
-        if (!isMicroservicesreq) {
 
+        if (!isMicroservicesreq) {
+            
             if (!isPublicUrlRequest(req.method, req.originalUrl)) {
                 if (!doesAuthorizationHeaderExists(req.headers)) {
                     return next(createValidationError({
                         code: 'AUTHORIZATION_HEADER_REQUIRED', description: {
-                            en: 'You need to provide authorization headers to access this resource',
-                            tr: 'Bu kaynağa erişmek için yetkilendirme başlıkları gerekiyor',
+                            en: 'You need to provide authorization headers to access this resource (file)',
+                            tr: 'Bu kaynağa erişmek için yetkilendirme başlıkları gerekiyor (file)',
                         }
                     }, req.language))
                 }
@@ -47,6 +48,9 @@ async function authorizationChecker(req, res, next) {
                             const accessTokenresponse = await axios(
                                 {
                                     method: 'POST',
+                                    headers: {
+                                        session_key: config.session.secret
+                                    },
                                     url: config.services.Auth + 'Oauth/ValidateToken',
                                     data: {
                                         accessToken: bearerToken

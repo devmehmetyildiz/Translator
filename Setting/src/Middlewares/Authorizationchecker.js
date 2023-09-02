@@ -32,8 +32,8 @@ async function authorizationChecker(req, res, next) {
                 if (!doesAuthorizationHeaderExists(req.headers)) {
                     return next(createValidationError({
                         code: 'AUTHORIZATION_HEADER_REQUIRED', description: {
-                            en: 'You need to provide authorization headers to access this resource',
-                            tr: 'Bu kaynağa erişmek için yetkilendirme başlıkları gerekiyor',
+                            en: 'You need to provide authorization headers to access this resource (setting)',
+                            tr: 'Bu kaynağa erişmek için yetkilendirme başlıkları gerekiyor (setting)',
                         }
                     }, req.language))
                 }
@@ -47,6 +47,9 @@ async function authorizationChecker(req, res, next) {
                             const accessTokenresponse = await axios(
                                 {
                                     method: 'POST',
+                                    headers: {
+                                        session_key: config.session.secret
+                                    },
                                     url: config.services.Auth + 'Oauth/ValidateToken',
                                     data: {
                                         accessToken: bearerToken

@@ -1,9 +1,8 @@
 const messages = require('../Constants/Messages')
 const createValidationError = require('../Utilities/Error').createValidation
-const crypto = require('crypto')
+const bcrypt = require('bcrypt')
 const uuid = require('uuid').v4
-const { sequelizeErrorCatcher, createAccessDenied, createAutherror, requestErrorCatcher, createNotfounderror } = require("../Utilities/Error")
-const priveleges = require('../Constants/Privileges')
+const { sequelizeErrorCatcher, createAutherror, requestErrorCatcher, createNotfounderror } = require("../Utilities/Error")
 const axios = require('axios')
 const config = require('../Config')
 const Createlog = require('../Utilities/Createlog')
@@ -208,7 +207,7 @@ async function responseToGetTokenByRefreshToken(req, res, next) {
 
 async function ValidatePassword(UserPassword, DbPassword, salt) {
     try {
-        let hash = crypto.pbkdf2Sync(UserPassword, salt, 1000, 64, 'sha512').toString('hex');
+        let hash = await bcrypt.hash(UserPassword, salt)
         if (hash === DbPassword) {
             return true
         } else {

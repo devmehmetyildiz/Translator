@@ -1,6 +1,6 @@
 const messages = require('../Constants/Messages')
 const createValidationError = require('../Utilities/Error').createValidation
-const crypto = require('crypto')
+const bcrypt = require('bcrypt')
 const uuid = require('uuid').v4
 const { sequelizeErrorCatcher, createAccessDenied, createAutherror, requestErrorCatcher, createNotfounderror } = require("../Utilities/Error")
 const axios = require('axios')
@@ -172,8 +172,7 @@ async function Changepassword(req, res, next) {
       return next(requestErrorCatcher(error, 'Userrole'))
     }
 
-    const hash = crypto.pbkdf2Sync(Password, usersalt.Salt, 1000, 64, 'sha512').toString('hex');
-
+    const hash = bcrypt.hash(Password, usersalt.Salt)
     try {
       await axios({
         method: 'PUT',

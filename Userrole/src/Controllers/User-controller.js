@@ -4,7 +4,7 @@ const createValidationError = require("../Utilities/Error").createValidation
 const createNotfounderror = require("../Utilities/Error").createNotfounderror
 const validator = require("../Utilities/Validator")
 const uuid = require('uuid').v4
-const crypto = require('crypto')
+const bcrypt = require('bcrypt')
 const axios = require('axios')
 const config = require("../Config")
 
@@ -38,9 +38,10 @@ async function Register(req, res, next) {
         if (validationErrors.length > 0) {
             return next(createValidationError(validationErrors, req.language))
         }
+        
 
-        const salt = crypto.randomBytes(16).toString('hex');
-        const hash = crypto.pbkdf2Sync(Password, salt, 1000, 64, 'sha512').toString('hex');
+        const salt = await bcrypt.genSalt(16)
+        const hash = await bcrypt.hash(Password, salt)
         let useruuid = uuid()
         let adminRoleuuid = uuid()
 
@@ -381,8 +382,8 @@ async function AddUser(req, res, next) {
         return next(createValidationError(validationErrors, req.language))
     }
 
-    const salt = crypto.randomBytes(16).toString('hex');
-    const hash = crypto.pbkdf2Sync(Password, salt, 1000, 64, 'sha512').toString('hex');
+    const salt = await bcrypt.genSalt(16)
+    const hash = bcrypt.hash(Password, salt)
     let useruuid = uuid()
 
     const t = await db.sequelize.transaction();
@@ -604,13 +605,13 @@ async function Changepassword(req, res, next) {
         if (!ValidatePassword(Oldpassword, req.identity?.user?.PasswordHash, usersalt.Salt)) {
             return next(createValidationError([messages.VALIDATION_ERROR.OLDPASSWORD_DIDNT_MATCH], req.language))
         }
-        newSalt = crypto.randomBytes(16).toString('hex');
+        newSalt = await bcrypt.genSalt(16)
     } catch (error) {
         return next(sequelizeErrorCatcher(error))
     }
     const t = await db.sequelize.transaction();
     try {
-        const hash = crypto.pbkdf2Sync(Newpassword, newSalt, 1000, 64, 'sha512').toString('hex');
+        const hash = bcrypt.hash(Newpassword, salt)
         await db.userModel.update({
             ...req.identity?.user,
             PasswordHash: hash,
@@ -655,7 +656,7 @@ function GetUserByUsername(next, Username, language) {
 
 async function ValidatePassword(UserPassword, DbPassword, salt) {
     try {
-        let hash = crypto.pbkdf2Sync(UserPassword, salt, 1000, 64, 'sha512').toString('hex');
+        let hash = bcrypt.hash(UserPassword, salt)
         if (hash === DbPassword) {
             return true
         } else {
