@@ -157,7 +157,7 @@ export default class Flowreports extends Component {
         <React.Fragment>
           <Pagewrapper>
             <Headerwrapper>
-              <Grid columns='2' >
+            <Grid stackable columns='2' >
                 <GridColumn width={8}>
                   <Breadcrumb size='big'>
                     <Link to={"/Flowreports"} >

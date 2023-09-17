@@ -12,6 +12,8 @@ import Pagedivider from '../../Common/Styled/Pagedivider'
 import Pagewrapper from '../../Common/Wrappers/Pagewrapper'
 import Headerwrapper from '../../Common/Wrappers/Headerwrapper'
 import MailsettingsDelete from "../../Containers/Mailsettings/MailsettingsDelete"
+import Settings from '../../Common/Settings'
+import MobileTable from '../../Utils/MobileTable'
 export default class Mailsettings extends Component {
 
   constructor(props) {
@@ -40,11 +42,11 @@ export default class Mailsettings extends Component {
     const Columns = [
       { Header: Literals.Columns.Id[Profile.Language], accessor: 'Id', sortable: true, canGroupBy: true, canFilter: true, },
       { Header: Literals.Columns.Uuid[Profile.Language], accessor: 'Uuid', sortable: true, canGroupBy: true, canFilter: true, },
-      { Header: Literals.Columns.Name[Profile.Language], accessor: 'Name', sortable: true, canGroupBy: true, canFilter: true },
-      { Header: Literals.Columns.User[Profile.Language], accessor: 'User', sortable: true, canGroupBy: true, canFilter: true },
+      { Header: Literals.Columns.Name[Profile.Language], accessor: 'Name', sortable: true, canGroupBy: true, canFilter: true, Firstheader: true },
+      { Header: Literals.Columns.User[Profile.Language], accessor: 'User', sortable: true, canGroupBy: true, canFilter: true, Subheader: true },
       { Header: Literals.Columns.Smtphost[Profile.Language], accessor: 'Smtphost', sortable: true, canGroupBy: true, canFilter: true },
       { Header: Literals.Columns.Smtpport[Profile.Language], accessor: 'Smtpport', sortable: true, canGroupBy: true, canFilter: true },
-      { Header: Literals.Columns.Mailaddress[Profile.Language], accessor: 'Mailaddress', sortable: true, canGroupBy: true, canFilter: true },
+      { Header: Literals.Columns.Mailaddress[Profile.Language], accessor: 'Mailaddress', sortable: true, canGroupBy: true, canFilter: true, Finalheader: true },
       { Header: Literals.Columns.Isbodyhtml[Profile.Language], accessor: 'Isbodyhtml', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.boolCellhandler(col) },
       { Header: Literals.Columns.Issettingactive[Profile.Language], accessor: 'Issettingactive', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.boolCellhandler(col) },
       { Header: Literals.Columns.Createduser[Profile.Language], accessor: 'Createduser', sortable: true, canGroupBy: true, canFilter: true, },
@@ -68,7 +70,7 @@ export default class Mailsettings extends Component {
       }) : [],
     };
 
-    const list = (Mailsettings.list || []).filter(u=>u.Isactive).map(item => {
+    const list = (Mailsettings.list || []).filter(u => u.Isactive).map(item => {
       return {
         ...item,
         edit: <Link to={`/Mailsettings/${item.Uuid}/edit`} ><Icon size='large' className='row-edit' name='edit' /></Link>,
@@ -85,27 +87,30 @@ export default class Mailsettings extends Component {
           <Pagewrapper>
             <Headerwrapper>
               <Grid columns='2' >
-                <GridColumn width={8} className="">
+                <GridColumn width={8}>
                   <Breadcrumb size='big'>
                     <Link to={"/Mailsettings"}>
                       <Breadcrumb.Section>{Literals.Page.Pageheader[Profile.Language]}</Breadcrumb.Section>
                     </Link>
                   </Breadcrumb>
                 </GridColumn>
-                <GridColumn width={8} >
-                  <Link to={"/Mailsettings/Create"}>
-                    <Button color='blue' floated='right' className='list-right-green-button'>
-                      {Literals.Page.Pagecreateheader[Profile.Language]}
-                    </Button>
-                  </Link>
-                  <ColumnChooser meta={Profile.tablemeta} columns={Columns} metaKey={metaKey} />
-                </GridColumn>
+                <Settings
+                  Profile={Profile}
+                  Pagecreateheader={Literals.Page.Pagecreateheader[Profile.Language]}
+                  Pagecreatelink={"/Mailsettings/Create"}
+                  Columns={Columns}
+                  list={list}
+                  initialConfig={initialConfig}
+                  metaKey={metaKey}
+                  dontShowexcelexport
+                  dontShowexcelimport
+                />
               </Grid>
             </Headerwrapper>
             <Pagedivider />
             {list.length > 0 ?
               <div className='w-full mx-auto '>
-                <DataTable Columns={Columns} Data={list} Config={initialConfig} />
+                {Profile.Ismobile ? <MobileTable Columns={Columns} Data={list} Config={initialConfig} Profile={Profile} /> : <DataTable Columns={Columns} Data={list} Config={initialConfig} />}
               </div> : <NoDataScreen message={Literals.Messages.Nodatafind[Profile.Language]} />
             }
           </Pagewrapper>

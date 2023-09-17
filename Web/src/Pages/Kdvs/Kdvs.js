@@ -14,6 +14,8 @@ import KdvsDelete from '../../Containers/Kdvs/KdvsDelete'
 import Pagedivider from '../../Common/Styled/Pagedivider'
 import ExcelImport from '../../Containers/Utils/ExcelImport'
 import ExcelExport from '../../Containers/Utils/ExcelExport'
+import Settings from '../../Common/Settings'
+import MobileTable from '../../Utils/MobileTable'
 
 export default class Kdvs extends Component {
 
@@ -35,8 +37,8 @@ export default class Kdvs extends Component {
         const Columns = [
             { Header: Literals.Columns.Id[Profile.Language], accessor: 'Id', sortable: true, canGroupBy: true, canFilter: true, },
             { Header: Literals.Columns.Uuid[Profile.Language], accessor: 'Uuid', sortable: true, canGroupBy: true, canFilter: true, },
-            { Header: Literals.Columns.Name[Profile.Language], accessor: 'Name', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.nameCellhandler(col) },
-            { Header: Literals.Columns.Percent[Profile.Language], accessor: 'Percent', sortable: true, canGroupBy: true, canFilter: true, Cell: col => { return col.value + '%' } },
+            { Header: Literals.Columns.Name[Profile.Language], accessor: 'Name', sortable: true, canGroupBy: true, canFilter: true, Firstheader: true, Cell: col => this.nameCellhandler(col) },
+            { Header: Literals.Columns.Percent[Profile.Language], accessor: 'Percent', sortable: true, canGroupBy: true, canFilter: true, Subheader: true, Cell: col => { return col.value + '%' } },
             { Header: Literals.Columns.Isdefaultkdv[Profile.Language], accessor: 'Isdefaultkdv', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.boolCellhandler(col) },
             { Header: Literals.Columns.Createduser[Profile.Language], accessor: 'Createduser', sortable: true, canGroupBy: true, canFilter: true, },
             { Header: Literals.Columns.Updateduser[Profile.Language], accessor: 'Updateduser', sortable: true, canGroupBy: true, canFilter: true, },
@@ -84,22 +86,22 @@ export default class Kdvs extends Component {
                                         </Link>
                                     </Breadcrumb>
                                 </GridColumn>
-                                <GridColumn width={8} >
-                                    <Link to={"/Kdvs/Create"}>
-                                        <Button color='blue' floated='right' className='list-right-green-button'>
-                                            {Literals.Page.Pagecreateheader[Profile.Language]}
-                                        </Button>
-                                    </Link>
-                                    <ColumnChooser meta={Profile.tablemeta} columns={Columns} metaKey={metaKey} />
-                                    <ExcelImport columns={Columns} addData={AddRecordKdvs} />
-                                    <ExcelExport columns={Columns} data={list} name={metaKey} Config={initialConfig} />
-                                </GridColumn>
+                                <Settings
+                                    Profile={Profile}
+                                    Pagecreateheader={Literals.Page.Pagecreateheader[Profile.Language]}
+                                    Pagecreatelink={"/Kdvs/Create"}
+                                    Columns={Columns}
+                                    list={list}
+                                    initialConfig={initialConfig}
+                                    metaKey={metaKey}
+                                    AddRecord={AddRecordKdvs}
+                                />
                             </Grid>
                         </Headerwrapper>
                         <Pagedivider />
                         {list.length > 0 ?
                             <div className='w-full mx-auto '>
-                                <DataTable Columns={Columns} Data={list} Config={initialConfig} />
+                                {Profile.Ismobile ? <MobileTable Columns={Columns} Data={list} Config={initialConfig} Profile={Profile} /> : <DataTable Columns={Columns} Data={list} Config={initialConfig} />}
                             </div> : <NoDataScreen message={Literals.Messages.Nodatafind[Profile.Language]} />
                         }
                     </Pagewrapper>

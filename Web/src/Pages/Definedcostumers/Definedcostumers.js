@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import {  Icon } from 'semantic-ui-react'
+import { Icon } from 'semantic-ui-react'
 import { Breadcrumb, Button, Grid, GridColumn } from 'semantic-ui-react'
 import ColumnChooser from '../../Containers/Utils/ColumnChooser'
 import DataTable from '../../Utils/DataTable'
@@ -14,6 +14,8 @@ import DefinedcostumersDelete from '../../Containers/Definedcostumers/Definedcos
 import Pagedivider from '../../Common/Styled/Pagedivider'
 import ExcelImport from '../../Containers/Utils/ExcelImport'
 import ExcelExport from '../../Containers/Utils/ExcelExport'
+import Settings from '../../Common/Settings'
+import MobileTable from '../../Utils/MobileTable'
 
 export default class Definedcostumers extends Component {
 
@@ -35,9 +37,9 @@ export default class Definedcostumers extends Component {
         const Columns = [
             { Header: Literals.Columns.Id[Profile.Language], accessor: 'Id', sortable: true, canGroupBy: true, canFilter: true, },
             { Header: Literals.Columns.Uuid[Profile.Language], accessor: 'Uuid', sortable: true, canGroupBy: true, canFilter: true, },
-            { Header: Literals.Columns.Name[Profile.Language], accessor: 'Name', sortable: true, canGroupBy: true, canFilter: true },
-            { Header: Literals.Columns.CountryID[Profile.Language], accessor: 'CountryID', sortable: true, canGroupBy: true, canFilter: true },
-            { Header: Literals.Columns.Phone[Profile.Language], accessor: 'Phone', sortable: true, canGroupBy: true, canFilter: true },
+            { Header: Literals.Columns.Name[Profile.Language], accessor: 'Name', sortable: true, canGroupBy: true, canFilter: true, Firstheader: true },
+            { Header: Literals.Columns.CountryID[Profile.Language], accessor: 'CountryID', sortable: true, canGroupBy: true, canFilter: true, Subheader: true },
+            { Header: Literals.Columns.Phone[Profile.Language], accessor: 'Phone', sortable: true, canGroupBy: true, canFilter: true, Finalheader: true },
             { Header: Literals.Columns.Email[Profile.Language], accessor: 'Email', sortable: true, canGroupBy: true, canFilter: true },
             { Header: Literals.Columns.City[Profile.Language], accessor: 'City', sortable: true, canGroupBy: true, canFilter: true },
             { Header: Literals.Columns.Town[Profile.Language], accessor: 'Town', sortable: true, canGroupBy: true, canFilter: true },
@@ -59,11 +61,11 @@ export default class Definedcostumers extends Component {
                 return item.key
             }) : [],
             groupBy: tableMeta ? JSON.parse(tableMeta.Config).filter(u => u.isGroup === true).map(item => {
-              return item.key
+                return item.key
             }) : [],
-          };
+        };
 
-        const list = (Definedcostumers.list || []).filter(u=>u.Isactive).map(item => {
+        const list = (Definedcostumers.list || []).filter(u => u.Isactive).map(item => {
 
             return {
                 ...item,
@@ -88,22 +90,22 @@ export default class Definedcostumers extends Component {
                                         </Link>
                                     </Breadcrumb>
                                 </GridColumn>
-                                <GridColumn width={8} >
-                                    <Link to={"/Definedcostumers/Create"}>
-                                        <Button color='blue' floated='right' className='list-right-green-button'>
-                                            {Literals.Page.Pagecreateheader[Profile.Language]}
-                                        </Button>
-                                    </Link>
-                                    <ColumnChooser meta={Profile.tablemeta} columns={Columns} metaKey={metaKey} />
-                                    <ExcelImport columns={Columns} addData={AddRecordDefinedcostumers} />
-                                    <ExcelExport columns={Columns} data={list} name={metaKey} Config={initialConfig} />
-                                </GridColumn>
+                                <Settings
+                                    Profile={Profile}
+                                    Pagecreateheader={Literals.Page.Pagecreateheader[Profile.Language]}
+                                    Pagecreatelink={"/Definedcostumers/Create"}
+                                    Columns={Columns}
+                                    list={list}
+                                    initialConfig={initialConfig}
+                                    metaKey={metaKey}
+                                    AddRecord={AddRecordDefinedcostumers}
+                                />
                             </Grid>
                         </Headerwrapper>
                         <Pagedivider />
                         {list.length > 0 ?
                             <div className='w-full mx-auto '>
-                                <DataTable Columns={Columns} Data={list} Config={initialConfig} />
+                                {Profile.Ismobile ? <MobileTable Columns={Columns} Data={list} Config={initialConfig} Profile={Profile} /> : <DataTable Columns={Columns} Data={list} Config={initialConfig} />}
                             </div> : <NoDataScreen message={Literals.Messages.Nodatafind[Profile.Language]} />
                         }
                     </Pagewrapper>

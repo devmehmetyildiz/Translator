@@ -229,7 +229,8 @@ export const ProfileSlice = createSlice({
         tablemeta: [],
         Language: "tr",
         resetpasswordStatus: false,
-        passwordrequestsended: false
+        passwordrequestsended: false,
+        Ismobile: false
     },
     reducers: {
         fillnotification: (state, action) => {
@@ -242,6 +243,9 @@ export const ProfileSlice = createSlice({
         },
         removeauth: (state) => {
             state.auth = false
+        },
+        handlemobile: (state, action) => {
+            state.Ismobile = action.payload
         },
         handleauth: (state) => {
             state.auth = true
@@ -411,7 +415,8 @@ export const {
     removenotification,
     logOut,
     removeauth,
-    handleauth
+    handleauth,
+    handlemobile
 } = ProfileSlice.actions;
 
 export default ProfileSlice.reducer;

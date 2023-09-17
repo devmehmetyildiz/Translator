@@ -185,10 +185,10 @@ export default class Appreports extends Component {
                 <React.Fragment>
                     <Pagewrapper>
                         <Headerwrapper>
-                            <Grid columns='2' >
+                          <Grid stackable columns='2' >
                                 <GridColumn width={8}>
                                     <Breadcrumb size='big'>
-                                        <Link to={"/Cases"} >
+                                        <Link to={"/Appreports"} >
                                             <Breadcrumb.Section>{Literals.Page.Pageheader[Profile.Language]}</Breadcrumb.Section>
                                         </Link>
                                     </Breadcrumb>

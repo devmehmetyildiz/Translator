@@ -12,6 +12,7 @@ import Pagewrapper from '../../Common/Wrappers/Pagewrapper'
 import Headerwrapper from '../../Common/Wrappers/Headerwrapper'
 import JobsDelete from '../../Containers/Jobs/JobsDelete'
 import Pagedivider from '../../Common/Styled/Pagedivider'
+import Settings from '../../Common/Settings'
 
 export default class Jobs extends Component {
 
@@ -70,7 +71,7 @@ export default class Jobs extends Component {
       }) : [],
     };
 
-    const list = (Jobs.list || []).filter(u=>u.Isactive).map(item => {
+    const list = (Jobs.list || []).filter(u => u.Isactive).map(item => {
 
       return {
         ...item,
@@ -95,14 +96,17 @@ export default class Jobs extends Component {
                     </Link>
                   </Breadcrumb>
                 </GridColumn>
-                <GridColumn width={8} >
-                  <Link to={"/Jobs/Create"}>
-                    <Button color='blue' floated='right' className='list-right-green-button'>
-                      {Literals.Page.Pagecreateheader[Profile.Language]}
-                    </Button>
-                  </Link>
-                  <ColumnChooser meta={Profile.tablemeta} columns={Columns} metaKey={metaKey} />
-                </GridColumn>
+                <Settings
+                  Profile={Profile}
+                  Pagecreateheader={Literals.Page.Pagecreateheader[Profile.Language]}
+                  Pagecreatelink={"/Jobs/Create"}
+                  Columns={Columns}
+                  list={list}
+                  initialConfig={initialConfig}
+                  metaKey={metaKey}
+                  dontShowexcelexport
+                  dontShowexcelimport
+                />
               </Grid>
             </Headerwrapper>
             <Pagedivider />

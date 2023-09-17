@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import {  Icon, Loader } from 'semantic-ui-react'
+import { Icon, Loader } from 'semantic-ui-react'
 import { Breadcrumb, Button, Grid, GridColumn } from 'semantic-ui-react'
 import ColumnChooser from '../../Containers/Utils/ColumnChooser'
 import DataTable from '../../Utils/DataTable'
@@ -15,6 +15,8 @@ import Pagedivider from '../../Common/Styled/Pagedivider'
 import ExcelImport from '../../Containers/Utils/ExcelImport'
 import ExcelExport from '../../Containers/Utils/ExcelExport'
 import validator from '../../Utils/Validator'
+import Settings from '../../Common/Settings'
+import MobileTable from '../../Utils/MobileTable'
 
 export default class Recordtypes extends Component {
 
@@ -38,11 +40,11 @@ export default class Recordtypes extends Component {
         const Columns = [
             { Header: Literals.Columns.Id[Profile.Language], accessor: 'Id', sortable: true, canGroupBy: true, canFilter: true, },
             { Header: Literals.Columns.Uuid[Profile.Language], accessor: 'Uuid', sortable: true, canGroupBy: true, canFilter: true, },
-            { Header: Literals.Columns.Name[Profile.Language], accessor: 'Name', sortable: true, canGroupBy: true, canFilter: true },
+            { Header: Literals.Columns.Name[Profile.Language], accessor: 'Name', sortable: true, canGroupBy: true, canFilter: true, Firstheader: true },
             { Header: Literals.Columns.Ishaveprice[Profile.Language], accessor: 'Ishaveprice', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.boolCellhandler(col) },
             { Header: Literals.Columns.Price[Profile.Language], accessor: 'Price', sortable: true, canGroupBy: true, canFilter: true, Cell: col => { return col.value ? col.value + ' ₺' : 0 + ' ₺' } },
-            { Header: Literals.Columns.Pricetype[Profile.Language], accessor: 'Pricetype', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.pricetypeCellhandler(col) },
-            { Header: Literals.Columns.Goal[Profile.Language], accessor: 'GoalID', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.goalCellhandler(col) },
+            { Header: Literals.Columns.Pricetype[Profile.Language], accessor: 'Pricetype', sortable: true, canGroupBy: true, Finalheader: true, canFilter: true, Cell: col => this.pricetypeCellhandler(col) },
+            { Header: Literals.Columns.Goal[Profile.Language], accessor: 'GoalID', sortable: true, canGroupBy: true, canFilter: true, Subheader: true, Cell: col => this.goalCellhandler(col) },
             { Header: Literals.Columns.Createduser[Profile.Language], accessor: 'Createduser', sortable: true, canGroupBy: true, canFilter: true, },
             { Header: Literals.Columns.Updateduser[Profile.Language], accessor: 'Updateduser', sortable: true, canGroupBy: true, canFilter: true, },
             { Header: Literals.Columns.Createtime[Profile.Language], accessor: 'Createtime', sortable: true, canGroupBy: true, canFilter: true, },
@@ -64,7 +66,7 @@ export default class Recordtypes extends Component {
             }) : [],
         };
 
-        const list = (Recordtypes.list || []).filter(u=>u.Isactive).map(item => {
+        const list = (Recordtypes.list || []).filter(u => u.Isactive).map(item => {
 
             return {
                 ...item,
@@ -89,22 +91,22 @@ export default class Recordtypes extends Component {
                                         </Link>
                                     </Breadcrumb>
                                 </GridColumn>
-                                <GridColumn width={8} >
-                                    <Link to={"/Recordtypes/Create"}>
-                                        <Button color='blue' floated='right' className='list-right-green-button'>
-                                            {Literals.Page.Pagecreateheader[Profile.Language]}
-                                        </Button>
-                                    </Link>
-                                    <ColumnChooser meta={Profile.tablemeta} columns={Columns} metaKey={metaKey} />
-                                    <ExcelImport columns={Columns} addData={AddRecordRecordtypes} />
-                                    <ExcelExport columns={Columns} data={list} name={metaKey} Config={initialConfig} />
-                                </GridColumn>
+                                <Settings
+                                    Profile={Profile}
+                                    Pagecreateheader={Literals.Page.Pagecreateheader[Profile.Language]}
+                                    Pagecreatelink={"/Recordtypes/Create"}
+                                    Columns={Columns}
+                                    list={list}
+                                    initialConfig={initialConfig}
+                                    metaKey={metaKey}
+                                    AddRecord={AddRecordRecordtypes}
+                                />
                             </Grid>
                         </Headerwrapper>
                         <Pagedivider />
                         {list.length > 0 ?
                             <div className='w-full mx-auto '>
-                                <DataTable Columns={Columns} Data={list} Config={initialConfig} />
+                                {Profile.Ismobile ? <MobileTable Columns={Columns} Data={list} Config={initialConfig} Profile={Profile} /> : <DataTable Columns={Columns} Data={list} Config={initialConfig} />}
                             </div> : <NoDataScreen message={Literals.Messages.Nodatafind[Profile.Language]} />
                         }
                     </Pagewrapper>

@@ -20,6 +20,7 @@ import myTurkishFont from '../../Assets/fonts/AbhayaLibre-Medium.ttf';
 import Contentwrapper from '../../Common/Wrappers/Contentwrapper'
 import { Collapse } from 'react-collapse'
 import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io'
+import Settings from '../../Common/Settings'
 
 export default class Orders extends Component {
 
@@ -233,15 +234,19 @@ export default class Orders extends Component {
                   </Link>
                 </Breadcrumb>
               </GridColumn>
-              <GridColumn width={8} >
-                <Link to={validator.isString(recordTypename) ? `/Orders/Create?recordType=${recordType}` : "/Orders/Create"}>
-                  <Button color='blue' floated='right' className='list-right-green-button'>
-                    {Literals.Page.Pagecreateheader[Profile.Language]}
-                  </Button>
-                </Link>
-                <ColumnChooser meta={Profile.tablemeta} columns={Columns} metaKey={metaKey} />
-              </GridColumn>
+              <Settings
+                Profile={Profile}
+                Pagecreateheader={Literals.Page.Pagecreateheader[Profile.Language]}
+                Pagecreatelink={validator.isString(recordTypename) ? `/Orders/Create?recordType=${recordType}` : "/Orders/Create"}
+                Columns={Columns}
+                list={list}
+                initialConfig={initialConfig}
+                metaKey={metaKey}
+                dontShowexcelexport
+                dontShowexcelimport
+              />
             </Grid>
+            <Pagedivider />
           </Headerwrapper>
           <Contentwrapper>
             {!this.state.isSearchopened ?

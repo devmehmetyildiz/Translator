@@ -197,7 +197,7 @@ export default class ProfileEdit extends Component {
                     File: selectedimage,
                     Willdelete: false,
                     FileChanged: true,
-                    order: Profile.meta.Files.length,
+                    order: 0,
                 }]
 
                 const formData = new FormData();

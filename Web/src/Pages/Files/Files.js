@@ -12,6 +12,8 @@ import Literals from './Literals'
 import Pagedivider from '../../Common/Styled/Pagedivider'
 import Pagewrapper from '../../Common/Wrappers/Pagewrapper'
 import Headerwrapper from '../../Common/Wrappers/Headerwrapper'
+import Settings from '../../Common/Settings'
+import MobileTable from '../../Utils/MobileTable'
 export class Files extends Component {
 
   constructor(props) {
@@ -41,12 +43,12 @@ export class Files extends Component {
       { Header: Literals.Columns.Id[Profile.Language], accessor: 'Id', sortable: true, canGroupBy: true, canFilter: true, },
       { Header: Literals.Columns.Uuid[Profile.Language], accessor: 'Uuid', sortable: true, canGroupBy: true, canFilter: true, },
       { Header: Literals.Columns.ParentID[Profile.Language], accessor: 'ParentID', sortable: true, canGroupBy: true, canFilter: true, },
-      { Header: Literals.Columns.Name[Profile.Language], accessor: 'Name', sortable: true, canGroupBy: true, canFilter: true },
-      { Header: Literals.Columns.Filename[Profile.Language], accessor: 'Filename', sortable: true, canGroupBy: true, canFilter: true },
+      { Header: Literals.Columns.Name[Profile.Language], accessor: 'Name', sortable: true, canGroupBy: true, canFilter: true ,Firstheader: true},
+      { Header: Literals.Columns.Filename[Profile.Language], accessor: 'Filename', sortable: true, canGroupBy: true, canFilter: true, Subheader: true },
       { Header: Literals.Columns.Filefolder[Profile.Language], accessor: 'Filefolder', sortable: true, canGroupBy: true, canFilter: true },
       { Header: Literals.Columns.Filepath[Profile.Language], accessor: 'Filepath', sortable: true, canGroupBy: true, canFilter: true },
-      { Header: Literals.Columns.Filetype[Profile.Language], accessor: 'Filetype', sortable: true, canGroupBy: true, canFilter: true },
-      { Header: Literals.Columns.Usagetype[Profile.Language], accessor: 'Usagetype', sortable: true, canGroupBy: true, canFilter: true },
+      { Header: Literals.Columns.Filetype[Profile.Language], accessor: 'Filetype', sortable: true, canGroupBy: true, canFilter: true, Finalheader: true  },
+      { Header: Literals.Columns.Usagetype[Profile.Language], accessor: 'Usagetype', sortable: true, canGroupBy: true, canFilter: true},
       { Header: Literals.Columns.Createduser[Profile.Language], accessor: 'Createduser', sortable: true, canGroupBy: true, canFilter: true, },
       { Header: Literals.Columns.Updateduser[Profile.Language], accessor: 'Updateduser', sortable: true, canGroupBy: true, canFilter: true, },
       { Header: Literals.Columns.Createtime[Profile.Language], accessor: 'Createtime', sortable: true, canGroupBy: true, canFilter: true, },
@@ -68,7 +70,7 @@ export class Files extends Component {
       }) : [],
     };
 
-    const list = (Files.list || []).filter(u=>u.Isactive).map(item => {
+    const list = (Files.list || []).filter(u => u.Isactive).map(item => {
       return {
         ...item,
         edit: <Link to={`/Files/${item.Uuid}/edit`} ><Icon size='large' className='row-edit' name='edit' /></Link>,
@@ -86,28 +88,31 @@ export class Files extends Component {
           <Pagewrapper>
             <Headerwrapper>
               <Grid columns='2' >
-                <GridColumn width={8} className="">
+                <GridColumn width={8}>
                   <Breadcrumb size='big'>
                     <Link to={"/Files"}>
                       <Breadcrumb.Section>{Literals.Page.Pageheader[Profile.Language]}</Breadcrumb.Section>
                     </Link>
                   </Breadcrumb>
                 </GridColumn>
-                <GridColumn width={8} >
-                  <Link to={"/Files/Create"}>
-                    <Button color='blue' floated='right' className='list-right-green-button'>
-                      {Literals.Page.Pagecreateheader[Profile.Language]}
-                    </Button>
-                  </Link>
-                  <ColumnChooser meta={Profile.tablemeta} columns={Columns} metaKey={metaKey} />
-                </GridColumn>
+                <Settings
+                  Profile={Profile}
+                  Pagecreateheader={Literals.Page.Pagecreateheader[Profile.Language]}
+                  Pagecreatelink={"/Files/Create"}
+                  Columns={Columns}
+                  list={list}
+                  initialConfig={initialConfig}
+                  metaKey={metaKey}
+                  dontShowexcelexport
+                  dontShowexcelimport
+                />
               </Grid>
             </Headerwrapper>
             <Pagedivider />
             {list.length > 0 ?
               <div className='w-full mx-auto '>
-                <DataTable Columns={Columns} Data={list} Config={initialConfig} />
-              </div> : <NoDataScreen message= {Literals.Messages.Nodatafind[Profile.Language]} />
+                {Profile.Ismobile ? <MobileTable Columns={Columns} Data={list} Config={initialConfig} Profile={Profile} /> : <DataTable Columns={Columns} Data={list} Config={initialConfig} />}
+              </div> : <NoDataScreen message={Literals.Messages.Nodatafind[Profile.Language]} />
             }
           </Pagewrapper>
           <FilesDelete />

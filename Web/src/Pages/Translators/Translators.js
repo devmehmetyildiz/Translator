@@ -14,6 +14,8 @@ import TranslatorsDelete from '../../Containers/Translators/TranslatorsDelete'
 import Pagedivider from '../../Common/Styled/Pagedivider'
 import ExcelImport from '../../Containers/Utils/ExcelImport'
 import ExcelExport from '../../Containers/Utils/ExcelExport'
+import Settings from '../../Common/Settings'
+import MobileTable from '../../Utils/MobileTable'
 
 export default class Translators extends Component {
 
@@ -35,8 +37,8 @@ export default class Translators extends Component {
         const Columns = [
             { Header: Literals.Columns.Id[Profile.Language], accessor: 'Id', sortable: true, canGroupBy: true, canFilter: true, },
             { Header: Literals.Columns.Uuid[Profile.Language], accessor: 'Uuid', sortable: true, canGroupBy: true, canFilter: true, },
-            { Header: Literals.Columns.Name[Profile.Language], accessor: 'Name', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.nameCellhandler(col) },
-            { Header: Literals.Columns.UserName[Profile.Language], accessor: 'UserID', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.userCellhandler(col) },
+            { Header: Literals.Columns.Name[Profile.Language], accessor: 'Name', sortable: true, canGroupBy: true, canFilter: true, Firstheader: true, Cell: col => this.nameCellhandler(col) },
+            { Header: Literals.Columns.UserName[Profile.Language], accessor: 'UserID', sortable: true, canGroupBy: true, canFilter: true, Finalheader: true, Cell: col => this.userCellhandler(col) },
             { Header: Literals.Columns.Isdefaulttranslator[Profile.Language], accessor: 'Isdefaulttranslator', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.boolCellhandler(col) },
             { Header: Literals.Columns.Createduser[Profile.Language], accessor: 'Createduser', sortable: true, canGroupBy: true, canFilter: true, },
             { Header: Literals.Columns.Updateduser[Profile.Language], accessor: 'Updateduser', sortable: true, canGroupBy: true, canFilter: true, },
@@ -84,22 +86,22 @@ export default class Translators extends Component {
                                         </Link>
                                     </Breadcrumb>
                                 </GridColumn>
-                                <GridColumn width={8} >
-                                    <Link to={"/Translators/Create"}>
-                                        <Button color='blue' floated='right' className='list-right-green-button'>
-                                            {Literals.Page.Pagecreateheader[Profile.Language]}
-                                        </Button>
-                                    </Link>
-                                    <ColumnChooser meta={Profile.tablemeta} columns={Columns} metaKey={metaKey} />
-                                    <ExcelImport columns={Columns} addData={AddRecordTranslators} />
-                                    <ExcelExport columns={Columns} data={list} name={metaKey} Config={initialConfig} />
-                                </GridColumn>
+                                <Settings
+                                    Profile={Profile}
+                                    Pagecreateheader={Literals.Page.Pagecreateheader[Profile.Language]}
+                                    Pagecreatelink={"/Translators/Create"}
+                                    Columns={Columns}
+                                    list={list}
+                                    initialConfig={initialConfig}
+                                    metaKey={metaKey}
+                                    AddRecord={AddRecordTranslators}
+                                />
                             </Grid>
                         </Headerwrapper>
                         <Pagedivider />
                         {list.length > 0 ?
                             <div className='w-full mx-auto '>
-                                <DataTable Columns={Columns} Data={list} Config={initialConfig} />
+                                {Profile.Ismobile ? <MobileTable Columns={Columns} Data={list} Config={initialConfig} Profile={Profile} /> : <DataTable Columns={Columns} Data={list} Config={initialConfig} />}
                             </div> : <NoDataScreen message={Literals.Messages.Nodatafind[Profile.Language]} />
                         }
                     </Pagewrapper>

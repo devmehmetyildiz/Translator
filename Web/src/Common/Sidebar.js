@@ -8,7 +8,7 @@ import Literals from "../Utils/Literalregistrar"
 
 export function Sidebar(props) {
 
-    const { iconOnly, isMobile, Profile } = props
+    const { iconOnly, isMobile, Profile, hideMobile } = props
     const { roles } = Profile
 
     const checkAuth = (authname) => {
@@ -136,12 +136,18 @@ export function Sidebar(props) {
 
 
     return (
-        <div className={`${iconOnly ? 'w-[50px] ' : 'w-[250px] overflow-x-hidden overflow-y-auto'} relative flex flex-col z-40 justify-start items-start mt-[58.61px]  h-[calc(100vh-58.61px)] bg-white dark:bg-Contentfg  transition-all ease-in-out duration-500`}>
+        <div className={`${iconOnly ? `${hideMobile ? 'w-[0px] ' : 'w-[50px] '}` : 'w-[250px] overflow-x-hidden overflow-y-auto'} relative flex flex-col z-40 justify-start items-start mt-[58.61px]  h-[calc(100vh-58.61px)] bg-white dark:bg-Contentfg  transition-all ease-in-out duration-500`}>
             {Pages.map((item, index) => {
                 let willshow = false
                 item.items.forEach(subitem => {
-                    if (subitem.permission) {
-                        willshow = true
+                    if (iconOnly) {
+                        if (subitem.permission && !hideMobile) {
+                            willshow = true
+                        }
+                    } else {
+                        if (subitem.permission) {
+                            willshow = true
+                        }
                     }
                 })
                 return willshow ? <div key={index} className='w-full flex items-start flex-col relative'

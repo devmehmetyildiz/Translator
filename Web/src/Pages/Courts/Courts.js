@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Icon } from 'semantic-ui-react'
+import { Icon, Modal } from 'semantic-ui-react'
 import { Breadcrumb, Button, Grid, GridColumn } from 'semantic-ui-react'
 import ColumnChooser from '../../Containers/Utils/ColumnChooser'
 import DataTable from '../../Utils/DataTable'
@@ -14,6 +14,8 @@ import CourtsDelete from '../../Containers/Courts/CourtsDelete'
 import Pagedivider from '../../Common/Styled/Pagedivider'
 import ExcelImport from '../../Containers/Utils/ExcelImport'
 import ExcelExport from '../../Containers/Utils/ExcelExport'
+import Settings from '../../Common/Settings'
+import MobileTable from '../../Utils/MobileTable'
 
 export default class Courts extends Component {
 
@@ -36,7 +38,7 @@ export default class Courts extends Component {
     const Columns = [
       { Header: Literals.Columns.Id[Profile.Language], accessor: 'Id', sortable: true, canGroupBy: true, canFilter: true, },
       { Header: Literals.Columns.Uuid[Profile.Language], accessor: 'Uuid', sortable: true, canGroupBy: true, canFilter: true, },
-      { Header: Literals.Columns.Name[Profile.Language], accessor: 'Name', sortable: true, canGroupBy: true, canFilter: true },
+      { Header: Literals.Columns.Name[Profile.Language], accessor: 'Name', sortable: true, canGroupBy: true, canFilter: true, Firstheader: true },
       { Header: Literals.Columns.Isdefaultprincible[Profile.Language], accessor: 'Isdefaultprincible', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.boolCellhandler(col) },
       { Header: Literals.Columns.Isdefaultdirective[Profile.Language], accessor: 'Isdefaultdirective', sortable: true, canGroupBy: true, canFilter: true, Cell: col => this.boolCellhandler(col) },
       { Header: Literals.Columns.Createduser[Profile.Language], accessor: 'Createduser', sortable: true, canGroupBy: true, canFilter: true, },
@@ -60,7 +62,7 @@ export default class Courts extends Component {
       }) : [],
     };
 
-    const list = (Courts.list || []).filter(u=>u.Isactive).map(item => {
+    const list = (Courts.list || []).filter(u => u.Isactive).map(item => {
 
       return {
         ...item,
@@ -85,25 +87,26 @@ export default class Courts extends Component {
                     </Link>
                   </Breadcrumb>
                 </GridColumn>
-                <GridColumn width={8} >
-                  <Link to={"/Courts/Create"}>
-                    <Button color='blue' floated='right' className='list-right-green-button'>
-                      {Literals.Page.Pagecreateheader[Profile.Language]}
-                    </Button>
-                  </Link>
-                  <ColumnChooser meta={Profile.tablemeta} columns={Columns} metaKey={metaKey} />
-                  <ExcelImport columns={Columns} addData={AddRecordCourts} />
-                  <ExcelExport columns={Columns} data={list} name={metaKey} Config={initialConfig} />
-                </GridColumn>
+                <Settings
+                  Profile={Profile}
+                  Pagecreateheader={Literals.Page.Pagecreateheader[Profile.Language]}
+                  Pagecreatelink={"/Courts/Create"}
+                  Columns={Columns}
+                  list={list}
+                  initialConfig={initialConfig}
+                  metaKey={metaKey}
+                  AddRecord={AddRecordCourts}
+                />
               </Grid>
             </Headerwrapper>
             <Pagedivider />
-            {list.length > 0 ?
-              <div className='w-full mx-auto '>
-                <DataTable Columns={Columns} Data={list} Config={initialConfig} />
-              </div> : <NoDataScreen message={Literals.Messages.Nodatafind[Profile.Language]} />
+            {
+              list.length > 0 ?
+                <div className='w-full mx-auto '>
+                  {Profile.Ismobile ? <MobileTable Columns={Columns} Data={list} Config={initialConfig} Profile={Profile} /> : <DataTable Columns={Columns} Data={list} Config={initialConfig} />}
+                </div> : <NoDataScreen message={Literals.Messages.Nodatafind[Profile.Language]} />
             }
-          </Pagewrapper>
+          </Pagewrapper >
           <CourtsDelete />
         </React.Fragment >
     )

@@ -9,7 +9,7 @@ import LoadingPage from '../../Utils/LoadingPage'
 export default class Layout extends Component {
 
   componentDidMount() {
-    const { GetActiveUser, GetUserRoles, GetTableMeta, GetUserMeta, GetRecordtypes } = this.props
+    const { GetActiveUser, GetUserRoles, GetTableMeta, GetUserMeta, GetRecordtypes, GetFiles } = this.props
     const routes = [
       "/Login",
       "/login",
@@ -25,30 +25,36 @@ export default class Layout extends Component {
       GetTableMeta()
       GetUserMeta()
       GetRecordtypes()
+      GetFiles()
     }
   }
 
   componentDidUpdate() {
-    const { Profile, removenotification,
-      Users, removeUsernotification } = this.props
+    const { Profile, removenotification, Files, removeFilenotification,
+      Users, removeUsernotification, isMobile, handlemobile } = this.props
     notification(Profile.notifications, removenotification)
     notification(Users.notifications, removeUsernotification)
+    notification(Files.notifications, removeFilenotification)
     this.handleLanguage()
+
+    if (isMobile !== Profile.Ismobile) {
+      handlemobile(isMobile)
+    }
   }
 
   render() {
-    const { Profile, iconOnly, seticonOnly, history, logOut, isMobile } = this.props
+    const { Profile, Files, iconOnly, seticonOnly, history, logOut, isMobile, hideMobile, sethideMobile } = this.props
     return (
       (Profile.isLogging || Profile.isFetching) ?
         <LoadingPage />
         :
         <div className='bg-white dark:bg-Contentbg overflow-hidden' >
-          <Navbar iconOnly={isMobile ? true : iconOnly} seticonOnly={seticonOnly} Profile={Profile} logOut={logOut} isMobile={isMobile} />
+          <Navbar iconOnly={isMobile ? true : iconOnly} seticonOnly={seticonOnly} Profile={Profile} logOut={logOut} isMobile={isMobile} Files={Files} sethideMobile={sethideMobile} hideMobile={hideMobile} />
           <div className='flex flex-row justify-start items-start '>
-            <Sidebar history={history} iconOnly={isMobile ? true : iconOnly} seticonOnly={seticonOnly} Profile={Profile} isMobile={isMobile} />
+            <Sidebar history={history} iconOnly={isMobile ? true : iconOnly} seticonOnly={seticonOnly} Profile={Profile} isMobile={isMobile} hideMobile={hideMobile} />
             <div className={`mt-[58.61px] p-4 w-full min-w-[0px] contentWrapper`}>
               <div className='w-full '>
-                <Routes Profile={Profile}/>
+                <Routes Profile={Profile} />
               </div>
             </div>
           </div>
